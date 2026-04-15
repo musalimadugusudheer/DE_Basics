@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al Hilal Bank — Interview Prep | Sudheer Kumar M</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --surface: #111827;
+    --border: #1e2d45;
+    --accent: #00c9a7;
+    --accent2: #3b82f6;
+    --accent3: #f59e0b;
+    --accent4: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --tag-bg: #1e2d45;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* HEADER */
+  .hero {
+    background: linear-gradient(135deg, #0a0f1e 0%, #0d1b35 50%, #0a1628 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,201,167,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    background: var(--tag-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--accent2);
+  }
+
+  /* NAV */
+  .toc {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    padding: 14px 16px;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color .2s, border-color .2s;
+  }
+  .toc a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 40px 40px 80px; }
+
+  /* QUESTION CARD */
+  .qcard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .qcard:hover { border-color: #2a3f5f; }
+
+  .qcard-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px 28px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,201,167,0.1);
+    border: 1px solid rgba(0,201,167,0.3);
+    border-radius: 6px;
+    padding: 4px 10px;
+    min-width: 42px;
+    text-align: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .q-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: #fff;
+    line-height: 1.35;
+  }
+  .q-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    padding: 3px 10px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .tag-azure { background: rgba(59,130,246,.15); color: #3b82f6; border: 1px solid rgba(59,130,246,.3); }
+  .tag-spark { background: rgba(245,158,11,.15); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+  .tag-arch { background: rgba(0,201,167,.15); color: #00c9a7; border: 1px solid rgba(0,201,167,.3); }
+  .tag-db { background: rgba(168,85,247,.15); color: #a855f7; border: 1px solid rgba(168,85,247,.3); }
+  .tag-infra { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+
+  .qcard-body { padding: 24px 28px; }
+
+  /* ANSWER BLOCKS */
+  .answer-para { margin-bottom: 14px; color: var(--text); }
+  .answer-para:last-child { margin-bottom: 0; }
+
+  .highlight-box {
+    background: rgba(0,201,167,0.07);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .highlight-box strong { color: var(--accent); }
+
+  .info-box {
+    background: rgba(59,130,246,0.07);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .info-box strong { color: var(--accent2); }
+
+  .warn-box {
+    background: rgba(245,158,11,0.07);
+    border-left: 3px solid var(--accent3);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  .warn-box strong { color: var(--accent3); }
+
+  /* CODE */
+  .code-block {
+    background: #0d1117;
+    border: 1px solid #1e2d45;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 16px 0;
+    color: #a8d8a8;
+  }
+  .code-block .kw { color: #79c0ff; }
+  .code-block .str { color: #a5d6ff; }
+  .code-block .cm { color: #484f58; font-style: italic; }
+  .code-block .fn { color: #d2a8ff; }
+
+  /* TABLES */
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13.5px;
+  }
+  .comp-table th {
+    background: #1e2d45;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .comp-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* STEP LIST */
+  .steps { margin: 16px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 14px;
+    align-items: flex-start;
+  }
+  .step-num {
+    background: var(--accent2);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content strong { color: #fff; }
+
+  /* BULLETS */
+  .bullet-list { padding-left: 0; list-style: none; margin: 12px 0; }
+  .bullet-list li {
+    padding: 5px 0 5px 20px;
+    position: relative;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .bullet-list li::before {
+    content: '▸';
+    position: absolute; left: 0;
+    color: var(--accent);
+    font-size: 11px;
+    top: 7px;
+  }
+
+  /* SECTION DIVIDER */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 40px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin: 2px 3px 2px 0;
+  }
+  .badge-g { background: rgba(0,201,167,.15); color: #00c9a7; }
+  .badge-b { background: rgba(59,130,246,.15); color: #60a5fa; }
+  .badge-y { background: rgba(245,158,11,.15); color: #fbbf24; }
+  .badge-r { background: rgba(239,68,68,.15); color: #f87171; }
+
+  .inline-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--tag-bg);
+    color: var(--accent2);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+  }
+
+  @media (max-width: 600px) {
+    .hero, .container { padding-left: 20px; padding-right: 20px; }
+    .toc { padding: 0 20px; }
+    .qcard-header { flex-wrap: wrap; }
+    .q-tag { margin-left: 0; margin-top: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Interview Preparation Guide</div>
+  <h1>Al Hilal Bank <span>Technical Interview</span></h1>
+  <div class="hero-sub">Sudheer Kumar M — Lead Data Engineer · 11+ Years Experience</div>
+  <div class="hero-meta">
+    <span class="meta-pill">Azure ADF / Databricks</span>
+    <span class="meta-pill">PySpark · Delta Lake</span>
+    <span class="meta-pill">Kafka · Python</span>
+    <span class="meta-pill">Kubernetes</span>
+    <span class="meta-pill">Kahramaa Reference Project</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<div class="toc">
+  <a href="#q1">Q1 · Injection ADF/ADS</a>
+  <a href="#q2">Q2 · 4 Data Sources</a>
+  <a href="#q3">Q3 · Schema Evolution</a>
+  <a href="#q4">Q4 · RCA 100GB</a>
+  <a href="#q5">Q5 · Cluster vs Non-Cluster</a>
+  <a href="#q6">Q6 · Thumb Rule</a>
+  <a href="#q7">Q7 · Data Fragmentation</a>
+  <a href="#q8">Q8 · ADF Design</a>
+  <a href="#q9">Q9 · Python/PySpark/K8s</a>
+  <a href="#q10">Q10 · Monitoring</a>
+  <a href="#q11">Q11 · Kafka</a>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <div class="section-title">Core Azure / ADF Questions</div>
+
+  <!-- Q1 -->
+  <div class="qcard" id="q1">
+    <div class="qcard-header">
+      <div class="q-num">Q01</div>
+      <div class="q-title">What is Injection/Ingestion in ADF and ADS?</div>
+      <div class="q-tag tag-azure">ADF / ADS</div>
+    </div>
+    <div class="qcard-body">
+      <div class="highlight-box">
+        <strong>Interviewer likely means:</strong> "Ingestion" — bringing raw data into the platform — and possibly "parameter injection" (dynamic content in ADF pipelines). ADS = Azure Data Studio or Azure Databricks Service.
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Ingestion in ADF (Azure Data Factory):</strong></p>
+      <p class="answer-para">Ingestion is the first step — pulling data from source systems and landing it in ADLS Gen2 or a Bronze layer. In ADF, we do this using <span class="inline-tag">Copy Activity</span>, <span class="inline-tag">Data Flows</span>, and <span class="inline-tag">Linked Services</span>. In my Kahramaa project, ADF handled ingestion from four source types: Oracle ERP (on-prem via Self-Hosted Integration Runtime), MySQL CRM, SharePoint flat files, and IoT telemetry via Azure Event Hubs. We had about 32 ADF pipelines doing this — each pipeline parameterised so a single template could serve multiple tables.</p>
+
+      <div class="info-box">
+        <strong>Parameter Injection in ADF</strong> — This is the practice of passing runtime values into pipelines using <code>@pipeline().parameters</code> and <code>@variables()</code> expressions. Instead of hardcoding table names, file paths, or date ranges, we inject them dynamically. For example, our batch ingestion pipeline accepted <code>source_table</code>, <code>watermark_date</code>, and <code>target_container</code> as parameters. One master pipeline looped through a metadata control table and injected these values per table — making it fully metadata-driven.
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Ingestion in ADS (Azure Databricks Service):</strong></p>
+      <p class="answer-para">In Databricks, ingestion happens via <span class="inline-tag">Auto Loader</span> for streaming and <span class="inline-tag">spark.read</span> for batch. Auto Loader uses <span class="inline-tag">cloudFiles</span> format to incrementally ingest files from ADLS Gen2 as they arrive — it tracks what's been processed using checkpoints so there's no duplicate ingestion. For our IoT meter data (2.8M events/day), we used Auto Loader feeding directly into the Bronze Delta table. ADF triggered the Databricks notebooks once ingestion was staged, so the two tools were complementary: ADF for orchestration and movement, Databricks for transformation.</p>
+
+      <div class="code-block">
+<span class="cm"># Auto Loader ingestion in Databricks (ADS)</span>
+df = (spark.readStream
+  <span class="fn">.format</span>(<span class="str">"cloudFiles"</span>)
+  <span class="fn">.option</span>(<span class="str">"cloudFiles.format"</span>, <span class="str">"json"</span>)
+  <span class="fn">.option</span>(<span class="str">"cloudFiles.schemaLocation"</span>, <span class="str">"/mnt/schema/iot_schema"</span>)
+  <span class="fn">.load</span>(<span class="str">"/mnt/landing/iot_events/"</span>)
+)
+
+<span class="cm"># Write to Bronze Delta with checkpointing</span>
+(df.writeStream
+  <span class="fn">.format</span>(<span class="str">"delta"</span>)
+  <span class="fn">.option</span>(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/checkpoints/iot_bronze"</span>)
+  <span class="fn">.outputMode</span>(<span class="str">"append"</span>)
+  <span class="fn">.table</span>(<span class="str">"bronze.iot_meter_readings"</span>)
+)
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="qcard" id="q2">
+    <div class="qcard-header">
+      <div class="q-num">Q02</div>
+      <div class="q-title">What are the 4 Sources of Data Flow?</div>
+      <div class="q-tag tag-azure">ADF Data Flow</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para">In ADF <strong style="color:#fff">Mapping Data Flows</strong>, every pipeline starts with a Source transformation. The four primary source dataset types you configure are:</p>
+
+      <table class="comp-table">
+        <thead>
+          <tr><th>Source Type</th><th>When Used</th><th>Our Kahramaa Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge badge-b">Delimited Text / CSV</span></td>
+            <td>Flat files, exports, SharePoint downloads</td>
+            <td>Monthly billing flat files from SharePoint landing zone</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-g">Database (SQL/Oracle)</span></td>
+            <td>Relational source tables via JDBC/ODBC</td>
+            <td>Oracle ERP (customer master, tariffs) via SHIR connector</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-y">Parquet / Delta Lake</span></td>
+            <td>Processed data in ADLS for transformation</td>
+            <td>Bronze Parquet → Silver Delta transformations</td>
+          </tr>
+          <tr>
+            <td><span class="badge badge-r">Azure Blob / ADLS Gen2</span></td>
+            <td>JSON, XML, binary files in cloud storage</td>
+            <td>IoT JSON payloads streamed via Event Hubs, then landed in ADLS</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Alternatively — the 4 data sources in our Kahramaa architecture:</strong> Oracle ERP (transactional batch), MySQL CRM (customer data), Azure Event Hubs (IoT streaming — 2.8M events/day from 300K+ smart meters), and SharePoint / flat files (operational reports). Each had its own ingestion pattern, either full load or incremental watermark-based.
+      </div>
+
+      <p class="answer-para">In ADF Mapping Data Flows, after the Source, the standard transformation chain is: <span class="inline-tag">Source</span> → <span class="inline-tag">Filter / Select</span> → <span class="inline-tag">Derived Column</span> → <span class="inline-tag">Aggregate / Join</span> → <span class="inline-tag">Sink</span>. The Sink is the fifth component — the destination (Delta table, SQL DB, Blob).</p>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="qcard" id="q3">
+    <div class="qcard-header">
+      <div class="q-num">Q03</div>
+      <div class="q-title">What is Schema Evolution and How Can You Use It?</div>
+      <div class="q-tag tag-arch">Delta Lake</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para">Schema evolution is the ability of a data table to automatically accept and handle structural changes in incoming data — new columns, changed column types, dropped columns — <strong style="color:#fff">without breaking existing pipelines or requiring manual ALTER TABLE.</strong></p>
+
+      <div class="info-box">
+        <strong>Real scenario from Kahramaa:</strong> Mid-project, the Oracle ERP team added three new columns to the customer billing table — <code>new_tariff_tier</code>, <code>green_energy_flag</code>, and <code>subsidy_code</code>. Without schema evolution, all pipelines writing to the Silver Delta table would have failed. With <code>mergeSchema = true</code>, the new columns were automatically added to the Delta table and backfilled as NULL for historical records. No pipeline downtime, no manual intervention.
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Two modes in Delta Lake:</strong></p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>mergeSchema = true</strong> — Additive only. New columns in the incoming DataFrame are added to the existing table schema. Existing data gets NULL for the new columns. Safe and non-destructive. Use this for most production scenarios.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>overwriteSchema = true</strong> — Replaces the entire schema. Use only when doing a full reload and you deliberately want to redefine the table structure. Destructive — historical schema is lost. Use with extreme caution.
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+<span class="cm"># mergeSchema — safest option for production</span>
+df_new.write \
+  .<span class="fn">format</span>(<span class="str">"delta"</span>) \
+  .<span class="fn">mode</span>(<span class="str">"append"</span>) \
+  .<span class="fn">option</span>(<span class="str">"mergeSchema"</span>, <span class="str">"true"</span>) \
+  .<span class="fn">saveAsTable</span>(<span class="str">"silver.customer_billing"</span>)
+
+<span class="cm"># Auto Loader with schema evolution enabled</span>
+spark.readStream \
+  .<span class="fn">format</span>(<span class="str">"cloudFiles"</span>) \
+  .<span class="fn">option</span>(<span class="str">"cloudFiles.schemaEvolutionMode"</span>, <span class="str">"addNewColumns"</span>) \
+  .<span class="fn">option</span>(<span class="str">"cloudFiles.inferColumnTypes"</span>, <span class="str">"true"</span>) \
+  .<span class="fn">load</span>(<span class="str">"/mnt/landing/billing/"</span>)
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Schema drift in ADF Data Flows:</strong> ADF has a built-in "Allow schema drift" toggle in the Source transformation. When enabled, columns arriving that aren't in the defined schema are passed through dynamically. This is useful when you don't want to predefine every column in a metadata-driven pipeline. We used this for SharePoint files where the column list changed month to month.</p>
+
+      <div class="warn-box">
+        <strong>Interview tip:</strong> Always mention the governance trade-off — schema evolution is powerful but you must monitor for accidental type changes (e.g., an INT column becoming STRING). We used <strong>Great Expectations</strong> in our pipeline to validate column types before writes. If a type mismatch was detected, the pipeline raised an alert rather than silently corrupting the table.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="qcard" id="q4">
+    <div class="qcard-header">
+      <div class="q-num">Q04</div>
+      <div class="q-title">What RCA Can You Use for 100 GB Data and How Do You Distribute a Large Dataset?</div>
+      <div class="q-tag tag-spark">Spark / Perf</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para"><strong style="color:#fff">Root Cause Analysis (RCA) approach for slow / failing 100GB pipeline:</strong></p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content"><strong>Check Spark UI — Stages tab first.</strong> Look for stages with dramatically longer runtimes. A 2-minute stage alongside 20-second stages = data skew. Check the Tasks tab — if one task handles 10x more data than others, skew is confirmed.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><strong>Identify the shuffle.</strong> In our Kahramaa project, Zone-A (Doha central district) had 40% of all meter readings. Grouping by zone caused a single task to process 38GB while others processed 2GB. Stage runtime was 38 minutes for that one task. Identified via Spark UI → Stage → Task Metrics → Input Size per task.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content"><strong>Check for spill.</strong> Spark UI → Executor tab → Disk spill / Memory spill columns. If tasks are writing to disk mid-sort, memory is insufficient for the shuffle. Fix: increase <code>spark.executor.memory</code>, or reduce <code>spark.sql.shuffle.partitions</code>.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><strong>Check GC time.</strong> If GC time > 10% of task time in Executor metrics, memory pressure is the root cause. Increase executor memory or use Tungsten off-heap.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content"><strong>Check DAG for unnecessary wide transformations.</strong> Lineage tab — are there multiple shuffle stages that could be collapsed? Use <code>cache()</code> to break recomputation chains if a DataFrame is used in 2+ downstream operations.</div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Kahramaa War Story — Zone-A Skew Fix:</strong> Identified skew on zone column. Fixed by salting: appended a random number 0–9 to the zone key during aggregation (e.g., <code>Zone-A_3</code>), aggregated at salted level, then reduced back. Task time dropped from <strong>38 minutes → 4 minutes</strong> on the same cluster.
+      </div>
+
+      <div class="code-block">
+<span class="cm"># Salting fix for skewed groupBy</span>
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+
+df_salted = df.<span class="fn">withColumn</span>(
+    <span class="str">"salted_zone"</span>,
+    F.<span class="fn">concat</span>(F.<span class="fn">col</span>(<span class="str">"zone_id"</span>), F.<span class="fn">lit</span>(<span class="str">"_"</span>), (F.<span class="fn">rand</span>() * 10).<span class="fn">cast</span>(<span class="str">"int"</span>))
+)
+
+df_agg = df_salted.<span class="fn">groupBy</span>(<span class="str">"salted_zone"</span>).<span class="fn">agg</span>(F.<span class="fn">sum</span>(<span class="str">"consumption_kwh"</span>).<span class="fn">alias</span>(<span class="str">"partial_sum"</span>))
+
+df_final = df_agg.<span class="fn">withColumn</span>(<span class="str">"zone_id"</span>, F.<span class="fn">split</span>(F.<span class="fn">col</span>(<span class="str">"salted_zone"</span>), <span class="str">"_"</span>)[0]) \
+                 .<span class="fn">groupBy</span>(<span class="str">"zone_id"</span>).<span class="fn">agg</span>(F.<span class="fn">sum</span>(<span class="str">"partial_sum"</span>).<span class="fn">alias</span>(<span class="str">"total_kwh"</span>))
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Distributing a Large Dataset (100GB+):</strong></p>
+      <ul class="bullet-list">
+        <li><strong>Partition wisely:</strong> Partition by a high-cardinality column that's used in WHERE clauses — in our case, <code>meter_read_date</code> (date partitioning) and <code>district_code</code>. Never partition by a column with only 2–3 values — that creates large, unbalanced files.</li>
+        <li><strong>Target partition size ~128MB–256MB:</strong> For 100GB, aim for ~400–800 partitions. Too few = large tasks; too many = scheduler overhead. Use <code>repartition(n)</code> before write or set <code>spark.sql.shuffle.partitions</code>.</li>
+        <li><strong>Z-ordering in Delta:</strong> For query patterns that filter on multiple columns, ZORDER BY (zone_id, read_date) co-locates related data in the same files, reducing data scanned dramatically. Used on our Gold consumption_summary table.</li>
+        <li><strong>Broadcast small dims:</strong> Any dimension table under 10MB should be broadcast-joined rather than shuffled. No network shuffle needed — each executor gets a copy.</li>
+        <li><strong>Bucketing for repeated joins:</strong> If you repeatedly join a large table to the same key, bucket on that key at write time so joins require zero shuffle.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="qcard" id="q5">
+    <div class="qcard-header">
+      <div class="q-num">Q05</div>
+      <div class="q-title">Difference Between Clustered and Non-Clustered Index</div>
+      <div class="q-tag tag-db">SQL / DB</div>
+    </div>
+    <div class="qcard-body">
+      <table class="comp-table">
+        <thead>
+          <tr><th>Aspect</th><th>Clustered Index</th><th>Non-Clustered Index</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Physical order</strong></td>
+            <td>Rows are physically stored on disk in the index order</td>
+            <td>A separate structure with pointers to the actual rows</td>
+          </tr>
+          <tr>
+            <td><strong>Per table limit</strong></td>
+            <td>Only ONE per table (data can only be sorted one way)</td>
+            <td>Multiple allowed — up to 999 in SQL Server</td>
+          </tr>
+          <tr>
+            <td><strong>Speed</strong></td>
+            <td>Faster for range queries and ORDER BY on index key</td>
+            <td>Fast for exact lookups; adds a pointer lookup step</td>
+          </tr>
+          <tr>
+            <td><strong>Storage</strong></td>
+            <td>No extra storage — IS the data</td>
+            <td>Requires additional storage for the index structure</td>
+          </tr>
+          <tr>
+            <td><strong>Best use</strong></td>
+            <td>Primary Key, date ranges, sequential reads</td>
+            <td>Non-PK columns used in WHERE / JOIN conditions</td>
+          </tr>
+          <tr>
+            <td><strong>Analogy</strong></td>
+            <td>A book sorted alphabetically — the book IS the index</td>
+            <td>A book's back-index — separate page with page numbers</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Kahramaa context:</strong> In our Oracle ERP source DB, the <code>meter_reading</code> table had a clustered index on <code>reading_date</code> — since 90% of queries were date-range based (e.g., "fetch all readings for October"). Non-clustered indexes were placed on <code>meter_id</code> and <code>customer_account_no</code> for lookup joins. This reduced ADF Copy Activity extraction time by ~35% compared to a full scan.
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Delta Lake equivalent:</strong> Delta doesn't use B-tree indexes. Instead, it uses <span class="inline-tag">file-level statistics</span> (min/max per column per file) for data skipping — effectively similar to a clustered index where files are physically grouped. ZORDER clustering co-locates data on frequently filtered columns, mimicking a multi-column clustered index in a Lakehouse context.</p>
+    </div>
+  </div>
+
+  <div class="section-title">Architecture & Design Principles</div>
+
+  <!-- Q6 -->
+  <div class="qcard" id="q6">
+    <div class="qcard-header">
+      <div class="q-num">Q06</div>
+      <div class="q-title">Thumb Rule for Data Flow from One Source to Another Source</div>
+      <div class="q-tag tag-arch">Architecture</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para">The core thumb rules I follow when designing any data flow pipeline:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content"><strong>Push filters as early as possible (predicate pushdown).</strong> Never pull 10 million rows across the network to filter to 100K at destination. Push the WHERE condition to the source system (Oracle, MySQL) so only relevant data moves. In ADF Copy, use <code>Query</code> mode instead of <code>Table</code> mode to push the filter.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content"><strong>Never move data twice if you can transform in-flight.</strong> If you're copying from Oracle to ADLS and need to mask PII — do it in the Data Flow transformation step, not a separate pipeline run. ADF Mapping Data Flow can project, filter, and mask in one pass.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content"><strong>Use incremental / watermark-based loads, not full dumps.</strong> For a 50GB Oracle table, never do a full extract every night. Use a high-watermark column (e.g., <code>last_updated_ts</code>) and only move records changed since the last run. Reduces network traffic, load on source, and pipeline runtime drastically.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content"><strong>Match compression to the use case.</strong> Landing zone → use <code>gzip</code> (compact, write-once). Bronze/Silver → use <code>snappy</code> (fast decompression for reads). Transferring between cloud regions → compress before transfer to reduce egress cost.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content"><strong>Isolate integration runtime to source proximity.</strong> Self-Hosted Integration Runtime (SHIR) should sit as close to the on-prem source as possible — ideally same subnet — to minimize latency. In Kahramaa, SHIR was deployed in the Qatar utility data center co-located with Oracle ERP.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content"><strong>Idempotency — every pipeline run should be safe to re-run.</strong> Write to temp partition first, validate, then atomic rename/overwrite. Delta Lake's ACID transactions give you this by default. In ADF, use staging blobs + Databricks MERGE to ensure no duplicates even on retry.</div>
+        </div>
+      </div>
+
+      <div class="warn-box">
+        <strong>100MB / 256MB file-size rule:</strong> When writing to ADLS or Delta, aim for 128–256MB files. Too many small files (small file problem) hammers the metadata store and slows Spark reads significantly. In ADF Data Flow, use the "Optimize" tab → "Set partitioning" to control output file count. In Databricks, use <code>OPTIMIZE</code> and <code>VACUUM</code> regularly on Delta tables.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="qcard" id="q7">
+    <div class="qcard-header">
+      <div class="q-num">Q07</div>
+      <div class="q-title">Data Fragmentation</div>
+      <div class="q-tag tag-arch">Architecture / DB</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para">Data fragmentation refers to dividing a large dataset across multiple physical locations, nodes, or files — either deliberately (to improve performance and parallelism) or unintentionally (causing inefficiency).</p>
+
+      <p class="answer-para"><strong style="color:#fff">Two types of intentional fragmentation (distributed DB context):</strong></p>
+
+      <table class="comp-table">
+        <thead>
+          <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Horizontal Fragmentation</strong><br><span style="color:var(--muted);font-size:12px">(Sharding)</span></td>
+            <td>Rows are split across nodes. Each node holds a subset of rows based on a partition key.</td>
+            <td>Meter readings split by emirate/region — Abu Dhabi data on Node 1, Dubai data on Node 2</td>
+          </tr>
+          <tr>
+            <td><strong>Vertical Fragmentation</strong></td>
+            <td>Columns are split across nodes. Each node holds specific columns of the same rows.</td>
+            <td>Customer table: PII columns (name, DOB) on secure node; usage columns on analytics node</td>
+          </tr>
+          <tr>
+            <td><strong>Mixed Fragmentation</strong></td>
+            <td>Combination of both</td>
+            <td>Region-based row sharding + separate column stores per team</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box">
+        <strong>Negative fragmentation — the Small Files Problem in Delta Lake:</strong> In our IoT streaming pipeline (2.8M events/day), early runs wrote one file per micro-batch — resulting in 5000+ files per day in the Bronze table. Spark had to open and read metadata for every file, causing query times of 4+ minutes for a simple aggregate. Fixed by: (1) increasing trigger interval in Structured Streaming from 30s to 5 min, (2) running <code>OPTIMIZE</code> daily via Databricks Jobs to compact small files into 128MB chunks, and (3) <code>VACUUM</code> weekly to remove stale files. Query time dropped to ~18 seconds.
+      </div>
+
+      <div class="code-block">
+<span class="cm"># Fix Delta Lake file fragmentation</span>
+<span class="cm"># Compact small files (OPTIMIZE)</span>
+<span class="kw">spark</span>.sql(<span class="str">"OPTIMIZE bronze.iot_meter_readings ZORDER BY (zone_id, read_date)"</span>)
+
+<span class="cm"># Remove old file versions (VACUUM — keep 7 days)</span>
+<span class="kw">spark</span>.sql(<span class="str">"VACUUM bronze.iot_meter_readings RETAIN 168 HOURS"</span>)
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Fragmentation in relational DBs:</strong> Index fragmentation occurs when INSERT/DELETE operations cause B-tree index pages to become out-of-order or sparsely filled. In SQL Server, <code>ALTER INDEX REBUILD</code> defragments the index. In Oracle, <code>ALTER TABLE ... MOVE</code> reclaims space. This was relevant in our Oracle ERP source — heavy daily INSERTs caused index fragmentation, and scheduled rebuilds were part of the source DB DBA's routine.</p>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="qcard" id="q8">
+    <div class="qcard-header">
+      <div class="q-num">Q08</div>
+      <div class="q-title">How Did You Design ADF — Step by Step Process?</div>
+      <div class="q-tag tag-azure">ADF Design</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para">Here's how I designed the ADF architecture for Kahramaa's data platform — ground up, step by step:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>Source Analysis & Connectivity Planning</strong><br>
+            Catalogued all 4 source systems. Oracle ERP was on-prem → needed Self-Hosted Integration Runtime deployed in Qatar DC. MySQL CRM was cloud-hosted → used Azure IR. SharePoint → REST connector. Event Hubs → Databricks Auto Loader (ADF not used for streaming). Documented connection strings, credentials, and service accounts. Stored all secrets in Azure Key Vault with Key Vault Linked Service references — no credentials in ADF JSON.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>Linked Services & Dataset Templates</strong><br>
+            Created parameterised Linked Services (e.g., one Oracle LS with <code>@{linkedService().host}</code> as a parameter). Created Dataset templates where table name and schema were runtime parameters. This meant one Dataset definition could serve all 15+ Oracle tables.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>Metadata-Driven Control Table</strong><br>
+            Built a SQL control table: <code>pipeline_config</code> with columns: <code>source_system</code>, <code>table_name</code>, <code>load_type (full/incremental)</code>, <code>watermark_column</code>, <code>last_run_watermark</code>, <code>target_path</code>, <code>is_active</code>. The master pipeline did a Lookup Activity on this table, then passed each row to a ForEach Activity.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>Pipeline Hierarchy: Master → Child</strong><br>
+            Master pipeline: Lookup → ForEach → Execute Pipeline (child). Child pipeline: accepted parameters, ran Get Watermark → Copy Activity (source to Bronze ADLS) → Update Watermark → Trigger Databricks notebook. Used If Condition Activity inside child to branch on full vs. incremental load type.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>Error Handling & Retry Logic</strong><br>
+            Each Copy Activity had 3 retries with 30-second intervals. Pipeline-level failure path triggered an Azure Logic Apps alert (email + Teams notification with pipeline name, error message, run ID). Partial failures were logged to a <code>pipeline_error_log</code> table. The next run picked up from last successful watermark — no data loss.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <strong>Scheduling & Triggering</strong><br>
+            Batch pipelines: Schedule trigger at 01:00 AM GST. Event-based trigger on ADLS for file arrival (SharePoint exports dropped files → trigger fired automatically). Tumbling window trigger for hourly micro-batch aggregations on meter data.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div class="step-content">
+            <strong>CI/CD via Azure DevOps</strong><br>
+            ADF connected to Git (Azure DevOps repo). All pipeline JSON configs versioned. Used ARM template export for deployment from Dev → UAT → Prod. Parameter files per environment. No manual changes in Prod — all changes through PRs.
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight-box">
+        <strong>Result:</strong> 32 pipelines managing ~25–30 GB/day batch ingestion from 4 source systems, all driven by a single control table. Adding a new table required inserting one row into the config table — zero code changes.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Engineering Experience</div>
+
+  <!-- Q9 -->
+  <div class="qcard" id="q9">
+    <div class="qcard-header">
+      <div class="q-num">Q09</div>
+      <div class="q-title">Experience on Python, PySpark and Kubernetes</div>
+      <div class="q-tag tag-spark">PySpark / K8s</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para"><strong style="color:#fff">Python:</strong></p>
+      <p class="answer-para">Python has been my primary scripting and orchestration language across all roles. In Kahramaa, I used Python for: ADF pipeline metadata management scripts (reading/writing control tables), Great Expectations data quality test suites (expectation configs and checkpoint runners), Azure SDK automation (triggering Databricks jobs, managing ADLS access via <code>azure-storage-file-datalake</code>), and utility functions for data masking and PII hashing.</p>
+
+      <p class="answer-para"><strong style="color:#fff">PySpark:</strong></p>
+      <p class="answer-para">PySpark is my core transformation engine. In Kahramaa's Databricks environment, every Silver and Gold layer transformation was a PySpark notebook or job. Key patterns I've implemented: SCD Type 2 using Delta MERGE, watermark-based streaming with <code>withWatermark</code> and event-time windows, broadcast joins for dimension tables under 10MB, salting for skewed aggregations (Zone-A fix — reduced task time 38 min → 4 min), and schema enforcement via <code>StructType</code> with explicit schemas rather than inferred. I've also used the <code>@udf</code> decorator and Pandas UDFs (vectorised) for complex transformations where native Spark functions didn't cover.</p>
+
+      <div class="code-block">
+<span class="cm"># Pandas UDF example — used for tariff calculation logic</span>
+<span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> pandas_udf
+<span class="kw">from</span> pyspark.sql.types <span class="kw">import</span> DoubleType
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+@<span class="fn">pandas_udf</span>(DoubleType())
+<span class="kw">def</span> <span class="fn">calc_tariff</span>(consumption: pd.Series, tier: pd.Series) -> pd.Series:
+    <span class="kw">return</span> consumption * tier.<span class="fn">map</span>({<span class="str">'low'</span>: 0.23, <span class="str">'mid'</span>: 0.31, <span class="str">'high'</span>: 0.45})
+
+df_billed = df.<span class="fn">withColumn</span>(<span class="str">"bill_amount"</span>, <span class="fn">calc_tariff</span>(F.<span class="fn">col</span>(<span class="str">"consumption_kwh"</span>), F.<span class="fn">col</span>(<span class="str">"tariff_tier"</span>)))
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Kubernetes:</strong></p>
+      <p class="answer-para">My Kubernetes experience is primarily from infrastructure automation at Kyndryl (formerly IBM), where I worked on the NAB (National Australia Bank) network automation platform. We containerised network management microservices using Docker, deployed them on AKS (Azure Kubernetes Service), and used Helm charts for environment-specific configuration. I managed pod autoscaling (HPA — Horizontal Pod Autoscaler) and resource quotas. For data engineering workloads, I'm aware of Spark-on-Kubernetes where Spark driver and executor pods are spun up dynamically in K8s rather than running on a fixed cluster — this is increasingly used as a cost-efficient alternative to Databricks clusters for batch jobs, as you pay only for actual pod runtime.</p>
+
+      <div class="info-box">
+        <strong>Honest framing if probed:</strong> My primary K8s use was at Kyndryl for network automation microservices. In data engineering, I've used Databricks which abstracts the cluster management. I'm familiar with Spark-on-K8s concepts and have worked with AKS deployments, but would ramp up quickly on K8s-based Spark orchestration if that's the pattern used at Al Hilal Bank.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="qcard" id="q10">
+    <div class="qcard-header">
+      <div class="q-num">Q10</div>
+      <div class="q-title">How Do You Monitor Data?</div>
+      <div class="q-tag tag-arch">Monitoring / Ops</div>
+    </div>
+    <div class="qcard-body">
+      <p class="answer-para">Monitoring has three layers in our Kahramaa platform: <strong style="color:#fff">Pipeline Monitoring</strong>, <strong style="color:#fff">Data Quality Monitoring</strong>, and <strong style="color:#fff">Infrastructure Monitoring.</strong></p>
+
+      <p class="answer-para"><strong style="color:#fff">1. Pipeline Monitoring (ADF + Databricks):</strong></p>
+      <ul class="bullet-list">
+        <li><strong>ADF Monitor Hub:</strong> Real-time view of all pipeline runs. Filter by status (Failed, InProgress), activity name, and trigger type. For each failed run: click into Activity runs → see exact error message, retry count, and duration per activity.</li>
+        <li><strong>Azure Monitor + Log Analytics:</strong> Configured Diagnostic Settings on ADF to push pipeline logs to Log Analytics workspace. KQL queries to alert on pipeline failures: <code>ADFPipelineRun | where Status == "Failed"</code>. Set alert rules with Action Groups sending Teams + email notifications within 5 minutes of failure.</li>
+        <li><strong>Databricks Job Alerts:</strong> Job run email notifications configured for Failure and Success. For long-running jobs, Ganglia metrics within Databricks showed CPU/memory per executor in real time.</li>
+      </ul>
+
+      <p class="answer-para"><strong style="color:#fff">2. Data Quality Monitoring (Great Expectations):</strong></p>
+      <ul class="bullet-list">
+        <li>Expectation suites defined for each Silver/Gold table: not-null checks on key columns, value range checks (consumption_kwh > 0 and &lt; 50000), row count threshold checks (±20% from 30-day rolling average — flags partial loads).</li>
+        <li>Checkpoints ran as the final step of each Databricks notebook. If any expectation failed, the notebook raised an exception — halting the pipeline before bad data reached Gold/Power BI.</li>
+        <li>Data Docs (GE's HTML report) published to ADLS and accessible via Databricks Jobs. Operations team could see which tables passed/failed QC without accessing Databricks directly.</li>
+      </ul>
+
+      <p class="answer-para"><strong style="color:#fff">3. Data Lineage & Governance (Azure Purview):</strong></p>
+      <ul class="bullet-list">
+        <li>Azure Purview scanned ADLS, ADF, and Databricks automatically to build lineage graphs. Could trace a Gold table column back to its Bronze source file and original Oracle table column.</li>
+        <li>Useful for impact analysis: "If we change this Oracle column, which 3 Power BI reports are affected?" — answered in Purview in seconds.</li>
+      </ul>
+
+      <div class="highlight-box">
+        <strong>SLA monitoring example:</strong> Gold layer tables had a business SLA of 07:00 AM availability. Configured Azure Monitor alert: if ADF pipeline "gold_layer_refresh" didn't show "Succeeded" status by 06:45 AM, alert fired. Operations team had 15 minutes to investigate before business users arrived. This proactive monitoring reduced data-related support tickets by ~60% in the first quarter.
+      </div>
+    </div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="qcard" id="q11">
+    <div class="qcard-header">
+      <div class="q-num">Q11</div>
+      <div class="q-title">Kafka Experience</div>
+      <div class="q-tag tag-infra">Streaming / Kafka</div>
+    </div>
+    <div class="qcard-body">
+      <div class="warn-box">
+        <strong>Honest position:</strong> In Kahramaa, we used Azure Event Hubs for IoT streaming — which is Kafka-protocol compatible. I'll lead with that connection, then cover Kafka concepts I know deeply.
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Kafka-compatible experience via Azure Event Hubs:</strong></p>
+      <p class="answer-para">Azure Event Hubs exposes a Kafka endpoint — meaning any Kafka producer/consumer SDK connects to it unchanged. In Kahramaa, 300K+ smart meters (electricity and water) published telemetry events — ~2.8 million events per day — to Event Hubs topics (equivalent to Kafka topics). Our Databricks Structured Streaming consumed these using the Kafka connector (<code>spark.readStream.format("kafka")</code>), pointing at the Event Hubs Kafka endpoint. This gave me hands-on experience with offset management, consumer groups, and exactly-once semantics — the same concepts as native Kafka.</p>
+
+      <div class="code-block">
+<span class="cm"># Reading from Event Hubs via Kafka protocol in Databricks</span>
+df_stream = (spark.readStream
+  .<span class="fn">format</span>(<span class="str">"kafka"</span>)
+  .<span class="fn">option</span>(<span class="str">"kafka.bootstrap.servers"</span>, <span class="str">"kahramaa-eh.servicebus.windows.net:9093"</span>)
+  .<span class="fn">option</span>(<span class="str">"subscribe"</span>, <span class="str">"iot-meter-readings"</span>)
+  .<span class="fn">option</span>(<span class="str">"startingOffsets"</span>, <span class="str">"latest"</span>)
+  .<span class="fn">option</span>(<span class="str">"kafka.security.protocol"</span>, <span class="str">"SASL_SSL"</span>)
+  .<span class="fn">load</span>()
+)
+
+<span class="cm"># Parse JSON payload from Kafka value (binary → string → JSON)</span>
+df_parsed = df_stream.<span class="fn">selectExpr</span>(<span class="str">"CAST(value AS STRING) as json_payload"</span>, <span class="str">"timestamp"</span>) \
+  .<span class="fn">select</span>(F.<span class="fn">from_json</span>(F.<span class="fn">col</span>(<span class="str">"json_payload"</span>), meter_schema).<span class="fn">alias</span>(<span class="str">"data"</span>), <span class="str">"timestamp"</span>) \
+  .<span class="fn">select</span>(<span class="str">"data.*"</span>, <span class="str">"timestamp"</span>)
+      </div>
+
+      <p class="answer-para"><strong style="color:#fff">Kafka concepts I work with:</strong></p>
+
+      <table class="comp-table">
+        <thead>
+          <tr><th>Concept</th><th>What It Does</th><th>How We Used It</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Topics & Partitions</strong></td>
+            <td>Topic = named stream. Partitions = parallel lanes. More partitions = higher throughput.</td>
+            <td>Event Hubs with 32 partitions matching our 32-executor Databricks cluster for 1:1 parallelism</td>
+          </tr>
+          <tr>
+            <td><strong>Consumer Groups</strong></td>
+            <td>Independent readers of same topic. Each group tracks its own offset.</td>
+            <td>One group for real-time anomaly detection, separate group for Bronze ingestion — both read the same Event Hub independently</td>
+          </tr>
+          <tr>
+            <td><strong>Offsets</strong></td>
+            <td>Bookmark per partition. Controls where consumer resumes after restart.</td>
+            <td>Databricks checkpoints stored offset → guaranteed no data loss or duplication on restart</td>
+          </tr>
+          <tr>
+            <td><strong>Retention</strong></td>
+            <td>How long messages stay in Kafka (default 7 days). Replay possible within retention window.</td>
+            <td>Event Hubs set to 3-day retention — allowed replaying missed events if Bronze pipeline had downtime</td>
+          </tr>
+          <tr>
+            <td><strong>Watermarking</strong></td>
+            <td>In Spark Streaming: tells Spark how late data can arrive before state is dropped.</td>
+            <td><code>withWatermark("event_time", "10 minutes")</code> — allowed 10-min late IoT events before window closed</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box">
+        <strong>If asked about native Kafka (without Event Hubs):</strong> The architecture is identical — brokers instead of Event Hubs namespaces, Zookeeper (or KRaft in newer versions) for broker coordination, and the same producer/consumer API. The Databricks Spark Kafka connector works with both. My gap is production Kafka broker administration (topic creation, replication factor tuning, ISR management) — for which I'd rely on the platform/ops team, just as in Kahramaa I relied on Azure managing the Event Hubs broker layer.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Sudheer Kumar M — Lead Data Engineer · Al Hilal Bank Interview Prep · Compiled April 2026
+</div>
+
+</body>
+</html>
