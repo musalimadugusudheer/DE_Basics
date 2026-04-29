@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENBD Interview No. 02 — Complete Answers | Sudheer Kumar M.</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #09090b;
+  --surface: #111115;
+  --card:    #18181c;
+  --border:  #27272a;
+  --border2: #3f3f46;
+  --text:    #d4d4d8;
+  --muted:   #52525b;
+  --accent:  #60a5fa;
+  --gold:    #f59e0b;
+  --green:   #10b981;
+  --orange:  #f97316;
+  --purple:  #a78bfa;
+  --teal:    #06b6d4;
+  --red:     #ef4444;
+  --code-bg: #050507;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;line-height:1.75;}
+.wrap{max-width:1000px;margin:0 auto;padding:2.5rem 1.75rem 5rem;}
+
+/* HEADER */
+.hdr{margin-bottom:2.5rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border2);}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem;}
+h1{font-family:'Lora',serif;font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:600;color:#fff;line-height:1.2;}
+.hdr p{font-size:.9rem;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:.5rem;}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem;}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:.63rem;padding:3px 9px;border-radius:20px;border:1px solid var(--border2);color:var(--muted);}
+
+/* SECTION */
+.sec{margin-bottom:1.5rem;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.sec-hdr{background:var(--surface);padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.9rem;cursor:pointer;user-select:none;}
+.sec-hdr:hover{background:rgba(96,165,250,.04);}
+.s-num{font-family:'IBM Plex Mono',monospace;font-size:.68rem;padding:3px 10px;border-radius:6px;flex-shrink:0;}
+.s-intro{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.2);color:var(--accent);}
+.s-arch {background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:var(--green);}
+.s-ocr  {background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:var(--gold);}
+.s-spark{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2);color:var(--purple);}
+.s-orch {background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);color:var(--teal);}
+.s-opt  {background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);color:var(--orange);}
+.s-sql  {background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--red);}
+.s-title{flex:1;font-family:'Lora',serif;font-size:1.05rem;font-weight:600;color:#fff;}
+.s-tog{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted);white-space:nowrap;}
+
+/* QGROUP */
+.qg{padding:1.4rem 1.5rem;border-bottom:1px solid var(--border);}
+.qg:last-child{border-bottom:none;}
+.qline{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.85rem;}
+.qb{font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:2px 8px;border-radius:4px;white-space:nowrap;margin-top:3px;flex-shrink:0;}
+.qb-a{background:rgba(96,165,250,.07);border:1px solid rgba(96,165,250,.15);color:var(--accent);}
+.qb-g{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.15);color:var(--green);}
+.qb-o{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.15);color:var(--gold);}
+.qb-p{background:rgba(167,139,250,.07);border:1px solid rgba(167,139,250,.15);color:var(--purple);}
+.qt{font-family:'IBM Plex Mono',monospace;font-size:.77rem;color:var(--muted);font-style:italic;line-height:1.5;}
+.ans{font-size:.96rem;color:var(--text);line-height:1.82;}
+.ans p{margin-bottom:.85rem;}
+.ans p:last-child{margin-bottom:0;}
+
+/* highlights */
+.k{color:var(--accent);font-weight:600;}
+.n{color:var(--teal);font-weight:600;}
+.e{color:var(--gold);font-weight:600;}
+.s{color:var(--purple);font-weight:600;}
+.t{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.06);color:var(--teal);padding:1px 5px;border-radius:3px;font-size:.85em;}
+.m{color:var(--gold);font-style:italic;}
+
+/* callouts */
+.note,.warn,.bridge,.ok,.gap-box{border-left:2px solid;padding:.8rem 1rem;margin:.85rem 0;border-radius:0 7px 7px 0;font-size:.91rem;}
+.note  {border-color:var(--accent);background:rgba(96,165,250,.05);}
+.warn  {border-color:var(--orange);background:rgba(249,115,22,.05);}
+.bridge{border-color:var(--gold);background:rgba(245,158,11,.05);}
+.ok    {border-color:var(--green);background:rgba(16,185,129,.05);}
+.gap-box{border-color:var(--purple);background:rgba(167,139,250,.05);}
+.note  strong{color:var(--accent);}
+.warn  strong{color:var(--orange);}
+.bridge strong{color:var(--gold);}
+.ok    strong{color:var(--green);}
+.gap-box strong{color:var(--purple);}
+.note  strong,.warn strong,.bridge strong,.ok strong,.gap-box strong{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.25rem;}
+
+/* CODE */
+pre{background:var(--code-bg);border:1px solid var(--border2);border-radius:9px;padding:1.1rem 1.3rem;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:.78rem;line-height:1.75;margin:.75rem 0;}
+code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.07);color:var(--teal);padding:1px 5px;border-radius:3px;font-size:.85em;}
+.kw{color:#93c5fd;} .fn{color:#6ee7b7;} .st{color:#fde68a;} .cm{color:#374c5e;font-style:italic;} .nm{color:#fca5a5;} .cn{color:#c4b5fd;} .op{color:#94a3b8;}
+.bad-label{color:#f87171;font-size:.7rem;font-family:'IBM Plex Mono',monospace;}
+.good-label{color:#6ee7b7;font-size:.7rem;font-family:'IBM Plex Mono',monospace;}
+
+/* TABLE */
+.tw{overflow-x:auto;margin:.75rem 0;}
+table{width:100%;border-collapse:collapse;font-size:.83rem;}
+thead th{background:var(--surface);color:var(--accent);font-family:'IBM Plex Mono',monospace;font-size:.67rem;letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;text-align:left;border:1px solid var(--border2);}
+tbody td{padding:8px 12px;border:1px solid var(--border);vertical-align:top;line-height:1.5;}
+tbody tr:nth-child(even) td{background:rgba(255,255,255,.015);}
+.bdg{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:2px 6px;border-radius:3px;}
+.bg{background:rgba(16,185,129,.1);color:var(--green);}
+.bo{background:rgba(249,115,22,.1);color:var(--orange);}
+.ba{background:rgba(96,165,250,.1);color:var(--accent);}
+
+hr{border:none;border-top:1px dashed var(--border);margin:1.2rem 0;opacity:.5;}
+
+/* arch diagram */
+.arch{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:var(--border);border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin:.75rem 0;}
+.arch-box{background:var(--card);padding:.8rem .6rem;text-align:center;}
+.arch-box .ab-name{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.3rem;}
+.arch-box .ab-tech{font-size:.75rem;color:var(--text);}
+.arch-box .ab-vol{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--green);margin-top:.2rem;}
+.arch-arrow{display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:.9rem;color:var(--muted);}
+
+/* trigger timeline */
+.timeline{margin:.75rem 0;}
+.tl-row{display:flex;align-items:flex-start;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border);}
+.tl-row:last-child{border-bottom:none;}
+.tl-time{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--gold);min-width:60px;padding-top:2px;}
+.tl-content{flex:1;font-size:.88rem;}
+.tl-badge{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:1px 7px;border-radius:3px;margin-left:.4rem;}
+.tb-sched{background:rgba(96,165,250,.1);color:var(--accent);}
+.tb-event{background:rgba(16,185,129,.1);color:var(--green);}
+.tb-tumble{background:rgba(245,158,11,.1);color:var(--gold);}
+.tb-cont{background:rgba(167,139,250,.1);color:var(--purple);}
+
+@media(max-width:640px){.arch{grid-template-columns:1fr 1fr;}.s-tog{display:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hdr">
+  <div class="eyebrow">ENBD Client Round · Interview No. 02 · Full Answer Set</div>
+  <h1>Technical Interview — Complete Answers</h1>
+  <p>Sudheer Kumar M. · Lead Data Engineer · Candidate POV</p>
+  <div class="chips">
+    <span class="chip">Section 1 — Introduction</span>
+    <span class="chip">Section 2 — Pipeline Architecture</span>
+    <span class="chip">Section 3 — OCR Pipeline</span>
+    <span class="chip">Section 4 — PySpark Usage</span>
+    <span class="chip">Section 5 — Orchestration</span>
+    <span class="chip">Section 6 — Spark Optimization</span>
+    <span class="chip">Section 7 — SQL/Spark Optimization Exercise</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 1 — INTRODUCTION & BACKGROUND
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-intro">Section 1</span>
+    <span class="s-title">Introduction &amp; Background</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-a">Q-1.1</span><span class="qt">Provide a brief introduction and experience in Big Data / Data Engineering.</span></div>
+      <div class="ans">
+        <p>I'm Sudheer Kumar, a Lead Data Engineer with <span class="m">11+ years of IT experience</span>, of which the last <span class="m">6+ years</span> have been dedicated to cloud-native data engineering. My background spans the full data engineering lifecycle — from designing ingestion pipelines and building transformation logic, to implementing data governance frameworks and delivering analytical outputs that business teams actually use.</p>
+        <p>My core expertise is in the Azure ecosystem: <span class="t">Azure Data Factory</span> for orchestration, <span class="t">Azure Databricks</span> with PySpark for large-scale transformation, <span class="t">Delta Lake</span> for reliable storage, <span class="t">ADLS Gen2</span> for the data lake layer, and <span class="t">Power BI</span> for serving analytics. I've worked across utility, banking, and financial services domains — which makes this ENBD opportunity a natural fit given my financial data background at JPMC through Empower Retirement, and my current large-scale IoT data platform at Kahramaa in Qatar.</p>
+        <p>Beyond data engineering, I spent the first five years of my career in application automation and DevOps, which gives me a strong foundation in CI/CD, infrastructure-as-code with Terraform, and building production-grade, testable code — not just pipelines that "work on my laptop."</p>
+      </div>
+    </div>
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-a">Q-1.2</span><span class="qt">Describe your role in the most recent project.</span></div>
+      <div class="ans">
+        <p>Currently I'm the Lead Data Engineer at <span class="k">Kahramaa — Qatar's national electricity and water corporation</span> — on the Data Transformation and Self-Service Digitization initiative. This project is modernizing how Qatar manages utility data at a national scale, following the rollout of <span class="m">988,000 smart meters</span> that transmit readings every 30 minutes.</p>
+        <p>My role is end-to-end ownership of the data platform. That covers: architecting and building the ingestion pipelines from Oracle ERP, MySQL CRM, IoT Event Hub streams, flat files, and SharePoint document sources into ADLS Gen2; writing the PySpark transformation logic in Databricks that processes raw meter readings into clean, analytics-ready Gold layer data; implementing Delta Lake across all layers for ACID transactions, schema enforcement, and time travel; building the data governance framework including RBAC, encryption, and Unity Catalog; and delivering the Power BI dashboards that the operations, finance, and customer service teams use for daily decisions. I'm also responsible for pipeline monitoring through Azure Monitor and Databricks logs, and proactively resolving issues before they reach business impact.</p>
+      </div>
+    </div>
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-a">Q-1.3</span><span class="qt">Explain team size and responsibilities of each member.</span></div>
+      <div class="ans">
+        <p>The core data engineering team at Kahramaa is lean — <span class="m">4 members</span> covering distinct functional areas:</p>
+        <div class="tw">
+        <table>
+          <thead><tr><th>Role</th><th>Responsibilities</th><th>Interface</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Me — Lead Data Engineer</strong></td><td>End-to-end pipeline architecture, Databricks PySpark transformations, Delta Lake design, data governance, performance optimization, code reviews, team technical direction</td><td>Business teams, infrastructure, Siemens AMI vendor</td></tr>
+            <tr><td>Data Engineer</td><td>ADF pipeline development, ingestion from Oracle/MySQL, pipeline monitoring, ADF trigger configuration, error handling and quarantine routing</td><td>Source system DBAs, Oracle team</td></tr>
+            <tr><td>BI / Reporting Engineer</td><td>Power BI dashboard development, DAX measures, dataset optimization, self-service analytics enablement, report documentation</td><td>Operations, Finance, Customer Services business users</td></tr>
+            <tr><td>Data Analyst</td><td>Business requirements gathering, data validation against business rules, UAT coordination, ad-hoc Databricks SQL queries, documentation of business logic</td><td>All business stakeholders, translates requirements to engineering team</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>We follow a two-week Agile sprint cycle managed in Azure DevOps. I run the sprint planning and daily standups, manage the backlog, and do final code review before anything merges to main. Each member owns their domain but we cross-train — for example, the BI engineer understands enough of the Gold layer schema to optimize their own queries rather than raising a ticket every time.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 2 — PROJECT ARCHITECTURE
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-arch">Section 2</span>
+    <span class="s-title">Project Architecture / Pipeline Design</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-g">Q-2.1</span><span class="qt">Explain the end-to-end pipeline architecture.</span></div>
+      <div class="ans">
+        <p>The architecture follows a classic Medallion Lakehouse pattern with five layers. Let me walk through it source to consumer.</p>
+        <div class="arch">
+          <div class="arch-box"><div class="ab-name">Sources</div><div class="ab-tech">Oracle ERP · MySQL CRM · IoT EventHub · SharePoint · Flat Files</div></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="ab-name">Landing</div><div class="ab-tech">ADLS Gen2 Raw Container</div><div class="ab-vol">~18 GB/day</div></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="ab-name">Bronze</div><div class="ab-tech">Delta Lake Append-Only</div><div class="ab-vol">~4.5 GB/day</div></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="ab-name">Silver</div><div class="ab-tech">Validated · Deduped · Enriched</div><div class="ab-vol">~2.5 GB/day</div></div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box"><div class="ab-name">Gold</div><div class="ab-tech">Star Schema · Analytics-Ready</div><div class="ab-vol">~0.9 GB/day</div></div>
+        </div>
+        <p><strong>Ingestion layer (Landing → Bronze):</strong> ADF pipelines extract data from all sources using a watermark-based incremental strategy — each pipeline reads a last-processed timestamp from a metadata Delta table and only pulls new or changed records. IoT data from the Siemens AMI system flows continuously into Azure Event Hubs, consumed by Databricks Structured Streaming into Bronze within seconds.</p>
+        <p><strong>Transformation layer (Bronze → Silver):</strong> Databricks PySpark notebooks apply business rules: schema normalization, deduplication using window functions, null checks, range validation, and dead-letter routing for bad records. The result is a clean, deduplicated Silver Delta table partitioned by date.</p>
+        <p><strong>Serving layer (Silver → Gold):</strong> Databricks SQL and PySpark build the star schema — <span class="t">FactElectricityConsumption</span>, <span class="t">FactBilling</span>, <span class="t">DimCustomer</span>, <span class="t">DimMeter</span>, and others. Gold data is exposed via Databricks SQL endpoints to Power BI and via Azure Synapse Analytics for enterprise reporting.</p>
+      </div>
+    </div>
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-g">Q-2.2</span><span class="qt">Describe data sources used in the project.</span></div>
+      <div class="ans">
+        <div class="tw">
+        <table>
+          <thead><tr><th>Source</th><th>Type</th><th>Content</th><th>Ingestion Method</th><th>Frequency</th></tr></thead>
+          <tbody>
+            <tr><td>Oracle ERP</td><td>On-premise RDBMS</td><td>Billing transactions, tariff tables, payment events, meter registry</td><td>ADF JDBC (watermark)</td><td>Hourly</td></tr>
+            <tr><td>MySQL CRM</td><td>On-premise RDBMS</td><td>Customer master, complaints, service requests, contact history</td><td>ADF JDBC (watermark)</td><td>Hourly</td></tr>
+            <tr><td>Azure Event Hubs</td><td>Streaming</td><td>Smart meter readings (electricity + water) from Siemens AMI</td><td>Databricks Structured Streaming</td><td>Continuous (30-min reads)</td></tr>
+            <tr><td>SharePoint Online</td><td>Document / File</td><td>Customer application forms, meter inspection reports, regulatory documents, tariff update files</td><td>ADF HTTP connector / SharePoint Online connector</td><td>Daily / On-file-drop</td></tr>
+            <tr><td>Flat Files (CSV/XML)</td><td>File-based</td><td>Meter inventory exports, geospatial zone mappings, historical legacy data</td><td>ADF Copy Activity → Landing container</td><td>Daily</td></tr>
+            <tr><td>REST APIs</td><td>API</td><td>Weather data feed, external enrichment sources</td><td>ADF Web Activity + Copy</td><td>Daily</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-g">Q-2.3</span><span class="qt">Explain how data was moved from SharePoint to Azure storage.</span></div>
+      <div class="ans">
+        <p>This is a real part of the Kahramaa setup. During the digitization initiative, several operational teams maintained documents and structured files in SharePoint Online — meter inspection reports uploaded by field engineers, customer application forms scanned and uploaded by the customer service team, and periodic tariff update files maintained by the finance team.</p>
+        <p>ADF has two mechanisms for SharePoint integration, and I used both depending on the data type:</p>
+        <p><strong>For structured list data</strong> (SharePoint Lists used as lightweight databases by business teams), I used the native <span class="t">SharePoint Online List connector</span> in ADF. This reads list items directly as rows without needing any intermediate step:</p>
+<pre><span class="cm"># ADF Linked Service — SharePoint Online List</span>
+<span class="cm"># Authentication: Service Principal with Sites.Read.All permission</span>
+<span class="cm"># Source: SharePoint List → Sink: ADLS Gen2 Parquet</span>
+{
+  <span class="st">"type"</span>: <span class="st">"SharePointOnlineList"</span>,
+  <span class="st">"typeProperties"</span>: {
+    <span class="st">"siteUrl"</span>:      <span class="st">"https://kahramaa.sharepoint.com/sites/operations"</span>,
+    <span class="st">"tenantId"</span>:     <span class="st">"[tenant-id]"</span>,
+    <span class="st">"servicePrincipalId"</span>: <span class="st">"[sp-app-id]"</span>,
+    <span class="st">"servicePrincipalKey"</span>: <span class="st">"[key-vault-reference]"</span>
+  }
+}</pre>
+        <p><strong>For document files</strong> (PDFs, CSVs, Excel files dropped into SharePoint document libraries by business users), I used a two-step approach. First, an ADF pipeline with an <span class="t">HTTP connector</span> calling the Microsoft Graph API to list and download files from the document library into the ADLS landing container. Second, once in the landing zone, a separate pipeline processed the files — CSV files went straight through ADF Copy Activity to Bronze; PDF documents containing structured forms went through the OCR pipeline I'll describe in Section 3.</p>
+        <div class="note">
+          <strong>Event-based trigger on SharePoint drops</strong>
+          For time-sensitive documents, I set up an ADF storage event trigger that fires when a new file lands in the ADLS landing container (after the SharePoint sync). This means the processing pipeline starts within 60 seconds of a document being uploaded to SharePoint, without any polling or scheduled delay.
+        </div>
+      </div>
+    </div>
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-g">Q-2.4</span><span class="qt">Pipeline scheduling frequency · Daily data processing volume · Number of pipelines.</span></div>
+      <div class="ans">
+        <div class="timeline">
+          <div class="tl-row"><span class="tl-time">Continuous</span><div class="tl-content">IoT streaming pipeline — Databricks Structured Streaming consuming Azure Event Hubs <span class="tl-badge tb-cont">Continuous</span></div></div>
+          <div class="tl-row"><span class="tl-time">Hourly</span><div class="tl-content">Oracle ERP + MySQL CRM incremental ingestion — watermark-based JDBC extraction <span class="tl-badge tb-sched">Scheduled</span></div></div>
+          <div class="tl-row"><span class="tl-time">Every 2h</span><div class="tl-content">Bronze → Silver transformation orchestration pipelines <span class="tl-badge tb-tumble">Tumbling Window</span></div></div>
+          <div class="tl-row"><span class="tl-time">Daily 2 AM</span><div class="tl-content">Silver → Gold aggregation, star schema load, DimCustomer SCD2 refresh <span class="tl-badge tb-sched">Scheduled</span></div></div>
+          <div class="tl-row"><span class="tl-time">On file drop</span><div class="tl-content">SharePoint documents, flat file ingestion, OCR pipeline trigger <span class="tl-badge tb-event">Event-Based</span></div></div>
+          <div class="tl-row"><span class="tl-time">Weekly</span><div class="tl-content">Delta OPTIMIZE, VACUUM, Z-ORDER maintenance, Power BI dataset full refresh <span class="tl-badge tb-sched">Scheduled</span></div></div>
+        </div>
+        <p><strong>Daily processing volume:</strong> approximately <span class="m">~50 million IoT readings per day</span> from 988,000 smart meters combined with ~2 million Oracle ERP records and ~300K CRM records. Raw ingestion is approximately <span class="m">18 GB/day</span>. After Delta compression, net storage growth is around <span class="m">8 GB/day</span> across all persistent layers.</p>
+        <p><strong>Number of pipelines:</strong> <span class="m">32 ADF pipelines</span> across ingestion (14), orchestration (8), post-processing (4), error handling (3), and data quality (3) categories.</p>
+      </div>
+    </div>
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-g">Q-2.5</span><span class="qt">Whether all datasets followed the same pipeline architecture · Data consumers · Where processed data was stored · Other output systems.</span></div>
+      <div class="ans">
+        <p><strong>Same architecture for all datasets?</strong> The high-level pattern is consistent — Landing → Bronze → Silver → Gold for everything. But the implementation details differ by source type. IoT streaming bypasses the landing container entirely and writes directly to Bronze via Structured Streaming. Oracle ERP and MySQL follow the full batch path through landing. Document-based sources (SharePoint PDFs) go through an OCR preprocessing step before entering the pipeline at Bronze. So the medallion structure is universal, but the on-ramp differs.</p>
+        <p><strong>Data consumers:</strong> there are four distinct consumer groups:</p>
+        <div class="tw">
+        <table>
+          <thead><tr><th>Consumer</th><th>Layer Used</th><th>Access Method</th><th>Use Case</th></tr></thead>
+          <tbody>
+            <tr><td>Operations Team</td><td>Gold</td><td>Power BI dashboards</td><td>Real-time consumption monitoring, outage detection, zone-level peak demand</td></tr>
+            <tr><td>Finance Team</td><td>Gold</td><td>Power BI + Excel export</td><td>Billing reconciliation, revenue reporting, tariff impact analysis</td></tr>
+            <tr><td>Customer Services</td><td>Gold</td><td>Power BI self-service</td><td>Customer account history, complaint tracking, outage impact by area</td></tr>
+            <tr><td>Data Analysts</td><td>Silver + Gold</td><td>Databricks SQL / Synapse</td><td>Ad-hoc analysis, custom reports, model development</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p><strong>Where is data stored?</strong> Primary storage is ADLS Gen2 in Delta Lake format across all medallion layers. The Gold layer is additionally published to <span class="t">Azure Synapse Analytics</span> (dedicated SQL Pool) for enterprise query performance on the star schema. Power BI connects via DirectQuery to Databricks SQL endpoints for operational dashboards, and via imported datasets for less time-sensitive reports.</p>
+        <p>So outputs are not only in ADLS — they flow to Synapse SQL Pool for analytical workloads and to Power BI Premium capacity for dashboards. We also have a lightweight API layer where the operations system polls aggregated daily consumption summaries via a REST endpoint backed by Databricks SQL.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 3 — OCR PIPELINE
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-ocr">Section 3</span>
+    <span class="s-title">OCR Pipeline &amp; Processing</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-o">Q-3.1</span><span class="qt">Explain where OCR fits in the architecture · Service used · How OCR results were integrated · How models were invoked from Python.</span></div>
+      <div class="ans">
+        <p>OCR was a specific component of the "Self-Service Digitization" part of the project title — it addressed a real operational gap. When Kahramaa rolled out smart meters, a large volume of <strong>legacy paper-based documents</strong> needed to be digitized: customer application forms that had been filed physically, meter inspection reports filled out by field engineers on paper, and historical tariff change documents. These were scanned to PDF and uploaded to SharePoint by administrative staff.</p>
+        <p><strong>Where it fits in the architecture:</strong> the OCR pipeline sits between the SharePoint ingestion and the Bronze layer. PDFs landing in ADLS trigger the OCR preprocessing pipeline, which extracts structured field values from the documents and writes them as structured rows to Bronze — exactly like any other ingestion source. From Bronze onwards, the data follows the standard Silver → Gold path.</p>
+<pre><span class="cm">
+SharePoint PDF upload
+       ↓
+ADLS Landing Container  (raw PDF files)
+       ↓
+OCR Pipeline (Azure AI Document Intelligence)
+       ↓
+Structured JSON result  (field name → value pairs)
+       ↓
+Bronze Delta Table      (same schema as batch ingestion)
+       ↓
+Standard Silver → Gold  (identical to other sources)
+</span></pre>
+        <p><strong>Service used — Azure AI Document Intelligence</strong> (formerly Form Recognizer, now part of Azure AI Services). I chose the managed service approach rather than building in-house OCR — there's no business case for training a custom OCR model when Microsoft's pre-built and custom model capabilities cover all the document types we had. Specifically, I used two model types:</p>
+        <p>The <strong>prebuilt-document</strong> model for general text extraction from free-form inspection reports, and a <strong>custom trained model</strong> for the structured customer application forms, which have a fixed layout. Training the custom model required uploading ~50 labelled sample forms through the Document Intelligence Studio UI and took about a day — entirely within the managed service.</p>
+        <p><strong>How OCR was invoked from Python in Databricks:</strong></p>
+<pre><span class="kw">import</span> os
+<span class="kw">from</span> azure.ai.formrecognizer <span class="kw">import</span> DocumentAnalysisClient
+<span class="kw">from</span> azure.core.credentials <span class="kw">import</span> AzureKeyCredential
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> SparkSession
+<span class="kw">from</span> pyspark.sql.types <span class="kw">import</span> StructType, StructField, StringType, DateType
+<span class="kw">import</span> json
+
+<span class="cm"># ── Credentials from Key Vault (never hardcoded) ──</span>
+endpoint = dbutils.secrets.get(<span class="st">"kv-kahramaa"</span>, <span class="st">"doc-intelligence-endpoint"</span>)
+api_key  = dbutils.secrets.get(<span class="st">"kv-kahramaa"</span>, <span class="st">"doc-intelligence-key"</span>)
+model_id = <span class="st">"customer-application-form-v2"</span>  <span class="cm"># custom trained model</span>
+
+<span class="kw">def</span> <span class="fn">extract_fields_from_pdf</span>(blob_url: str) -> dict:
+    <span class="st">"""
+    Invoke Azure AI Document Intelligence on a PDF stored in ADLS.
+    Returns extracted key-value field pairs as a dictionary.
+    """</span>
+    client = DocumentAnalysisClient(
+        endpoint=endpoint,
+        credential=AzureKeyCredential(api_key)
+    )
+
+    <span class="cm"># Analyze document from URL (ADLS URL with SAS token)</span>
+    poller = client.begin_analyze_document_from_url(
+        model_id=model_id,
+        document_url=blob_url
+    )
+    result = poller.result()
+
+    <span class="cm"># Extract fields from first document in result</span>
+    extracted = {}
+    <span class="kw">if</span> result.documents:
+        doc = result.documents[<span class="nm">0</span>]
+        <span class="kw">for</span> field_name, field <span class="kw">in</span> doc.fields.items():
+            extracted[field_name] = field.value <span class="kw">if</span> field <span class="kw">else</span> <span class="cn">None</span>
+
+    <span class="kw">return</span> extracted
+
+<span class="cm"># ── Process batch of PDFs using Spark parallelism ──</span>
+<span class="cm"># Get list of unprocessed PDFs from landing container</span>
+pdf_files_df = spark.sql(<span class="st">"""
+    SELECT file_path, file_name
+    FROM metadata.ocr_processing_queue
+    WHERE status = 'PENDING'
+"""</span>)
+
+<span class="cm"># Use Pandas UDF for vectorized Python execution across workers</span>
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> pandas_udf
+<span class="kw">from</span> pyspark.sql.types <span class="kw">import</span> MapType, StringType
+
+@pandas_udf(MapType(StringType(), StringType()))
+<span class="kw">def</span> <span class="fn">ocr_extract_udf</span>(file_urls: pd.Series) -> pd.Series:
+    <span class="kw">return</span> file_urls.apply(
+        <span class="kw">lambda</span> url: extract_fields_from_pdf(url)
+    )
+
+<span class="cm"># Apply OCR extraction across all pending PDFs in parallel</span>
+results_df = pdf_files_df.withColumn(
+    <span class="st">"extracted_fields"</span>,
+    ocr_extract_udf(<span class="st">"file_path"</span>)
+)
+
+<span class="cm"># Flatten map to structured columns</span>
+<span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col
+
+structured = results_df.select(
+    col(<span class="st">"file_name"</span>),
+    col(<span class="st">"extracted_fields"</span>).getItem(<span class="st">"CustomerID"</span>).alias(<span class="st">"customer_id"</span>),
+    col(<span class="st">"extracted_fields"</span>).getItem(<span class="st">"FullName"</span>).alias(<span class="st">"full_name"</span>),
+    col(<span class="st">"extracted_fields"</span>).getItem(<span class="st">"AccountType"</span>).alias(<span class="st">"account_type"</span>),
+    col(<span class="st">"extracted_fields"</span>).getItem(<span class="st">"ApplicationDate"</span>).alias(<span class="st">"application_date"</span>),
+    col(<span class="st">"extracted_fields"</span>).getItem(<span class="st">"MeterID"</span>).alias(<span class="st">"meter_id"</span>)
+)
+
+<span class="cm"># Write structured results to Bronze Delta</span>
+structured.write.format(<span class="st">"delta"</span>).mode(<span class="st">"append"</span>) \
+    .save(<span class="st">"/mnt/bronze/customer_applications"</span>)</pre>
+        <div class="note">
+          <strong>Managed vs In-House decision</strong>
+          I chose Azure AI Document Intelligence (managed service) over building in-house for three reasons: no GPU infrastructure needed, model training takes hours not weeks, and confidence scores per field allow automated quality thresholding — I only accept extractions where confidence &gt; 0.85, routing lower-confidence results to a human review queue rather than silently ingesting potentially wrong data.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 4 — SPARK / PYSPARK USAGE
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-spark">Section 4</span>
+    <span class="s-title">Spark / PySpark Usage</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-p">Q-4.1</span><span class="qt">How PySpark was used · Transformations after OCR · Where implemented · Types of transformations applied.</span></div>
+      <div class="ans">
+        <p>PySpark is the primary transformation engine for everything from Bronze onwards. Let me describe the transformation chain and what each layer applies.</p>
+        <p><strong>Bronze layer (raw ingest — minimal transformation):</strong> At Bronze, I only apply lightweight structural transformations — adding ingestion metadata columns (<span class="t">_load_timestamp</span>, <span class="t">_source_system</span>, <span class="t">_pipeline_run_id</span>), casting raw strings to their correct types, and schema enforcement via Delta. No business logic here — Bronze is as close to source as possible.</p>
+<pre><span class="cm"># Bronze: structural only</span>
+bronze_df = (raw_df
+    .withColumn(<span class="st">"_load_ts"</span>,       current_timestamp())
+    .withColumn(<span class="st">"_source"</span>,         lit(<span class="st">"oracle_erp"</span>))
+    .withColumn(<span class="st">"amount"</span>,          col(<span class="st">"amount"</span>).cast(DecimalType(<span class="nm">18</span>,<span class="nm">2</span>)))
+    .withColumn(<span class="st">"transaction_date"</span>, to_date(col(<span class="st">"transaction_date"</span>), <span class="st">"yyyy-MM-dd"</span>))
+)</pre>
+        <p><strong>Silver layer (business logic + cleaning):</strong> This is where PySpark does the heavy lifting. The main transformation types are:</p>
+        <p><strong>1. Deduplication using window functions</strong> — IoT data retransmits readings on network recovery; I deduplicate on meter_id + timestamp keeping the latest ingested version:</p>
+<pre><span class="kw">from</span> pyspark.sql.window <span class="kw">import</span> Window
+<span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> row_number, col
+
+dedup_window = (Window
+    .partitionBy(<span class="st">"meter_id"</span>, <span class="st">"reading_timestamp"</span>)
+    .orderBy(col(<span class="st">"_load_ts"</span>).desc())
+)
+deduped = (bronze_df
+    .withColumn(<span class="st">"rn"</span>, row_number().over(dedup_window))
+    .filter(col(<span class="st">"rn"</span>) == <span class="nm">1</span>)
+    .drop(<span class="st">"rn"</span>)
+)</pre>
+        <p><strong>2. Computed feature columns</strong> — time-of-use band classification, 30-day rolling average, anomaly flag:</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> hour, when, avg, stddev
+<span class="kw">from</span> pyspark.sql.window <span class="kw">import</span> Window
+
+tou_df = deduped.withColumn(<span class="st">"time_of_use_band"</span>,
+    when((hour(<span class="st">"reading_ts"</span>) >= <span class="nm">18</span>) & (hour(<span class="st">"reading_ts"</span>) < <span class="nm">22</span>), <span class="st">"PEAK"</span>)
+    .when((hour(<span class="st">"reading_ts"</span>) >= <span class="nm">6"</span>)  & (hour(<span class="st">"reading_ts"</span>) < <span class="nm">18</span>), <span class="st">"SHOULDER"</span>)
+    .otherwise(<span class="st">"OFF_PEAK"</span>)
+)
+
+rolling_win = (Window
+    .partitionBy(<span class="st">"meter_id"</span>)
+    .orderBy(col(<span class="st">"reading_date"</span>).cast(<span class="st">"long"</span>))
+    .rangeBetween(-<span class="nm">30</span>*<span class="nm">86400</span>, <span class="nm">0</span>)
+)
+enriched = (tou_df
+    .withColumn(<span class="st">"rolling_30d_avg"</span>, avg(<span class="st">"kwh_consumed"</span>).over(rolling_win))
+    .withColumn(<span class="st">"rolling_30d_std"</span>, stddev(<span class="st">"kwh_consumed"</span>).over(rolling_win))
+    .withColumn(<span class="st">"is_anomalous"</span>,
+        col(<span class="st">"kwh_consumed"</span>) > (col(<span class="st">"rolling_30d_avg"</span>) + <span class="nm">3</span> * col(<span class="st">"rolling_30d_std"</span>))
+    )
+)</pre>
+        <p><strong>3. SCD Type 2 for DimCustomer</strong> — at the Gold layer, I implement SCD2 using Delta MERGE to track customer risk tier and account type changes over time while preserving full history.</p>
+        <p><strong>After OCR extraction</strong>, a separate Silver transformation normalizes the extracted field values — date strings from OCR output get properly cast to Date types, customer IDs are matched against the CRM master for referential integrity, and low-confidence extractions get a <span class="t">requires_review = true</span> flag rather than being rejected outright. All transformations run in Databricks notebooks called from ADF pipelines.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 5 — PIPELINE ORCHESTRATION
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-orch">Section 5</span>
+    <span class="s-title">Pipeline Orchestration</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-p">Q-5.1</span><span class="qt">How pipelines were triggered in ADF · Use of event-based or scheduled triggers.</span></div>
+      <div class="ans">
+        <p>I use all four ADF trigger types — each chosen for the specific operational characteristic of its pipeline. The choice of trigger type is a deliberate engineering decision, not just a configuration detail.</p>
+        <div class="tw">
+        <table>
+          <thead><tr><th>Trigger Type</th><th>Pipelines Using It</th><th>Why This Type</th><th>Config Key</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Schedule Trigger</strong></td><td>Oracle ERP hourly ingestion, Gold daily aggregation, weekly OPTIMIZE/VACUUM</td><td>Predictable cadence, external system availability windows known. Oracle is best extracted during off-peak hours (1–5 AM for Gold).</td><td>Cron: <code>0 * * * *</code> for hourly, <code>0 2 * * *</code> for daily 2 AM</td></tr>
+            <tr><td><strong>Tumbling Window Trigger</strong></td><td>Bronze → Silver orchestration (every 2h)</td><td>Guarantees exactly-once semantics per window. If a window fails and retries, data isn't duplicated. Dependency tracking between consecutive windows ensures ordering.</td><td>Window size: 2h, Max concurrency: 1</td></tr>
+            <tr><td><strong>Storage Event Trigger</strong></td><td>SharePoint file ingestion, OCR pipeline, flat file processing</td><td>Fires within seconds of a blob landing in the container. No polling waste. Business users upload a file and processing starts immediately without any scheduled delay.</td><td>Event: BlobCreated, Path filter: /landing/sharepoint/</td></tr>
+            <tr><td><strong>Custom Event Trigger</strong></td><td>Pipeline health alert, downstream notification after Gold load completes</td><td>Publishes completion events to Azure Event Grid, allowing downstream consumers (e.g., Synapse, Power BI refresh) to react to pipeline completion rather than polling on a schedule.</td><td>Event Grid topic: pipeline-completion-events</td></tr>
+          </tbody>
+        </table>
+        </div>
+<pre><span class="cm"># Example: Tumbling Window Trigger with dependency</span>
+{
+  <span class="st">"name"</span>: <span class="st">"twt_bronze_to_silver"</span>,
+  <span class="st">"type"</span>: <span class="st">"TumblingWindowTrigger"</span>,
+  <span class="st">"typeProperties"</span>: {
+    <span class="st">"frequency"</span>:    <span class="st">"Hour"</span>,
+    <span class="st">"interval"</span>:     <span class="nm">2</span>,
+    <span class="st">"startTime"</span>:    <span class="st">"2024-01-01T00:00:00Z"</span>,
+    <span class="st">"maxConcurrency"</span>: <span class="nm">1</span>,         <span class="cm">// prevents overlapping runs</span>
+    <span class="st">"retryPolicy"</span>: {
+      <span class="st">"count"</span>: <span class="nm">3</span>,
+      <span class="st">"intervalInSeconds"</span>: <span class="nm">600</span>  <span class="cm">// 10-min retry backoff</span>
+    },
+    <span class="st">"dependsOn"</span>: [{             <span class="cm">// wait for previous window to complete</span>
+      <span class="st">"type"</span>: <span class="st">"TumblingWindowTriggerDependency"</span>,
+      <span class="st">"size"</span>: <span class="st">"2:00:00"</span>,
+      <span class="st">"offset"</span>: <span class="st">"-2:00:00"</span>
+    }]
+  }
+}</pre>
+        <div class="bridge">
+          <strong>CDP / Oozie equivalent for ENBD</strong>
+          In Cloudera CDP, Oozie Coordinator serves the same role as ADF Tumbling Window triggers — it manages time-based workflow execution with catch-up semantics. An Oozie Workflow.xml defines the job graph, and a Coordinator.xml defines the schedule and data availability dependencies. The trigger hierarchy (continuous → hourly → 2h tumbling → daily) is implemented in Oozie using nested coordinator datasets and data-in/data-out dependencies rather than ADF trigger types, but the architectural intent is identical.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 6 — SPARK OPTIMIZATION
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-opt">Section 6</span>
+    <span class="s-title">Spark Optimization</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-o">Q-6.1</span><span class="qt">Techniques used for Spark optimization · Methods used to improve Spark job performance.</span></div>
+      <div class="ans">
+        <p>I group my optimization techniques into five layers — each addresses a different class of performance problem.</p>
+
+        <p><strong>1. Join Strategy Optimization</strong></p>
+        <p>The most impactful single optimization is choosing the right join strategy. The default sort-merge join shuffles both datasets across the network — for a join between 500 GB of transactions and a 2 MB branch lookup table, that's 500 GB of unnecessary shuffle. I use broadcast joins for any table under ~20 MB:</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> broadcast
+
+<span class="cm"># Force broadcast for small dimension tables</span>
+result = large_fact_df.join(
+    broadcast(small_dim_df), <span class="st">"branch_id"</span>, <span class="st">"left"</span>
+)
+
+<span class="cm"># Configure auto-broadcast threshold (default 10MB)</span>
+spark.conf.set(<span class="st">"spark.sql.autoBroadcastJoinThreshold"</span>, <span class="st">"20971520"</span>)  <span class="cm"># 20MB</span>
+
+<span class="cm"># Or SQL hint equivalent</span>
+spark.sql(<span class="st">"SELECT /*+ BROADCAST(b) */ * FROM transactions t JOIN branches b ON t.branch_id = b.id"</span>)</pre>
+
+        <p><strong>2. Adaptive Query Execution (AQE)</strong> — Spark 3.x runtime optimizer</p>
+        <p>AQE re-plans queries at runtime based on actual data statistics gathered during execution. I enable it on all production clusters:</p>
+<pre><span class="cm"># Enable AQE — crucial at ENBD's data scale</span>
+spark.conf.set(<span class="st">"spark.sql.adaptive.enabled"</span>,                      <span class="st">"true"</span>)
+spark.conf.set(<span class="st">"spark.sql.adaptive.coalescePartitions.enabled"</span>,    <span class="st">"true"</span>)  <span class="cm"># merge small partitions</span>
+spark.conf.set(<span class="st">"spark.sql.adaptive.skewJoin.enabled"</span>,              <span class="st">"true"</span>)  <span class="cm"># split skewed partitions</span>
+spark.conf.set(<span class="st">"spark.sql.adaptive.skewJoin.skewedPartitionFactor"</span>, <span class="st">"5"</span>)    <span class="cm"># 5x median = skewed</span>
+spark.conf.set(<span class="st">"spark.sql.adaptive.advisoryPartitionSizeInBytes"</span>,   <span class="st">"134217728"</span>)  <span class="cm"># 128MB target</span></pre>
+
+        <p><strong>3. Spill-to-Disk Prevention</strong></p>
+        <p>Spill happens when a Spark partition is too large for executor memory and overflows to local disk — this can make a job 10x slower. There are three root causes and fixes:</p>
+        <div class="tw">
+        <table>
+          <thead><tr><th>Root Cause</th><th>Symptom</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>Insufficient executor memory</td><td>Spill metrics in Spark UI Stage tab</td><td>Increase <code>spark.executor.memory</code> — start at 8g, tune to 16g or 32g based on data size</td></tr>
+            <tr><td>Too few shuffle partitions</td><td>One partition >> others, OOM</td><td>Increase <code>spark.sql.shuffle.partitions</code>. Rule: ~128MB per partition. 500GB ÷ 128MB = ~4000 partitions</td></tr>
+            <tr><td>Data skew (one key dominates)</td><td>One task takes 20x longer than others</td><td>AQE skewJoin (auto) or salting technique (manual). Enable <code>spark.sql.adaptive.skewJoin.enabled=true</code></td></tr>
+          </tbody>
+        </table>
+        </div>
+<pre><span class="cm"># Memory configuration for heavy shuffle jobs</span>
+spark.conf.set(<span class="st">"spark.executor.memory"</span>,        <span class="st">"16g"</span>)
+spark.conf.set(<span class="st">"spark.executor.memoryFraction"</span>, <span class="st">"0.8"</span>)   <span class="cm"># 80% for execution</span>
+spark.conf.set(<span class="st">"spark.executor.cores"</span>,          <span class="st">"4"</span>)
+spark.conf.set(<span class="st">"spark.sql.shuffle.partitions"</span>,  <span class="st">"400"</span>)   <span class="cm"># tune to ~128MB/partition</span>
+spark.conf.set(<span class="st">"spark.memory.offHeap.enabled"</span>,   <span class="st">"true"</span>)  <span class="cm"># use off-heap for large objects</span>
+spark.conf.set(<span class="st">"spark.memory.offHeap.size"</span>,      <span class="st">"4g"</span>)</pre>
+
+        <p><strong>4. Delta Lake Storage Optimization</strong></p>
+<pre><span class="cm"># Compact small files (weekly on Bronze, daily on Gold)</span>
+spark.sql(<span class="st">"OPTIMIZE bronze.electricity_readings"</span>)
+
+<span class="cm"># Z-Order on most frequently queried columns (put similar data physically close)</span>
+spark.sql(<span class="st">"OPTIMIZE gold.fact_electricity ZORDER BY (meter_id, reading_date)"</span>)
+
+<span class="cm"># Remove old Delta versions (default 7 days, extend for compliance)</span>
+spark.sql(<span class="st">"VACUUM gold.fact_electricity RETAIN 720 HOURS"</span>)  <span class="cm"># 30 days</span>
+
+<span class="cm"># Update statistics for Catalyst optimizer</span>
+spark.sql(<span class="st">"ANALYZE TABLE gold.fact_electricity COMPUTE STATISTICS FOR ALL COLUMNS"</span>)</pre>
+
+        <p><strong>5. DataFrame API Best Practices</strong></p>
+<pre><span class="cm"># Avoid: select(*) — reads all columns including unused ones</span>
+<span class="bad-label">✗ BAD</span>
+df.select(<span class="st">"*"</span>).filter(...)
+
+<span class="good-label">✓ GOOD — explicit column selection = column pruning</span>
+df.select(<span class="st">"customer_id"</span>, <span class="st">"amount"</span>, <span class="st">"transaction_date"</span>).filter(...)
+
+<span class="cm"># Push predicates early — filter before joins, not after</span>
+<span class="bad-label">✗ BAD</span>
+df1.join(df2, <span class="st">"id"</span>).filter(col(<span class="st">"df2.status"</span>) == <span class="st">"ACTIVE"</span>)
+
+<span class="good-label">✓ GOOD — filter df2 BEFORE the join</span>
+active = df2.filter(col(<span class="st">"status"</span>) == <span class="st">"ACTIVE"</span>)
+df1.join(active, <span class="st">"id"</span>)
+
+<span class="cm"># Cache strategically — for DataFrames used in multiple downstream operations</span>
+silver_df.cache()
+silver_df.count()  <span class="cm"># materialize cache</span>
+<span class="cm"># Use after: multiple joins, multiple aggregations, iterative ML operations</span>
+<span class="cm"># Avoid: large DataFrames used only once (wasted memory)</span>
+
+<span class="cm"># Partition alignment for joins — repartition on join key before expensive join</span>
+df1 = df1.repartition(<span class="nm">200</span>, <span class="st">"customer_id"</span>)
+df2 = df2.repartition(<span class="nm">200</span>, <span class="st">"customer_id"</span>)
+joined = df1.join(df2, <span class="st">"customer_id"</span>)  <span class="cm"># no shuffle needed — already co-partitioned</span></pre>
+
+        <div class="ok">
+          <strong>Real impact at Kahramaa</strong>
+          Applying broadcast join + AQE + Z-ordering on the daily Silver→Gold aggregation pipeline reduced runtime from 47 minutes to 9 minutes on the same cluster configuration. The biggest single gain was Z-ordering on (meter_id, reading_date) which dropped the query I/O by ~70% because Databricks could skip entire file groups rather than scanning full partitions.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SECTION 7 — SQL / SPARK OPTIMIZATION EXERCISE
+═══════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-hdr" onclick="tog(this)">
+    <span class="s-num s-sql">Section 7</span>
+    <span class="s-title">SQL / Spark Query Optimization Exercise</span>
+    <span class="s-tog">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <div class="qg">
+      <div class="qline"><span class="qb qb-p">Q-7.1</span><span class="qt">Optimize a given SQL query · Identify inefficiencies · Rewrite using PySpark DataFrame operations.</span></div>
+      <div class="ans">
+        <p>Let me walk through a realistic banking scenario — finding high-value active customers per branch for a given month. Here's a query I'd expect to see in an ENBD context that has multiple common inefficiencies baked in.</p>
+
+        <hr>
+        <p><strong>Step 1 — The Inefficient Query (as given)</strong></p>
+<pre><span class="bad-label">✗ INEFFICIENT VERSION — 8 problems identified</span>
+<span class="kw">SELECT</span> *                                           <span class="cm">-- (1) SELECT *</span>
+<span class="kw">FROM</span>   transactions t,                            <span class="cm">-- (2) implicit cross-join syntax</span>
+       customers c,
+       branches b
+<span class="kw">WHERE</span>  t.customer_id = c.customer_id
+  <span class="kw">AND</span>  t.branch_id   = b.branch_id
+  <span class="kw">AND</span>  <span class="fn">UPPER</span>(c.status) = <span class="st">'ACTIVE'</span>             <span class="cm">-- (3) function on filter col</span>
+  <span class="kw">AND</span>  <span class="fn">YEAR</span>(t.txn_date)  = <span class="nm">2024</span>               <span class="cm">-- (4) function prevents partition pruning</span>
+  <span class="kw">AND</span>  <span class="fn">MONTH</span>(t.txn_date) = <span class="nm">1</span>                  <span class="cm">-- (5) function prevents partition pruning</span>
+  <span class="kw">AND</span>  t.amount > <span class="nm">0</span>
+<span class="kw">GROUP BY</span>
+       t.customer_id,
+       c.customer_name,
+       b.branch_name,
+       b.region                                   <span class="cm">-- (6) non-aggregated columns in GROUP BY</span>
+<span class="kw">HAVING</span> <span class="fn">SUM</span>(t.amount) > <span class="nm">10000</span>
+<span class="kw">ORDER BY</span> <span class="fn">SUM</span>(t.amount) <span class="kw">DESC</span>                    <span class="cm">-- (7) ORDER BY without LIMIT</span>
+<span class="cm">-- (8) no filter pushdown — filters applied after 3-table cartesian product risk</span></pre>
+
+        <hr>
+        <p><strong>Step 2 — Identified Inefficiencies (explain each verbally)</strong></p>
+        <div class="tw">
+        <table>
+          <thead><tr><th>#</th><th>Problem</th><th>Impact</th><th>Fix</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>SELECT *</code></td><td>Reads all columns including unused ones — unnecessary I/O and network transfer in columnar formats</td><td>Select only the columns needed in the output</td></tr>
+            <tr><td>2</td><td>Comma-separated FROM (implicit join)</td><td>Risk of accidental cartesian product if WHERE conditions are incomplete; old syntax, unreadable intent</td><td>Explicit <code>JOIN ... ON</code> syntax</td></tr>
+            <tr><td>3</td><td><code>UPPER(c.status) = 'ACTIVE'</code></td><td>Function applied per-row prevents predicate pushdown to the storage layer; full column scan required</td><td>Store <code>status</code> in uppercase or use exact match: <code>c.status = 'ACTIVE'</code></td></tr>
+            <tr><td>4 &amp; 5</td><td><code>YEAR()</code> and <code>MONTH()</code> on partition column</td><td>Spark cannot use partition pruning when the partition column is wrapped in a function — full table scan on transactions</td><td>Use range filter directly: <code>txn_date BETWEEN '2024-01-01' AND '2024-01-31'</code></td></tr>
+            <tr><td>6</td><td>Joining then grouping on non-aggregated dim columns</td><td>Joining all dim columns before aggregation increases shuffle data size unnecessarily</td><td>Aggregate transactions first, then join small dims — reduces join input size dramatically</td></tr>
+            <tr><td>7</td><td><code>ORDER BY</code> without <code>LIMIT</code></td><td>Forces a full sort on the entire result set — O(n log n) on potentially millions of rows</td><td>Add <code>LIMIT 1000</code> unless you genuinely need every row sorted</td></tr>
+            <tr><td>8</td><td>No pre-filtering before joins</td><td>Joining all 3 tables on all data before filtering means the join sees far more rows than necessary</td><td>Apply all filters on individual tables before joining (predicate pushdown)</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <hr>
+        <p><strong>Step 3 — Optimized SQL</strong></p>
+<pre><span class="good-label">✓ OPTIMIZED SQL — all 8 issues addressed</span>
+
+<span class="cm">-- Step A: Pre-filter and aggregate transactions FIRST (smallest possible join input)</span>
+<span class="kw">WITH</span> filtered_txns <span class="kw">AS</span> (
+    <span class="kw">SELECT</span>
+        customer_id,
+        branch_id,
+        <span class="fn">SUM</span>(amount)   <span class="kw">AS</span> total_amount,
+        <span class="fn">COUNT</span>(*)       <span class="kw">AS</span> txn_count
+    <span class="kw">FROM</span>   transactions
+    <span class="kw">WHERE</span>  txn_date <span class="kw">BETWEEN</span> <span class="st">'2024-01-01'</span> <span class="kw">AND</span> <span class="st">'2024-01-31'</span>  <span class="cm">-- direct range: partition pruning works</span>
+      <span class="kw">AND</span>  amount > <span class="nm">0</span>
+    <span class="kw">GROUP BY</span> customer_id, branch_id
+    <span class="kw">HAVING</span>   <span class="fn">SUM</span>(amount) > <span class="nm">10000</span>                              <span class="cm">-- filter BEFORE joins</span>
+),
+<span class="cm">-- Step B: Filter active customers BEFORE joining</span>
+active_customers <span class="kw">AS</span> (
+    <span class="kw">SELECT</span> customer_id, customer_name
+    <span class="kw">FROM</span>   customers
+    <span class="kw">WHERE</span>  status = <span class="st">'ACTIVE'</span>                                   <span class="cm">-- no UPPER() wrapping</span>
+)
+<span class="cm">-- Step C: Join the pre-filtered, pre-aggregated results</span>
+<span class="kw">SELECT</span>
+    ft.customer_id,
+    ac.customer_name,
+    b.branch_name,
+    b.region,
+    ft.total_amount,
+    ft.txn_count
+<span class="kw">FROM</span>   filtered_txns ft
+<span class="kw">JOIN</span>   active_customers ac  <span class="kw">ON</span> ft.customer_id = ac.customer_id
+<span class="kw">JOIN</span>   branches b           <span class="kw">ON</span> ft.branch_id   = b.branch_id
+<span class="kw">ORDER BY</span> ft.total_amount <span class="kw">DESC</span>
+<span class="kw">LIMIT</span>  <span class="nm">1000</span>;</pre>
+
+        <hr>
+        <p><strong>Step 4 — PySpark DataFrame Equivalent</strong></p>
+<pre><span class="good-label">✓ PYSPARK VERSION — broadcast on small dims, filter-first pattern</span>
+
+<span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, sum <span class="kw">as</span> spark_sum, count, broadcast
+
+<span class="cm"># ── Step 1: Pre-filter transactions with partition-compatible range ──</span>
+txns_filtered = (transactions_df
+    .filter(
+        (col(<span class="st">"txn_date"</span>) >= <span class="st">"2024-01-01"</span>) &
+        (col(<span class="st">"txn_date"</span>) <= <span class="st">"2024-01-31"</span>) &
+        (col(<span class="st">"amount"</span>) > <span class="nm">0</span>)
+    )
+    .select(<span class="st">"customer_id"</span>, <span class="st">"branch_id"</span>, <span class="st">"amount"</span>)  <span class="cm"># column pruning</span>
+)
+
+<span class="cm"># ── Step 2: Aggregate BEFORE joining dims ──</span>
+txns_agg = (txns_filtered
+    .groupBy(<span class="st">"customer_id"</span>, <span class="st">"branch_id"</span>)
+    .agg(
+        spark_sum(<span class="st">"amount"</span>).alias(<span class="st">"total_amount"</span>),
+        count(<span class="st">"*"</span>).alias(<span class="st">"txn_count"</span>)
+    )
+    .filter(col(<span class="st">"total_amount"</span>) > <span class="nm">10000</span>)  <span class="cm"># HAVING equivalent — AFTER agg</span>
+)
+
+<span class="cm"># ── Step 3: Pre-filter small dimension tables ──</span>
+active_customers = (customers_df
+    .filter(col(<span class="st">"status"</span>) == <span class="st">"ACTIVE"</span>)   <span class="cm"># no UPPER() needed</span>
+    .select(<span class="st">"customer_id"</span>, <span class="st">"customer_name"</span>)
+)
+
+<span class="cm"># branches is small (~500 rows) → force broadcast</span>
+branches_small = branches_df.select(<span class="st">"branch_id"</span>, <span class="st">"branch_name"</span>, <span class="st">"region"</span>)
+
+<span class="cm"># ── Step 4: Join aggregated result with small broadcast dims ──</span>
+result = (txns_agg
+    .join(broadcast(active_customers), <span class="st">"customer_id"</span>, <span class="st">"inner"</span>)
+    .join(broadcast(branches_small),   <span class="st">"branch_id"</span>,   <span class="st">"inner"</span>)
+    .select(
+        <span class="st">"customer_id"</span>, <span class="st">"customer_name"</span>,
+        <span class="st">"branch_name"</span>, <span class="st">"region"</span>,
+        <span class="st">"total_amount"</span>, <span class="st">"txn_count"</span>
+    )
+    .orderBy(col(<span class="st">"total_amount"</span>).desc())
+    .limit(<span class="nm">1000</span>)
+)
+
+result.show(<span class="nm">20</span>)</pre>
+
+        <div class="ok">
+          <strong>Performance Impact Summary</strong>
+          The optimized version changes three fundamental things: (1) partition pruning on txn_date using a range filter instead of YEAR()/MONTH() — this alone can reduce scanned data from 100% to ~8% for a monthly query on a year-partitioned table. (2) Aggregating before joining means the join input shrinks from millions of rows to thousands of customer aggregates. (3) Broadcast joins on branches and customers eliminates shuffle entirely for those joins. Combined impact: typically 5–15x query speedup on large fact tables.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div style="text-align:center;padding:2rem 0 0;font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted);">
+  Sudheer Kumar M. · ENBD Interview No. 02 · All 7 Sections · April 2026
+</div>
+
+</div><!-- /wrap -->
+<script>
+function tog(hdr) {
+  const body = hdr.nextElementSibling;
+  const lbl  = hdr.querySelector('.s-tog');
+  const open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if (lbl) lbl.textContent = open ? '▼ expand' : '▲ collapse';
+}
+document.querySelectorAll('.sec-body').forEach(b => b.style.display = 'block');
+</script>
+</body>
+</html>

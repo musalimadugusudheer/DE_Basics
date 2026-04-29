@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENBD Questionnaire — My Answers | Sudheer Kumar M.</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --card: #1c2128;
+  --border: #30363d;
+  --border2: #3d444d;
+  --text: #cdd9e5;
+  --muted: #636e7b;
+  --accent: #4493f8;
+  --gold: #d4a72c;
+  --green: #3fb950;
+  --orange: #f0883e;
+  --purple: #bc8cff;
+  --red: #f85149;
+  --teal: #39c5cf;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Serif 4', Georgia, serif;
+  line-height: 1.75;
+  padding: 0;
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+}
+
+/* ── HEADER ── */
+.hdr {
+  padding-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+}
+.hdr::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0;
+  width: 80px; height: 2px;
+  background: var(--accent);
+}
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+}
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+.hdr-sub {
+  font-size: 0.97rem;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 0.75rem;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+}
+.chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  background: var(--surface);
+}
+
+/* ── QUESTION CARD ── */
+.qblock {
+  margin-bottom: 1.75rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.qblock:hover { border-color: var(--border2); }
+
+.qhead {
+  background: var(--surface);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.qhead:hover { background: rgba(68,147,248,0.04); }
+
+.qnum {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent);
+  background: rgba(68,147,248,0.1);
+  border: 1px solid rgba(68,147,248,0.2);
+  padding: 3px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.qnum.scale { background: rgba(212,167,44,0.1); border-color: rgba(212,167,44,0.2); color: var(--gold); }
+.qnum.quality { background: rgba(63,185,80,0.1); border-color: rgba(63,185,80,0.2); color: var(--green); }
+.qnum.ops { background: rgba(240,136,62,0.1); border-color: rgba(240,136,62,0.2); color: var(--orange); }
+
+.qtitle {
+  flex: 1;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.45;
+}
+.qtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.t-k { background: rgba(68,147,248,0.08); color: var(--accent); }
+.t-e { background: rgba(212,167,44,0.08); color: var(--gold); }
+.t-n { background: rgba(63,185,80,0.08); color: var(--green); }
+.t-s { background: rgba(188,140,255,0.08); color: var(--purple); }
+
+.qtoggle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  white-space: nowrap;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* ── ANSWER BODY ── */
+.qbody {
+  padding: 1.5rem;
+  display: none;
+  animation: fadeSlide 0.2s ease;
+}
+.qbody.open { display: block; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.answer {
+  font-size: 0.97rem;
+  color: var(--text);
+  line-height: 1.8;
+}
+.answer p { margin-bottom: 0.9rem; }
+.answer p:last-child { margin-bottom: 0; }
+
+/* ── INLINE HIGHLIGHTS ── */
+.hl-k { color: var(--accent); font-weight: 600; }      /* Kahramaa */
+.hl-n { color: var(--teal); font-weight: 600; }         /* Kyndryl/NAB */
+.hl-e { color: var(--gold); font-weight: 600; }         /* Empower/JPMC */
+.hl-s { color: var(--purple); font-weight: 600; }       /* SLK */
+.hl-t { font-family: 'IBM Plex Mono', monospace; background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; font-size: 0.88em; color: var(--teal); }
+.hl-m { color: var(--gold); font-style: italic; }       /* metric/number */
+
+/* ── CALLOUTS ── */
+.tip, .bridge, .gotcha {
+  border-left: 2px solid;
+  padding: 0.85rem 1.1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.92rem;
+}
+.tip { border-color: var(--accent); background: rgba(68,147,248,0.05); }
+.tip strong { color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 0.3rem; }
+.bridge { border-color: var(--gold); background: rgba(212,167,44,0.05); }
+.bridge strong { color: var(--gold); font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 0.3rem; }
+.gotcha { border-color: var(--orange); background: rgba(240,136,62,0.05); }
+.gotcha strong { color: var(--orange); font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 0.3rem; }
+
+/* ── DIVIDER ── */
+.divider {
+  border: none;
+  border-top: 1px dashed var(--border);
+  margin: 2rem 0;
+  opacity: 0.5;
+}
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+@media (max-width: 640px) {
+  .qtoggle { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="eyebrow">ENBD Client Round — Technical Questionnaire Answers</div>
+  <h1>My Answers — Candidate POV</h1>
+  <div class="hdr-sub">Sudheer Kumar Musalimadugu · Lead Data Engineer · 11+ Years</div>
+  <div class="chips">
+    <span class="chip">Kahramaa (Current)</span>
+    <span class="chip">Kyndryl / NAB</span>
+    <span class="chip">Empower / JPMC</span>
+    <span class="chip">SLK Software</span>
+    <span class="chip">Click any question to expand</span>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION A — SCALE ═══════════════ -->
+<div class="section-label">Scale &amp; Volume Questions</div>
+
+<!-- Q1 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum scale">Q-01</span>
+    <div class="qtitle">
+      Total data size handled is approximately 800 TB.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>I want to be straightforward about this — the platforms I've personally built and operated sit at a different scale than 800 TB, but the architecture principles are identical and I'll explain exactly how I'd get there.</p>
+      <p>At <span class="hl-k">Kahramaa</span>, I built and currently manage a Medallion Lakehouse on Azure Databricks and Delta Lake that handles data from approximately <span class="hl-m">988,000 smart meters</span> — electricity and water — reading every 30 minutes. That generates roughly <span class="hl-m">50 million IoT readings per day</span> combined with Oracle ERP billing and MySQL CRM batch feeds. After Delta Lake columnar compression, the platform's total persistent footprint across Bronze, Silver, and Gold layers is around <span class="hl-m">8–10 TB</span> of structured analytical data accumulated over the project lifetime, with a daily net storage growth of about 8 GB. The platform is architected and designed to scale to 2 million meters by 2027, which will roughly double that throughput.</p>
+      <p>At <span class="hl-n">Kyndryl for NAB</span>, I built a network change automation Lakehouse where we ingested telemetry from ServiceNow, network controllers, and real-time event streams — that was a high-frequency environment with continuous streaming data from infrastructure across Australia's hybrid cloud environment.</p>
+      <p>At <span class="hl-e">Empower Retirement (JPMC)</span>, I worked on financial data platforms processing retirement and investment data at enterprise scale — that's where I really developed depth on incremental load patterns, watermarking, and managing large JDBC extractions reliably.</p>
+      <div class="bridge">
+        <strong>Bridging to 800 TB</strong>
+        Scaling from my current platform to 800 TB is an architectural evolution, not a redesign. The same patterns I use today apply — incremental watermark extraction, partition pruning to avoid full scans, Delta OPTIMIZE and VACUUM to manage storage growth, Z-ordering on high-cardinality columns like customer_id and transaction_date. The tuning changes: JDBC numPartitions scales from 20 to 80+, executor memory moves to 64–128 GB nodes, AQE becomes non-optional, and shuffle partitions go from 400 to 2,000+. I'm very comfortable architecting at that level.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum scale">Q-14</span>
+    <div class="qtitle">
+      Monthly data volume handled is approximately 500 TB.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Again, I want to give you an honest picture. My Kahramaa platform currently processes around <span class="hl-m">537 GB of raw data per month</span> through the pipelines — that's 50 million IoT readings daily plus Oracle and CRM batch feeds. At full deployment of 2 million meters in 2027, that scales to approximately 1.1 TB per month in raw ingestion, with multi-layer copies pushing total monthly pipeline throughput higher.</p>
+      <p>At the architecture level, handling 500 TB monthly is about two things: throughput management and cost-efficient storage. For throughput, the key design decisions I would apply from my experience are — parallel JDBC extraction with at least 80 partitions on any relational source, Event Hub partitioning aligned to the number of stream consumers, Databricks Structured Streaming with a 10-second trigger interval for near-real-time pipelines, and batch jobs sized with enough executor cores so that no single stage exceeds 30 minutes. For storage, 500 TB raw per month compresses to roughly <span class="hl-m">100–125 TB in Delta format</span> with Snappy compression, which is the number that actually sits in ADLS and drives your storage cost.</p>
+      <p>The incremental watermark pattern I use at Kahramaa — where each pipeline records its last processed timestamp and only extracts new rows — is what makes 500 TB/month manageable. You never reload what you already have.</p>
+      <div class="tip">
+        <strong>Key technical detail</strong>
+        At 500 TB/month, or roughly 17 TB/day, the shuffle during a Spark aggregation can itself generate 17+ TB of intermediate data. That's where AQE skew join detection and proper shuffle partition count become critical — without tuning, you'd see spill to disk degrading jobs from minutes to hours.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION B — PROJECT ═══════════════ -->
+<div class="section-label">Project Overview Questions</div>
+
+<!-- Q2 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum">Q-02</span>
+    <div class="qtitle">
+      Description of project along with roles and responsibilities.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Let me walk you through my current and most recent projects.</p>
+      <p>At <span class="hl-k">Kahramaa — Qatar's national electricity and water utility</span> — I lead the Data Transformation and Self-Service Digitization initiative. The project is essentially modernizing how Qatar manages utility consumption data across the entire country. We have <span class="hl-m">988,000 smart meters</span> now live and reading every 30 minutes, feeding into a cloud-native Medallion Lakehouse I architected on Azure. My role is end-to-end: I own the ingestion pipelines from Oracle ERP, MySQL CRM, and IoT streams through Azure Event Hubs; I build the PySpark transformation logic in Databricks that processes raw meter readings into clean, analytics-ready data; and I deliver the Gold layer that powers Power BI dashboards for business teams. I'm also responsible for data governance — RBAC, encryption, ADLS access policies — and for pipeline monitoring through Azure Monitor and Databricks logs.</p>
+      <p>Before that, at <span class="hl-n">Kyndryl building a solution for National Australia Bank</span>, I was Lead Data Engineer on a network change automation platform. We built a Lakehouse that ingested network device configurations from ServiceNow and Cisco controllers, then used PySpark and Databricks SQL to automatically identify which network changes were low-risk and could be executed without human intervention. We automated <span class="hl-m">40%+ of change requests with a 95%+ success rate</span>. My responsibility there covered everything from real-time telemetry streaming via Event Hubs to post-deployment validation pipelines and data governance with Azure Purview.</p>
+      <p>At <span class="hl-e">Empower Retirement (part of JPMC)</span>, I was Senior Data and Automation Engineer. I migrated legacy financial data workflows from tools like QP Tool and DBC into Python-based Databricks pipelines, and built scalable ingestion from on-premise databases and legacy systems into ADLS Gen2. That was where I went deep on financial data quality — working with Great Expectations to build validation suites that ran at every layer boundary.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum">Q-03</span>
+    <div class="qtitle">
+      Challenges faced while handling large-scale data computation.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>A few come to mind that were genuinely hard problems to solve.</p>
+      <p>The first was the <strong>small-file explosion</strong> from IoT streaming at Kahramaa. When you have 988,000 meters each sending a reading every 30 minutes, Structured Streaming writes thousands of tiny Parquet files per micro-batch to the Bronze Delta table. Left unchecked, the Bronze table would accumulate <span class="hl-m">20,000+ files per day</span>, and Delta file listing overhead would make even simple queries crawl. I solved this by implementing a weekly <span class="hl-t">OPTIMIZE</span> pipeline that compacts files to the 128–512 MB target range, combined with <span class="hl-t">Z-ORDER BY (meter_id, event_time)</span> on the most frequent query predicates. That reduced a full-day Bronze scan from over 4 minutes to under 30 seconds.</p>
+      <p>The second was <strong>data skew in aggregations</strong>. At Kahramaa, certain distribution zones have significantly higher meter density than others — one municipal zone could account for 30% of all readings. When I first ran daily consumption aggregations grouped by zone_id, that one partition was 10x larger than the others, causing straggler tasks that held up the entire job. I addressed this by enabling AQE with <span class="hl-t">spark.sql.adaptive.skewJoin.enabled=true</span> and tuning the skew factor threshold. For the worst-offending zone I also used a salting technique in a pre-aggregation step.</p>
+      <p>At <span class="hl-n">Kyndryl/NAB</span>, the challenge was <strong>schema evolution on network device data</strong>. Different Cisco device generations returned different JSON structures for the same logical field. I implemented Delta Lake's <span class="hl-t">mergeSchema=true</span> option on all Bronze writes and built a Silver normalization layer that mapped all device-specific schemas to a canonical model before any downstream processing touched the data.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum">Q-04</span>
+    <div class="qtitle">
+      Details of failures encountered in production environments.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>I'll share three real production incidents and what I learned from each.</p>
+      <p><strong>Incident 1 — Checkpoint corruption at Kahramaa.</strong> One morning, our streaming pipeline from Event Hubs to Bronze stopped processing. Databricks showed no active query. The root cause was a corrupt checkpoint directory — a partial write during an executor failure had left the checkpoint in an inconsistent state. The immediate fix was to delete the checkpoint and restart the stream from the last committed Event Hub offset, which Delta's transaction log preserved correctly. The lasting fix was to add a pipeline health monitor in ADF that alerts on zero-throughput for more than 15 minutes, so we catch this immediately rather than discovering it hours later during business hours.</p>
+      <p><strong>Incident 2 — JDBC connection pool exhaustion at Kahramaa.</strong> Our hourly Oracle ERP ingestion pipeline started failing intermittently with connection timeout errors. The issue was that ADF was spinning up 20 parallel JDBC partitions simultaneously, which saturated Oracle's connection pool. I fixed this by staggering pipeline triggers using ADF's tumbling window with a 5-minute offset, and reducing <span class="hl-t">numPartitions</span> from 20 to 12 during peak Oracle business hours, reverting at night. I also added a retry policy with exponential backoff on the ADF linked service.</p>
+      <p><strong>Incident 3 — Silent data loss at Empower/JPMC.</strong> A pipeline migrating legacy financial data completed with a green status but the target row count was 3% lower than the source. The failure was silent — no exception was raised. The cause was a PySpark DataFrame write with <span class="hl-t">mode="overwrite"</span> where a partition filter was applied during the write, silently dropping partitions outside the filter. I fixed the immediate data gap with a targeted backfill and permanently addressed the pattern by adding row-count reconciliation checks using Great Expectations after every write — a check that fails loudly rather than passing silently.</p>
+      <div class="gotcha">
+        <strong>What interviewers want to hear</strong>
+        Don't just describe the failure — describe the detection, the immediate fix, and the permanent systemic change. That's what distinguishes a production-grade engineer from someone who just fixes and moves on.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION C — DATA QUALITY ═══════════════ -->
+<div class="section-label">Data Quality &amp; Insights</div>
+
+<!-- Q5 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum quality">Q-05</span>
+    <div class="qtitle">
+      Data quality checks implemented.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Data quality is something I treat as a first-class concern — not an afterthought. I implement it at every layer boundary in the Medallion architecture.</p>
+      <p>At the <strong>Bronze layer</strong>, the first gate is schema enforcement — Delta Lake rejects any record that doesn't conform to the defined schema. No exceptions, no silent truncation. The second check is null validation: for IoT readings, <span class="hl-t">meter_id</span>, <span class="hl-t">timestamp</span>, and <span class="hl-t">reading_value</span> cannot be null. Any record failing this goes to a dead-letter quarantine table with an error code, not to the trash.</p>
+      <p>At the <strong>Bronze → Silver transition</strong>, I use a five-dimension validation framework. First, row count reconciliation — Silver record count must be within 0.01% of Bronze after applying deduplication rules. Second, financial or measurement sum reconciliation — total kWh consumed in Silver must match total in Bronze. Third, range validation — consumption values must fall within physically plausible bounds per meter type; a water meter showing 10,000 m³ in one reading is flagged as anomalous. Fourth, duplicate detection using a window function on <span class="hl-t">meter_id</span> and <span class="hl-t">timestamp</span> over a 2-hour dedup window — the Siemens AMI system can retransmit readings on network recovery. Fifth, referential integrity — every <span class="hl-t">meter_id</span> in the fact table must have a matching record in <span class="hl-t">DimMeter</span>.</p>
+      <p>At <span class="hl-e">Empower/JPMC</span>, I used <strong>Great Expectations</strong> as the validation framework. I defined expectation suites per table — each suite had 15–25 expectations covering column types, value ranges, uniqueness, and statistical distributions. These ran as a Databricks task that gated the Silver→Gold promotion, so bad data could never reach the reporting layer.</p>
+      <p>On top of this, I built a <strong>data quality dashboard in Power BI</strong> that shows daily pass/fail rates per pipeline, quarantine record volumes by error type, and trend lines so the business team can see data health at a glance without digging into logs.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum quality">Q-06</span>
+    <div class="qtitle">
+      Business insights derived from the data.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>The whole point of building a Gold layer is to enable business decisions that weren't possible before. Let me give you concrete examples.</p>
+      <p>At <span class="hl-k">Kahramaa</span>, once we had clean 30-minute interval data flowing into the Gold layer, we could do things like <strong>peak demand forecasting by zone</strong>. Before smart meters, Kahramaa could only see daily totals from monthly manual readings. Now the business team can see exactly which neighbourhoods spike at 7 PM on weekdays, which informs where they need to invest in grid capacity. We also enabled <strong>water leakage detection</strong> — if a property shows consistent low-volume consumption at 3 AM when no one is typically active, that's a signal for a potential pipe leak. The field operations team now receives automated daily reports of these anomaly flags.</p>
+      <p>Another insight was <strong>Ramadan consumption pattern analysis</strong>. Qatar has unique energy consumption patterns during Ramadan — consumption peaks shift significantly. The business used our data to adjust supply scheduling during Ramadan months, which directly reduced generation costs.</p>
+      <p>At <span class="hl-e">Empower/JPMC</span>, the insights were around <strong>retirement fund contribution patterns</strong> — identifying cohorts of participants who were under-contributing relative to their income bracket, which the business team used for targeted outreach campaigns. We also surfaced operational insights: which legacy system integrations were causing the most data quality failures, allowing IT to prioritize technical debt remediation based on actual data impact rather than gut feel.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q7 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum quality">Q-07</span>
+    <div class="qtitle">
+      Feature computation approaches used.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>When you say feature computation, I interpret that as derived metrics and analytical attributes computed from raw data — the kind of computed columns that make the Gold layer useful for both reporting and downstream ML.</p>
+      <p>At <span class="hl-k">Kahramaa</span>, the core feature computations happen in PySpark in Databricks during the Silver → Gold transformation. Key examples:</p>
+      <p><strong>Rolling averages:</strong> For each meter, I compute a <span class="hl-m">30-day rolling average</span> consumption using a PySpark window function with <span class="hl-t">rangeBetween(-30 days in seconds, 0)</span>. This feeds directly into the anomaly detection logic — a reading more than 3 standard deviations above the rolling mean gets flagged.</p>
+      <p><strong>Peak vs off-peak classification:</strong> Each electricity reading gets a computed <span class="hl-t">time_of_use_band</span> attribute — Peak (6–10 PM), Shoulder (6 AM–6 PM), or Off-Peak (10 PM–6 AM) — computed from the reading timestamp. This is critical for Kahramaa's tiered tariff billing.</p>
+      <p><strong>Customer consumption tier:</strong> A computed column that classifies customers into Low / Medium / High / Very High consumption bands based on their trailing 90-day total, recalculated daily. The business uses this for demand response programmes.</p>
+      <p>At <span class="hl-n">Kyndryl/NAB</span>, features were more about network risk scoring — computing derived attributes like <span class="hl-t">change_risk_score</span> based on device criticality, number of dependent connections, time since last successful change, and historical failure rate. I used Databricks SQL to compute these as calculated columns in the Silver layer, then PySpark window functions for time-series features like rolling change failure rates per device type.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum quality">Q-08</span>
+    <div class="qtitle">
+      Interaction with business stakeholders or counterpart teams.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Stakeholder interaction is a big part of my role — I see myself as a translator between what the business needs and what the data platform can deliver.</p>
+      <p>At <span class="hl-k">Kahramaa</span>, I work directly with the Operations team, the Customer Services department, and the Finance team. The Operations team gives me requirements around grid monitoring and fault detection — they tell me which alerts they need and I translate those into pipeline logic and Power BI dashboard specifications. The Finance team needs accurate daily consumption aggregations for billing reconciliation — I work with them to validate that the numbers in our Gold layer match what Oracle ERP produces, and when there are discrepancies, we jointly investigate whether it's a pipeline issue or a source system issue. Customer Services uses our dashboards for outage impact analysis — I built the self-service analytics capability so their team can filter by zone and date range without needing to raise data requests.</p>
+      <p>At <span class="hl-n">Kyndryl/NAB</span>, I worked directly with NAB's network engineering team and change management team. The engineers helped me understand which network device attributes were reliable signals for automation eligibility versus which ones were too variable to trust. That domain knowledge directly shaped the feature engineering in our risk scoring model. I also ran weekly review sessions with the change management team to validate that automated deployments were meeting their reliability SLAs.</p>
+      <p>I find that the best data engineering work comes from these conversations — you only understand what "data quality" really means for a business when you understand what decisions they're making from the data.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION D — SECURITY / COMPLIANCE ═══════════════ -->
+<div class="section-label">Security, Compliance &amp; Operations</div>
+
+<!-- Q9 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum ops">Q-09</span>
+    <div class="qtitle">
+      Compliance and security checks implemented to avoid breaches.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Security is something I've implemented at multiple levels across all my projects — it's not an afterthought, it's built into the architecture from day one.</p>
+      <p>At <span class="hl-k">Kahramaa</span>, the platform handles citizen data and critical national infrastructure, so the standards are high. I implemented <strong>Role-Based Access Control (RBAC)</strong> through Azure Active Directory groups mapped to ADLS Gen2 container-level permissions. Business analysts can only read from the Gold layer — they have no access to Bronze or Silver. ETL service principals have write access to their specific containers only, never to the entire storage account. All data at rest is encrypted using Azure-managed keys, and all data in transit uses TLS 1.2.</p>
+      <p>For <strong>PII and sensitive data</strong>, I implemented column-level masking on customer personal details in the Silver layer — phone numbers and addresses are masked unless the accessing principal has explicit PII access role. In Unity Catalog, I used dynamic view policies so the masking is transparent to the pipeline but enforced automatically at query time.</p>
+      <p>At <span class="hl-n">Kyndryl/NAB</span>, the standard was banking-grade. I established <strong>Private Endpoints</strong> for all Azure PaaS services — ADLS, Key Vault, Databricks — ensuring that no traffic traversed the public internet. All secrets (database passwords, API keys, connection strings) were stored exclusively in <strong>Azure Key Vault</strong> with automated rotation policies. I set up <strong>Azure Purview</strong> for data lineage and compliance scanning, which allowed NAB's compliance team to trace any data element from source to report. Audit logging was enabled on all resources and forwarded to a Log Analytics workspace for SOC review.</p>
+      <div class="tip">
+        <strong>For ENBD specifically</strong>
+        UAE PDPL (Personal Data Protection Law) and Central Bank of UAE regulations apply. The same RBAC, PII masking, Private Endpoint, and audit logging architecture I've implemented maps directly to these requirements. I'm comfortable adapting the security framework to ENBD's specific compliance obligations.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum ops">Q-10</span>
+    <div class="qtitle">
+      Scheduling mechanisms used in pipelines.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>I use different scheduling mechanisms depending on the nature of the pipeline, and I think choosing the right trigger type is an important engineering decision that's often overlooked.</p>
+      <p>At <span class="hl-k">Kahramaa</span>, I run three different trigger patterns. For IoT streaming, it's <strong>continuous</strong> — Structured Streaming runs as a persistent Databricks job with a 10-second processing trigger, continuously consuming from Azure Event Hubs. There's no schedule; the pipeline runs 24/7. For Oracle ERP batch ingestion, I use <strong>ADF scheduled triggers</strong> with hourly incremental loads — the trigger fires every hour, the pipeline reads the watermark from a metadata Delta table, extracts only rows where <span class="hl-t">LAST_UPDATED > watermark</span>, and writes them to Bronze. For the Silver and Gold transformation jobs, I use <strong>ADF tumbling window triggers</strong> with a 2-hour window — this ensures exactly-once processing semantics so even if a window fails and retries, data isn't duplicated. The end-of-day Gold aggregation runs on a <strong>daily schedule at 2 AM</strong> when Oracle activity is lowest.</p>
+      <p>For maintenance pipelines — OPTIMIZE, VACUUM, Power BI dataset refresh — I use <strong>weekly scheduled triggers</strong> during weekends when query load is minimal.</p>
+      <p>At <span class="hl-n">Kyndryl/NAB</span>, I also used <strong>event-based triggers</strong>: when a new change request file landed in an ADLS container from ServiceNow, an ADF storage event trigger would automatically kick off the ingestion and eligibility assessment pipeline within seconds. No polling, no wasted compute.</p>
+      <div class="bridge">
+        <strong>CDP / Oozie Context for ENBD</strong>
+        In a Cloudera CDP environment, Oozie serves the same orchestration role as ADF. It uses workflow.xml for pipeline definition and coordinator.xml for scheduling — functionally equivalent to ADF's pipeline definition and trigger configuration. My orchestration principles transfer directly; the syntax is different, but the design patterns — dependency management, retry logic, watermarking, event-driven triggers — are identical.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SECTION E — TESTING / CODE QUALITY ═══════════════ -->
+<div class="section-label">Testing, Code Quality &amp; Operations</div>
+
+<!-- Q11 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum">Q-11</span>
+    <div class="qtitle">
+      Testing mechanisms implemented in the project.
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-e">Empower</span>
+        <span class="tag t-s">SLK</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Testing in data engineering is different from application testing — you're not just testing code behaviour, you're testing data transformations, so the test strategy needs to cover both dimensions.</p>
+      <p>For <strong>unit testing</strong>, I write pytest test suites for all PySpark transformation logic. Each transformation function gets its own test class with test data created using explicit schemas and typed values — proper <span class="hl-t">Decimal</span> types for financial amounts, proper <span class="hl-t">Date</span> types for timestamps, not string approximations. I mock SparkSession using a local <span class="hl-t">SparkSession.builder.master("local[2]")</span> instance so tests run without a cluster. Test fixtures are reusable across classes so I'm not repeating data setup code.</p>
+      <p>For <strong>integration testing</strong>, I test pipeline components end-to-end in a development Databricks environment against a sanitized copy of production data. This validates that the full chain — ingestion, transformation, validation, write — produces the expected row counts and schema at each layer.</p>
+      <p>For <strong>data contract testing</strong>, I validate that the schema of each Delta table matches its documented contract before any downstream pipeline reads from it. Schema drift alerts fire to Azure Monitor if a source system adds or changes a column unexpectedly.</p>
+      <p>At <span class="hl-e">Empower/JPMC</span>, I formalized the test strategy further using Great Expectations as the data assertion layer — each pipeline stage had an expectation suite with 15–25 assertions that ran as part of the pipeline itself, not as a separate QA step.</p>
+      <p>For <strong>regression testing</strong>, before any pipeline code change goes to production, I run a row count and sum reconciliation between the new pipeline output and the previous version's output on a shared test dataset. The change can only be promoted if both match within a defined tolerance.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum">Q-12</span>
+    <div class="qtitle">
+      Use of Sonar software for code quality and durability.
+      <div class="qtags">
+        <span class="tag t-s">SLK / PSG</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>Yes, I have hands-on SonarQube experience — it's listed in my resume from my SLK Software period on the PSG offshore project, and it was part of our CI/CD pipeline at Empower as well.</p>
+      <p>At <span class="hl-s">SLK Software</span>, SonarQube was integrated into our Jenkins CI pipeline. Every pull request was automatically scanned before it could be merged. The quality gate checked for: zero critical bugs, zero high-severity security vulnerabilities, duplication below 3%, and test coverage above 80%. If any gate failed, the PR was blocked — no exceptions. This is the standard I continue to apply on my own code regardless of whether SonarQube is enforced in the current environment.</p>
+      <p>The SonarQube metrics I pay most attention to are: <strong>Cyclomatic Complexity</strong> — I keep it below 10 per function, which means if a function has more than 10 independent paths through it, it needs to be refactored into smaller methods. <strong>Code duplication</strong> — I use private helper methods and utility classes aggressively so the same transformation logic doesn't appear in multiple places. <strong>Security hotspots</strong> — particularly around how credentials are handled (they should never appear in code, only in Key Vault references). And <strong>Technical Debt ratio</strong> — a useful proxy for maintainability.</p>
+      <p>For Python and PySpark specifically, I also follow Pylint conventions — snake_case for variables and functions, PascalCase for classes, line length under 100 characters, explicit imports rather than wildcard imports, and proper docstrings with type hints on all public methods. These aren't just style preferences — they're what makes code maintainable by the next engineer six months later.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum">Q-13</span>
+    <div class="qtitle">
+      Test coverage maintained at 80 percent.
+      <div class="qtags">
+        <span class="tag t-s">SLK / PSG</span>
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-e">Empower</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>80% coverage is the floor, not the target, in my experience. That was the enforced minimum at SLK Software through SonarQube, and it's the standard I've maintained since.</p>
+      <p>I measure coverage using <span class="hl-t">pytest-cov</span> — specifically with the <span class="hl-t">--cov-report=html</span> flag so I can visually inspect which branches are missed. The command I run before any PR is: <span class="hl-t">pytest --cov=src --cov-fail-under=80</span>. If coverage drops below 80, the test run fails and the build doesn't proceed.</p>
+      <p>Achieving 80%+ on data engineering code requires covering four categories of tests. <strong>Happy path tests</strong>: valid input produces correct output — this is the obvious 50–60%. <strong>Edge case tests</strong>: null inputs, empty DataFrames, zero-value amounts, single-row DataFrames — these add another 15–20% and are where most real-world bugs live. <strong>Boundary value tests</strong>: for threshold logic like <span class="hl-t">amount >= 10000</span> triggers HIGH_VALUE, I test exactly 9,999.99, 10,000.00, and 10,000.01. <strong>Mocked external dependency tests</strong>: JDBC connections and Delta table reads are mocked with <span class="hl-t">unittest.mock.patch</span> so tests run fast and in isolation without needing a live cluster or database.</p>
+      <p>One thing I'd add: 80% line coverage doesn't automatically mean 80% branch coverage. I always check branch coverage separately — an <span class="hl-t">if/else</span> where only the <span class="hl-t">if</span> is tested shows 100% line coverage but only 50% branch coverage. For financial or data validation logic, I target 80%+ branch coverage specifically.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Q15 -->
+<div class="qblock">
+  <div class="qhead" onclick="tog(this)">
+    <span class="qnum ops">Q-15</span>
+    <div class="qtitle">
+      Handling issues across multiple jobs (e.g., issues in 10 jobs out of 100 jobs).
+      <div class="qtags">
+        <span class="tag t-k">Kahramaa</span>
+        <span class="tag t-n">Kyndryl/NAB</span>
+      </div>
+    </div>
+    <span class="qtoggle">▼ expand</span>
+  </div>
+  <div class="qbody">
+    <div class="answer">
+      <p>This is something I deal with in practice at Kahramaa where we run around 32 ADF pipelines, and at Kyndryl/NAB where we had parallel automation jobs running across dozens of network devices simultaneously. The key principle is: a failure in one job should never cascade into failing healthy jobs, and recovery should be targeted — not a blanket re-run of everything.</p>
+      <p><strong>Isolation first.</strong> I design every pipeline as a fully independent unit with its own watermark, its own checkpoint, and its own success/failure state. An ADF tumbling window trigger ensures each window is independent — if window 7 fails, windows 8 through 12 continue running normally. The failed window will retry automatically up to 3 times with a 10-minute exponential backoff before triggering an alert.</p>
+      <p><strong>Job status telemetry.</strong> I write a job execution record to a Delta metadata table at the end of every pipeline run — job name, run date, status (SUCCESS/FAILED/PARTIAL), rows written, and error message. This gives me a single queryable table across all 32 pipelines. If 10 out of 100 jobs fail, I can run a simple SQL query: <span class="hl-t">SELECT * FROM metadata.job_log WHERE status = 'FAILED' AND run_date = today()</span> and immediately see which 10 failed, what error they threw, and what their last successful run was.</p>
+      <p><strong>Triage by error type.</strong> I categorize failures: transient infrastructure failures (network timeout, connector restart) get automatic retry. Source data failures (null key, unexpected schema) get routed to quarantine with an alert to the data owner — not a pipeline retry, because retrying won't fix a data problem. Logic failures (assertion error, unexpected transformation result) trigger an alert to me directly in Teams via Azure Monitor webhook.</p>
+      <p><strong>Partial success handling.</strong> At Kyndryl/NAB, where we had 40+ network devices being processed in parallel, I tracked which devices completed successfully and which failed. The recovery run would only reprocess the failed devices — never re-process the 90 that already succeeded. I implemented this using a partition-level success flag in the Bronze Delta table, so the Silver job automatically skips partitions that were already promoted successfully.</p>
+      <div class="tip">
+        <strong>The discipline that matters</strong>
+        The goal isn't zero failures — infrastructure at scale will always have transient failures. The goal is: when failures happen, they're detected in under 15 minutes, isolated from healthy jobs, categorised correctly, and recovered with the minimum reprocessing scope. That's what production-grade looks like.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end page -->
+
+<script>
+function tog(head) {
+  const body = head.nextElementSibling;
+  const block = head.parentElement;
+  const lbl   = head.querySelector('.qtoggle');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  if (lbl) lbl.textContent = isOpen ? '▼ expand' : '▲ collapse';
+  block.style.borderColor = isOpen ? 'var(--border)' : 'var(--border2)';
+}
+// Auto-expand all on load for easy reading
+window.addEventListener('load', () => {
+  document.querySelectorAll('.qhead').forEach(h => {
+    h.nextElementSibling.classList.add('open');
+    const lbl = h.querySelector('.qtoggle');
+    if (lbl) lbl.textContent = '▲ collapse';
+    h.parentElement.style.borderColor = 'var(--border2)';
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENBD Technical Answers — Validation, Hive, PySpark | Sudheer Kumar M.</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0e14;
+  --surface: #111620;
+  --card:    #151c27;
+  --border:  #1e2936;
+  --border2: #263345;
+  --text:    #c8d6e5;
+  --muted:   #556677;
+  --accent:  #38bdf8;
+  --gold:    #fbbf24;
+  --green:   #34d399;
+  --orange:  #fb923c;
+  --purple:  #a78bfa;
+  --red:     #f87171;
+  --teal:    #2dd4bf;
+  --code-bg: #060a0f;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  line-height: 1.75;
+}
+
+.wrap { max-width: 980px; margin: 0 auto; padding: 2.5rem 1.75rem 5rem; }
+
+/* HEADER */
+.hdr {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border2);
+}
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+h1 {
+  font-family: 'Lora', Georgia, serif;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.2;
+}
+.hdr p {
+  font-size: 0.93rem;
+  color: var(--muted);
+  font-family: 'IBM Plex Mono', monospace;
+  margin-top: 0.6rem;
+}
+.chips { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:1rem; }
+.chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* SECTION BLOCKS */
+.section {
+  margin-bottom: 2rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.sec-hdr {
+  background: var(--surface);
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+.sec-hdr:hover { background: rgba(56,189,248,0.04); }
+.sec-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  background: rgba(56,189,248,0.1);
+  border: 1px solid rgba(56,189,248,0.2);
+  color: var(--accent);
+  padding: 3px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+.sec-num.hive { background: rgba(251,191,36,0.1); border-color: rgba(251,191,36,0.2); color: var(--gold); }
+.sec-num.pyspark { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.2); color: var(--green); }
+.sec-num.gap { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.2); color: var(--purple); }
+.sec-title {
+  flex: 1;
+  font-family: 'Lora', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+.sec-toggle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+.sec-body { display: block; }
+
+/* QUESTION GROUPS */
+.qgroup {
+  border-bottom: 1px solid var(--border);
+  padding: 1.5rem;
+}
+.qgroup:last-child { border-bottom: none; }
+.qline {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.q-bullet {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--accent);
+  background: rgba(56,189,248,0.07);
+  border: 1px solid rgba(56,189,248,0.15);
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.q-bullet.hive { color: var(--gold); background: rgba(251,191,36,0.07); border-color: rgba(251,191,36,0.15); }
+.q-bullet.py { color: var(--green); background: rgba(52,211,153,0.07); border-color: rgba(52,211,153,0.15); }
+.q-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+  font-style: italic;
+}
+.answer {
+  font-size: 0.96rem;
+  color: var(--text);
+  line-height: 1.8;
+  margin-top: 0.75rem;
+}
+.answer p { margin-bottom: 0.85rem; }
+.answer p:last-child { margin-bottom: 0; }
+
+/* inline tech + name highlights */
+.t  { font-family:'IBM Plex Mono',monospace; background:rgba(56,189,248,0.08); color:var(--teal); padding:1px 5px; border-radius:3px; font-size:0.85em; }
+.hk { color: var(--accent); font-weight: 600; }
+.nk { color: var(--teal); font-weight: 600; }
+.ek { color: var(--gold); font-weight: 600; }
+.num { color: var(--gold); font-style: italic; }
+
+/* callouts */
+.note, .warn, .bridge, .success {
+  border-left: 2px solid;
+  padding: 0.85rem 1.1rem;
+  margin: 1rem 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.92rem;
+}
+.note   { border-color: var(--accent);  background: rgba(56,189,248,0.05);  }
+.warn   { border-color: var(--orange);  background: rgba(251,146,60,0.05);  }
+.bridge { border-color: var(--gold);    background: rgba(251,191,36,0.05);  }
+.success{ border-color: var(--green);   background: rgba(52,211,153,0.05);  }
+.note   strong { color: var(--accent);  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.3rem; }
+.warn   strong { color: var(--orange);  font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.3rem; }
+.bridge strong { color: var(--gold);    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.3rem; }
+.success strong{ color: var(--green);   font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:0.3rem; }
+
+/* CODE */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 1.2rem 1.4rem;
+  overflow-x: auto;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.79rem;
+  line-height: 1.75;
+  margin: 0.85rem 0;
+}
+.kw  { color: #7dd3fc; }
+.fn  { color: #6ee7b7; }
+.st  { color: #fde68a; }
+.cm  { color: #374c5e; font-style: italic; }
+.nm  { color: #fca5a5; }
+.cn  { color: #c4b5fd; }
+.op  { color: #94a3b8; }
+.sec-head-comment { color: #4a6070; font-size: 0.75rem; font-style: normal; }
+
+/* TABLE */
+.t-wrap { overflow-x:auto; margin: 0.85rem 0; }
+table { width:100%; border-collapse:collapse; font-size:0.84rem; }
+thead th {
+  background: var(--surface);
+  color: var(--accent);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  text-align: left;
+  border: 1px solid var(--border2);
+}
+tbody td {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.63rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.b-p { background:rgba(52,211,153,0.1); color:var(--green); }
+.b-f { background:rgba(248,113,113,0.1); color:var(--red); }
+.b-w { background:rgba(251,191,36,0.1);  color:var(--gold); }
+
+/* sample data table styling */
+.data-table thead th { background: rgba(56,189,248,0.08); color: var(--teal); }
+
+/* output box */
+.output-box {
+  background: var(--code-bg);
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--green);
+  margin: 0.85rem 0;
+}
+.output-box .out-hdr { color: var(--muted); font-size: 0.7rem; margin-bottom: 0.4rem; }
+
+hr.divider { border:none; border-top:1px dashed var(--border); margin:1.25rem 0; opacity:0.6; }
+
+@media (max-width:640px) {
+  .sec-toggle { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="eyebrow">ENBD Client Round · Technical Interview Answers · Section 2</div>
+  <h1>Data Validation · Hive · PySpark</h1>
+  <p>Sudheer Kumar M. — Candidate POV · Conversational Answers</p>
+  <div class="chips">
+    <span class="chip">Section 1 — Data Validation & Quality (8 Questions)</span>
+    <span class="chip">Section 2 — Hive Operations (2 Questions)</span>
+    <span class="chip">Section 3 — Hive Partition Recovery (3 Questions)</span>
+    <span class="chip">Section 4 — PySpark Coding (Live Code)</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — DATA VALIDATION / DATA QUALITY
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <span class="sec-num">Section 1</span>
+    <span class="sec-title">Data Validation / Data Quality</span>
+    <span class="sec-toggle">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <!-- Q1.1 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.1</span>
+        <span class="q-text">How do you validate that the records loaded into the target table are correct and complete? What checks do you perform?</span>
+      </div>
+      <div class="answer">
+        <p>Validating correctness and completeness is something I treat as a multi-layered process — not a single check. In my Medallion architecture at <span class="hk">Kahramaa</span>, I apply validation at every layer boundary. Let me walk you through exactly what I do.</p>
+        <p>The first thing I check after any load is <strong>row count reconciliation</strong>. I compare the count of records in the source extraction to the count of records written to the target. If I extracted 5 million records from Oracle ERP, I expect 5 million records in Bronze — accounting for any intentional deduplication. If the numbers don't match, the pipeline halts and alerts.</p>
+        <p>Second is <strong>financial sum reconciliation</strong> — for any table involving monetary or measured values, I compare the <span class="t">SUM(amount)</span> or <span class="t">SUM(kwh_consumed)</span> between source and target. A row count can match while individual values are wrong, so sum validation is the catch-all for value-level corruption.</p>
+        <p>Third is <strong>null checks on mandatory fields</strong>. Columns like <span class="t">customer_id</span>, <span class="t">transaction_id</span>, <span class="t">meter_id</span>, and <span class="t">transaction_date</span> must never be null in the target. I explicitly check <span class="t">COUNT(*) WHERE mandatory_col IS NULL = 0</span> before promoting any batch.</p>
+        <p>Fourth is <strong>primary key or uniqueness validation</strong> — every record in a fact table must have a unique business key. I validate that <span class="t">COUNT(DISTINCT key)</span> equals <span class="t">COUNT(*)</span> after the load.</p>
+        <p>Fifth is <strong>referential integrity</strong> — every foreign key in the fact table must have a matching record in the dimension table. For example, every <span class="t">meter_id</span> in <span class="t">FactElectricityConsumption</span> must exist in <span class="t">DimMeter</span>. An orphaned key means a join failure downstream and wrong or missing rows in reports.</p>
+        <p>Sixth is <strong>date range sanity</strong> — <span class="t">MIN(transaction_date)</span> and <span class="t">MAX(transaction_date)</span> in the target must fall within the expected processing window. If my daily pipeline for 2024-01-15 contains records dated 2023-11-01, something went wrong in the watermark logic.</p>
+        <div class="note">
+          <strong>At Empower/JPMC</strong>
+          I formalized all six of these as Great Expectations expectation suites. Each suite ran as a Databricks task that gated Silver→Gold promotion. Any failed expectation failed the task with a descriptive error — not a silent pass. The validation results were persisted to a Delta metadata table and visualized in a Power BI data quality dashboard.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.2 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.2</span>
+        <span class="q-text">Apart from record count reconciliation, what other validation techniques are used in ETL pipelines?</span>
+      </div>
+      <div class="answer">
+        <p>Great question because record count is actually one of the weakest validations by itself — it tells you nothing about the values inside the records. Here's what I go beyond it with.</p>
+        <p><strong>Aggregate sum reconciliation</strong> — as I mentioned, comparing <span class="t">SUM</span> of all numeric columns between source and target catches value-level corruption that a row count never would.</p>
+        <p><strong>Statistical distribution checks</strong> — at <span class="hk">Kahramaa</span>, I validate that the average daily electricity consumption per meter stays within a historical range. If today's average is 10x the 30-day average, that signals either a data quality issue or a genuinely anomalous day that needs investigation. I use Great Expectations' <span class="t">expect_column_mean_to_be_between</span> for this.</p>
+        <p><strong>Schema validation</strong> — I validate that the schema of the target Delta table matches the documented contract before any downstream pipeline reads from it. Delta Lake enforces this at write time, but I also run an explicit schema comparison between the source extraction schema and the expected target schema to catch type drift at the source before it causes a downstream failure.</p>
+        <p><strong>Duplicate detection</strong> — I check for duplicate records based on the business key. This is especially important for IoT data where the Siemens AMI system can retransmit readings on network recovery, giving us two records for the same meter at the same timestamp.</p>
+        <p><strong>Value range validation</strong> — every business column has a physically or logically plausible range. Water consumption can't be negative. A single meter can't show 1 million kWh in a day. I define these bounds explicitly and flag any record outside them as anomalous rather than silently ingesting it.</p>
+        <p><strong>Allowed values / domain validation</strong> — categorical columns like <span class="t">transaction_status</span> should only contain values from a known set (COMPLETED, PENDING, FAILED). Any value outside that set is a data quality problem — possibly a schema change in the source system that wasn't communicated.</p>
+        <p><strong>Cross-table consistency checks</strong> — at the Gold layer, I validate that the total billing amount in <span class="t">FactBilling</span> reconciles back to the sum of consumption in <span class="t">FactElectricityConsumption</span> for the same customer and period. If they don't match within a tolerance, it means the billing calculation has a logic bug.</p>
+      </div>
+    </div>
+
+    <!-- Q1.3 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.3</span>
+        <span class="q-text">How do you perform record-level and column-level validation between source and target systems?</span>
+      </div>
+      <div class="answer">
+        <p>This is where you go from aggregate-level assurance to row-level truth. Let me walk through both layers.</p>
+        <p><strong>For column-level validation</strong>, I perform a column-by-column profile comparison between source and target. For every column in the load, I compare: row count, distinct count, null count, min, max, and sum (for numerics). If any of these diverge between source and target beyond an acceptable tolerance, I flag that specific column rather than failing the entire pipeline — this makes triage much faster.</p>
+        <p>In PySpark at <span class="hk">Kahramaa</span>, I do this like so:</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, count, countDistinct, sum <span class="kw">as</span> s, min <span class="kw">as</span> mn, max <span class="kw">as</span> mx, isnull
+
+<span class="kw">def</span> <span class="fn">column_profile</span>(df, col_name):
+    <span class="kw">return</span> df.agg(
+        count(col(col_name)).alias(<span class="st">"row_count"</span>),
+        countDistinct(col(col_name)).alias(<span class="st">"distinct_count"</span>),
+        count(isnull(col(col_name)).cast(<span class="st">"int"</span>) * <span class="nm">1</span>
+              .when(isnull(col(col_name)), <span class="nm">1</span>).otherwise(<span class="nm">0</span>)).alias(<span class="st">"null_count"</span>),
+        mn(col(col_name)).alias(<span class="st">"min_val"</span>),
+        mx(col(col_name)).alias(<span class="st">"max_val"</span>)
+    )
+
+src_profile = column_profile(source_df, <span class="st">"amount"</span>)
+tgt_profile = column_profile(target_df, <span class="st">"amount"</span>)
+<span class="cm"># Compare and assert</span></pre>
+        <p><strong>For record-level validation</strong>, I use a key-based anti-join pattern. After loading, I compare the set of primary keys in source against the set of keys in target.</p>
+<pre><span class="cm"># Records in source but missing from target (load omissions)</span>
+missing_in_target = source_df.select(<span class="st">"txn_id"</span>).subtract(target_df.select(<span class="st">"txn_id"</span>))
+
+<span class="cm"># Records in target but not in source (phantom records)</span>
+phantom_in_target = target_df.select(<span class="st">"txn_id"</span>).subtract(source_df.select(<span class="st">"txn_id"</span>))
+
+assert missing_in_target.count() == <span class="nm">0</span>, <span class="st">f"Missing records: {missing_in_target.count()}"</span>
+assert phantom_in_target.count()  == <span class="nm">0</span>, <span class="st">f"Phantom records: {phantom_in_target.count()}"</span></pre>
+        <p>For value-level comparison on individual records, I join source and target on the primary key and then compare each column using a hash or direct comparison:</p>
+<pre><span class="cm"># Join source and target on key, then compare columns</span>
+joined = (source_df.alias(<span class="st">"s"</span>)
+    .join(target_df.alias(<span class="st">"t"</span>), <span class="st">"txn_id"</span>, <span class="st">"inner"</span>))
+
+mismatches = joined.filter(
+    (col(<span class="st">"s.amount"</span>)   != col(<span class="st">"t.amount"</span>))   |
+    (col(<span class="st">"s.customer_id"</span>) != col(<span class="st">"t.customer_id"</span>)) |
+    (col(<span class="st">"s.status"</span>)    != col(<span class="st">"t.status"</span>))
+)
+
+<span class="kw">if</span> mismatches.count() > <span class="nm">0</span>:
+    mismatches.show(<span class="nm">20</span>)
+    <span class="kw">raise</span> ValueError(<span class="st">f"Column-level mismatches found: {mismatches.count()} records"</span>)</pre>
+      </div>
+    </div>
+
+    <!-- Q1.4 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.4</span>
+        <span class="q-text">If the source system sends a column as DATE and the target stores it as TIMESTAMP, how do you validate correctness?</span>
+      </div>
+      <div class="answer">
+        <p>This is a very practical scenario and one I've handled in production — Oracle sends transaction_date as a DATE type, and our target Delta table stores it as TIMESTAMP for compatibility with streaming data and time-travel queries.</p>
+        <p>The validation has two parts: confirming the <strong>date value is preserved</strong>, and confirming the <strong>time component defaults correctly to midnight</strong>.</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, cast, hour, minute, second, to_date, count, when
+
+<span class="cm"># ── Validation 1: Date value preserved after cast ──</span>
+date_mismatch = (source_df.alias(<span class="st">"s"</span>)
+    .join(target_df.alias(<span class="st">"t"</span>), <span class="st">"txn_id"</span>)
+    .filter(
+        col(<span class="st">"s.transaction_date"</span>) !=
+        to_date(col(<span class="st">"t.transaction_date"</span>))   <span class="cm"># cast TIMESTAMP back to DATE for compare</span>
+    )
+)
+assert date_mismatch.count() == <span class="nm">0</span>, <span class="st">"Date values changed during DATE→TIMESTAMP cast"</span>
+
+<span class="cm"># ── Validation 2: Time component is exactly 00:00:00 ──</span>
+bad_timestamps = target_df.filter(
+    (hour(<span class="st">"transaction_date"</span>)   != <span class="nm">0</span>) |
+    (minute(<span class="st">"transaction_date"</span>) != <span class="nm">0</span>) |
+    (second(<span class="st">"transaction_date"</span>) != <span class="nm">0</span>)
+)
+assert bad_timestamps.count() == <span class="nm">0</span>, <span class="st">"Non-midnight time components found in TIMESTAMP column"</span>
+
+<span class="cm"># ── Validation 3: No nulls introduced by the cast ──</span>
+null_after_cast = target_df.filter(col(<span class="st">"transaction_date"</span>).isNull()).count()
+assert null_after_cast == <span class="nm">0</span>, <span class="st">f"Cast introduced {null_after_cast} null timestamps"</span></pre>
+        <p>In SQL terms, the equivalent check in Spark SQL is:</p>
+<pre><span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">AS</span> bad_count
+<span class="kw">FROM</span> target_transactions
+<span class="kw">WHERE</span>
+    <span class="fn">HOUR</span>(transaction_date)   != <span class="nm">0</span>
+    <span class="op">OR</span> <span class="fn">MINUTE</span>(transaction_date) != <span class="nm">0</span>
+    <span class="op">OR</span> <span class="fn">SECOND</span>(transaction_date) != <span class="nm">0</span>;
+<span class="cm">-- Expected result: 0</span></pre>
+        <div class="warn">
+          <strong>Watch out for timezone shifts</strong>
+          If Oracle stores dates in a local timezone (e.g., Asia/Qatar, UTC+3) and your Spark cluster runs in UTC, a midnight date in Oracle becomes 21:00:00 the previous day in UTC. Always configure your ADF or JDBC connection with an explicit <span class="t">sessionInitStatement=ALTER SESSION SET TIME_ZONE='UTC'</span> to prevent timezone conversion bugs. This is a silent data corruption that row count checks will never catch.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.5 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.5</span>
+        <span class="q-text">If the timestamp column automatically populates 00:00:00 for minutes and seconds, how do you verify correctness?</span>
+      </div>
+      <div class="answer">
+        <p>When the time component defaults to 00:00:00 — which is expected when a DATE is cast to TIMESTAMP — the correctness verification is actually straightforward: you're confirming the default happened correctly and consistently for every record, not just most of them.</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> hour, minute, second, col, count, when, lit
+
+<span class="cm"># Verify EVERY record has 00:00:00 — not just the majority</span>
+time_audit = target_df.agg(
+    count(when(hour(<span class="st">"transaction_date"</span>) == <span class="nm">0</span>, <span class="nm">1</span>)).alias(<span class="st">"hour_zero_count"</span>),
+    count(when(minute(<span class="st">"transaction_date"</span>) == <span class="nm">0</span>, <span class="nm">1</span>)).alias(<span class="st">"minute_zero_count"</span>),
+    count(when(second(<span class="st">"transaction_date"</span>) == <span class="nm">0</span>, <span class="nm">1</span>)).alias(<span class="st">"second_zero_count"</span>),
+    count(<span class="st">"*"</span>).alias(<span class="st">"total_count"</span>)
+)
+time_audit.show()
+<span class="cm"># All three counts must equal total_count</span>
+<span class="cm"># If hour_zero_count < total_count → some records have non-zero hour → BUG</span>
+
+<span class="cm"># Single-number assertion</span>
+non_midnight = target_df.filter(
+    (hour(<span class="st">"transaction_date"</span>) != <span class="nm">0</span>) |
+    (minute(<span class="st">"transaction_date"</span>) != <span class="nm">0</span>) |
+    (second(<span class="st">"transaction_date"</span>) != <span class="nm">0</span>)
+).count()
+
+print(<span class="st">f"Records with non-midnight time: {non_midnight}"</span>)
+<span class="cm"># Pass condition: non_midnight == 0</span></pre>
+        <p>There's also a useful spot check pattern: display a sample and visually confirm the pattern:</p>
+<pre><span class="cm"># Quick eyeball check — confirm pattern is consistent</span>
+target_df.select(
+    <span class="st">"txn_id"</span>,
+    <span class="st">"transaction_date"</span>,
+    hour(<span class="st">"transaction_date"</span>).alias(<span class="st">"hh"</span>),
+    minute(<span class="st">"transaction_date"</span>).alias(<span class="st">"mm"</span>),
+    second(<span class="st">"transaction_date"</span>).alias(<span class="st">"ss"</span>)
+).show(<span class="nm">5</span>, truncate=<span class="cn">False</span>)
+<span class="cm"># Expected:
+# | T001 | 2024-01-15 00:00:00 | 0 | 0 | 0 |
+# | T002 | 2024-01-16 00:00:00 | 0 | 0 | 0 |</span></pre>
+        <div class="note">
+          <strong>Why this matters beyond the obvious</strong>
+          If even one record has a non-zero time component, it means that record came from a different source code path — possibly a streaming event that carries a real timestamp, mixed into what should be a pure batch DATE load. Catching this immediately tells you there's a pipeline design bug, not just a data issue.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1.6 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.6</span>
+        <span class="q-text">If record counts match but column values are incorrect, how do you detect the issue?</span>
+      </div>
+      <div class="answer">
+        <p>This is precisely why I say row count is a necessary but not sufficient validation. A matching count means you have the right number of records — it says nothing about whether the values inside them are correct. Here's my approach to detecting value-level corruption.</p>
+        <p><strong>Sum reconciliation across all numeric columns.</strong> I compare <span class="t">SUM(amount)</span> in source against <span class="t">SUM(amount)</span> in target. If counts match but sum diverges, it means some records have incorrect values — possibly from a type truncation (a DECIMAL(18,4) loaded into a DECIMAL(10,2) silently drops precision), a unit conversion error, or a transformation bug.</p>
+        <p><strong>Hash-based record comparison.</strong> For exact value matching, I compute a row hash in both source and target using all columns, then compare the hash sets:</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> md5, concat_ws, col
+
+<span class="cm"># Compute row hash for each record in source and target</span>
+src_hashed = source_df.withColumn(
+    <span class="st">"row_hash"</span>,
+    md5(concat_ws(<span class="st">"|"</span>,
+        col(<span class="st">"txn_id"</span>).cast(<span class="st">"string"</span>),
+        col(<span class="st">"customer_id"</span>),
+        col(<span class="st">"amount"</span>).cast(<span class="st">"string"</span>),
+        col(<span class="st">"transaction_date"</span>).cast(<span class="st">"string"</span>),
+        col(<span class="st">"status"</span>)
+    ))
+).select(<span class="st">"txn_id"</span>, <span class="st">"row_hash"</span>)
+
+tgt_hashed = target_df.withColumn(
+    <span class="st">"row_hash"</span>,
+    md5(concat_ws(<span class="st">"|"</span>,
+        col(<span class="st">"txn_id"</span>).cast(<span class="st">"string"</span>),
+        col(<span class="st">"customer_id"</span>),
+        col(<span class="st">"amount"</span>).cast(<span class="st">"string"</span>),
+        col(<span class="st">"transaction_date"</span>).cast(<span class="st">"string"</span>),
+        col(<span class="st">"status"</span>)
+    ))
+).select(<span class="st">"txn_id"</span>, <span class="st">"row_hash"</span>)
+
+<span class="cm"># Find records where hash doesn't match (same key, different values)</span>
+mismatch = (src_hashed.alias(<span class="st">"s"</span>)
+    .join(tgt_hashed.alias(<span class="st">"t"</span>), <span class="st">"txn_id"</span>)
+    .filter(col(<span class="st">"s.row_hash"</span>) != col(<span class="st">"t.row_hash"</span>))
+)
+print(<span class="st">f"Value mismatches: {mismatch.count()}"</span>)
+
+<span class="cm"># Drill into which columns differ on the mismatched records</span>
+mismatched_keys = mismatch.select(<span class="st">"txn_id"</span>)
+drill = (source_df.join(mismatched_keys, <span class="st">"txn_id"</span>).alias(<span class="st">"s"</span>)
+         .join(target_df.join(mismatched_keys, <span class="st">"txn_id"</span>).alias(<span class="st">"t"</span>), <span class="st">"txn_id"</span>))
+
+drill.select(
+    col(<span class="st">"txn_id"</span>),
+    col(<span class="st">"s.amount"</span>).alias(<span class="st">"src_amount"</span>),
+    col(<span class="st">"t.amount"</span>).alias(<span class="st">"tgt_amount"</span>),
+    col(<span class="st">"s.status"</span>).alias(<span class="st">"src_status"</span>),
+    col(<span class="st">"t.status"</span>).alias(<span class="st">"tgt_status"</span>)
+).show(<span class="nm">20</span>)</pre>
+        <p>This pattern gives you exactly which records have wrong values and exactly which columns differ — making root-cause analysis fast and precise.</p>
+      </div>
+    </div>
+
+    <!-- Q1.7 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.7</span>
+        <span class="q-text">How do you identify bad or inconsistent data during ETL processing?</span>
+      </div>
+      <div class="answer">
+        <p>I think about bad data in three categories and handle each differently: <strong>structurally bad</strong> (nulls, wrong types, schema violations), <strong>logically bad</strong> (values outside business rules), and <strong>contextually bad</strong> (values that are individually valid but inconsistent with other data).</p>
+        <p><strong>Structurally bad data</strong> is caught at the Bronze layer. Delta Lake schema enforcement rejects records with wrong types. I add explicit null checks for mandatory columns. Anything rejected goes to the quarantine Delta table with an error code — not lost, but not in the main pipeline either.</p>
+        <p><strong>Logically bad data</strong> is caught at the Bronze → Silver transition. I tag each record with any rule violations as a computed column array, then split valid and invalid records:</p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, when, lit, array, concat_ws, size, filter <span class="kw">as</span> arr_filter
+
+flagged = raw_df.withColumn(<span class="st">"error_flags"</span>, array(
+    when(col(<span class="st">"amount"</span>) <= <span class="nm">0</span>,                                 lit(<span class="st">"NEGATIVE_OR_ZERO_AMOUNT"</span>)),
+    when(col(<span class="st">"customer_id"</span>).isNull(),                        lit(<span class="st">"NULL_CUSTOMER_ID"</span>)),
+    when(col(<span class="st">"txn_id"</span>).isNull(),                             lit(<span class="st">"NULL_TXN_ID"</span>)),
+    when(col(<span class="st">"transaction_date"</span>) > col(<span class="st">"current_date"</span>),     lit(<span class="st">"FUTURE_DATE"</span>)),
+    when(~col(<span class="st">"status"</span>).isin(<span class="st">"COMPLETED"</span>,<span class="st">"PENDING"</span>,<span class="st">"FAILED"</span>),lit(<span class="st">"INVALID_STATUS"</span>))
+)).withColumn(
+    <span class="st">"active_errors"</span>,
+    arr_filter(<span class="st">"error_flags"</span>, <span class="kw">lambda</span> x: x.isNotNull())
+).withColumn(<span class="st">"is_valid"</span>, size(col(<span class="st">"active_errors"</span>)) == <span class="nm">0</span>)
+
+valid_df     = flagged.filter(col(<span class="st">"is_valid"</span>))
+quarantine_df = flagged.filter(~col(<span class="st">"is_valid"</span>))
+
+<span class="cm"># Route: valid → Silver, quarantine → dead-letter table</span>
+valid_df.drop(<span class="st">"error_flags"</span>, <span class="st">"active_errors"</span>, <span class="st">"is_valid"</span>) \
+    .write.format(<span class="st">"delta"</span>).mode(<span class="st">"append"</span>).save(<span class="st">"/mnt/silver/transactions"</span>)
+
+quarantine_df.write.format(<span class="st">"delta"</span>).mode(<span class="st">"append"</span>) \
+    .save(<span class="st">"/mnt/quarantine/transactions"</span>)</pre>
+        <p><strong>Contextually bad data</strong> — things like a customer showing up in transactions but absent from the customer master, or a meter reading from a device that was decommissioned six months ago — requires cross-table validation using joins. I run these as post-load Silver quality checks and route any referential violations to a separate quality issue table for business review.</p>
+      </div>
+    </div>
+
+    <!-- Q1.8 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet">Q-1.8</span>
+        <span class="q-text">Provide an example where column-level or record-level validation was performed.</span>
+      </div>
+      <div class="answer">
+        <p>Let me give you a concrete production example from <span class="hk">Kahramaa</span>.</p>
+        <p>We were ingesting daily electricity meter readings from Oracle ERP into our Silver Delta table. One morning, our Power BI dashboard showed total daily consumption for zone 7 was <span class="num">4x higher than the 30-day average</span>. The pipeline had completed with a green status and row count reconciliation passed. But something was wrong.</p>
+        <p>I ran a column-level reconciliation between the Bronze and Silver layer for that day:</p>
+<pre><span class="cm"># Compare Bronze vs Silver for 2024-01-15</span>
+date_filter = <span class="st">"reading_date = '2024-01-15'"</span>
+
+bronze_profile = (spark.sql(<span class="st">f"""
+    SELECT zone_id,
+           COUNT(*) as row_count,
+           SUM(kwh_consumed) as total_kwh,
+           AVG(kwh_consumed) as avg_kwh,
+           MAX(kwh_consumed) as max_kwh
+    FROM bronze.electricity_readings
+    WHERE {date_filter}
+    GROUP BY zone_id
+"""</span>))
+
+silver_profile = (spark.sql(<span class="st">f"""
+    SELECT zone_id,
+           COUNT(*) as row_count,
+           SUM(kwh_consumed) as total_kwh,
+           AVG(kwh_consumed) as avg_kwh,
+           MAX(kwh_consumed) as max_kwh
+    FROM silver.electricity_readings
+    WHERE {date_filter}
+    GROUP BY zone_id
+"""</span>))
+
+bronze_profile.join(silver_profile, <span class="st">"zone_id"</span>, <span class="st">"full"</span>) \
+    .withColumn(<span class="st">"sum_delta"</span>, col(<span class="st">"silver_total_kwh"</span>) - col(<span class="st">"bronze_total_kwh"</span>)) \
+    .filter(col(<span class="st">"sum_delta"</span>) != <span class="nm">0</span>) \
+    .show()</pre>
+        <p>The output showed that zone 7 in Silver had a sum <span class="num">exactly 10x</span> higher than Bronze for the same date. Same row count, but the sum was wrong. I then drilled into the records with the highest values and found the issue: a unit conversion step in our Silver transformation was multiplying kWh by 10 for a specific meter firmware version that was reporting in <em>tenths of a kWh</em> — a format change that came in a Siemens firmware update without a data contract notification from the source team. The fix was a firmware version lookup in the transformation logic with the correct divisor per version. We quarantined the affected Silver records, reprocessed with the fix, and the numbers reconciled perfectly.</p>
+        <div class="success">
+          <strong>Lesson from this incident</strong>
+          Row count reconciliation would never have caught this. Only the column-level sum reconciliation exposed it. This is why aggregate reconciliation on every numeric column is non-negotiable — not optional or "nice to have."
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /sec-body -->
+</div><!-- /section 1 -->
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — HIVE / DATA ENGINEERING OPERATIONS
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <span class="sec-num hive">Section 2</span>
+    <span class="sec-title">Hive / Data Engineering Operations</span>
+    <span class="sec-toggle">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <!-- Q2.1 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet hive">Q-2.1</span>
+        <span class="q-text">In daily work, do you primarily use Hive queries or PySpark?</span>
+      </div>
+      <div class="answer">
+        <p>In my current and recent roles, I primarily use PySpark and Spark SQL — that's been the dominant tool across Kahramaa, Kyndryl/NAB, and Empower/JPMC. My platform stack is Azure Databricks and Delta Lake, where Spark is the native engine. But I want to be clear about the relationship between these tools, because it's not an either/or.</p>
+        <p>For complex, multi-step transformations — window functions, deduplication logic, incremental merge operations, streaming pipelines — I write PySpark. It gives me full programmatic control, testability through unit tests, and access to the full Spark ecosystem including MLlib and Structured Streaming.</p>
+        <p>For ad-hoc analysis, quick profiling, and Gold layer aggregations that are essentially SQL in nature, I use Spark SQL from within Databricks notebooks — which is functionally Hive-compatible SQL running on Spark. So I'm writing HiveQL-style queries regularly, just through the SparkSession SQL interface rather than Hive CLI or Beeline directly.</p>
+        <div class="bridge">
+          <strong>Honest Bridge to ENBD's CDP Environment</strong>
+          In a Cloudera CDP environment like yours, the native query tool is HQL (Hive Query Language) running on Hive or Impala. My Spark SQL experience maps directly — the syntax is virtually identical, the underlying semantics are the same. The key difference is execution engine: my queries run on Spark, yours on Hive/YARN. I'm comfortable adapting to Beeline or HUE as the query interface. Where I'd spend the most time learning is CDP-specific optimizations like Hive LLAP (Low Latency Analytical Processing) which is Cloudera's equivalent to Databricks' Delta cache.
+        </div>
+      </div>
+    </div>
+
+    <!-- Q2.2 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet hive">Q-2.2</span>
+        <span class="q-text">How is Hive typically used in workflows (validation, transformation, analysis)?</span>
+      </div>
+      <div class="answer">
+        <p>Based on my understanding of Hive in a CDP ecosystem — both from my Spark/HiveContext integration experience and from what I've learned about the CDP architecture — Hive plays three distinct roles in a data engineering workflow.</p>
+        <p><strong>As the metadata and catalog layer (always-on role).</strong> The Hive Metastore is the central catalog — it stores table definitions, partition metadata, schema information, and storage location mappings for all tables whether they're queried through Hive, Spark, or Impala. Even when you're not writing HQL queries, Hive Metastore is working in the background. When I read a Hive table from PySpark using <span class="t">spark.table("schema.table_name")</span>, I'm hitting the Hive Metastore to resolve the table location and schema.</p>
+        <p><strong>For batch ETL and transformation.</strong> In CDP workflows, Hive is typically used for heavy batch transformations — INSERT OVERWRITE, CTAS (Create Table As Select), and partition-based data movement operations. For example, loading a daily partition into a fact table:</p>
+<pre><span class="kw">INSERT OVERWRITE TABLE</span> enbd.fact_transactions
+<span class="kw">PARTITION</span> (txn_year=<span class="nm">2024</span>, txn_month=<span class="nm">1</span>)
+<span class="kw">SELECT</span>
+    txn_id, customer_id, amount,
+    <span class="fn">TO_DATE</span>(transaction_date)  <span class="kw">AS</span> transaction_date,
+    branch_id, status
+<span class="kw">FROM</span> enbd.staging_transactions
+<span class="kw">WHERE</span> txn_year = <span class="nm">2024</span> <span class="kw">AND</span> txn_month = <span class="nm">1</span>;</pre>
+        <p><strong>For validation and profiling queries.</strong> HQL is used for quick row count checks, aggregate comparisons, and data quality validation queries between staging and target. These are often the same SQL checks I run in Spark SQL — COUNT, SUM, GROUP BY with HAVING — just executed through Beeline or HUE against the Hive engine.</p>
+        <p><strong>For analysis and reporting.</strong> Hive or Impala (Cloudera's faster SQL-on-Hadoop engine) serves the analytical query layer, similar to how Databricks SQL serves that role in my Azure environment. Business users query Hive-registered tables through BI tools like Tableau or Power BI via JDBC/ODBC connections.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — HIVE PARTITION MANAGEMENT
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <span class="sec-num gap">Section 3</span>
+    <span class="sec-title">Hive Partition Management Scenario</span>
+    <span class="sec-toggle">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <!-- Q3.1 + Q3.3 combined -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet hive">Q-3.1</span>
+        <span class="q-text">If a Hive table partitioned by transaction_date loses partitions, how would you restore them? What approaches are used to rebuild or repair partitions in external Hive tables?</span>
+      </div>
+      <div class="answer">
+        <p>When Hive partition metadata is lost — which means the Hive Metastore no longer knows about partitions that still physically exist in HDFS — there are three approaches depending on the scope and nature of the loss.</p>
+        <p><strong>Approach 1 — MSCK REPAIR TABLE (the standard recovery command).</strong> This is the go-to for external Hive tables. It scans HDFS for directories that match the partition scheme and registers any missing partitions back into the Metastore.</p>
+<pre><span class="cm">-- Full partition scan and repair</span>
+MSCK REPAIR TABLE enbd.transactions;
+
+<span class="cm">-- Verify the repair worked</span>
+<span class="kw">SHOW PARTITIONS</span> enbd.transactions;
+
+<span class="cm">-- Count check post-repair</span>
+<span class="kw">SELECT</span> <span class="fn">COUNT</span>(*) <span class="kw">FROM</span> enbd.transactions <span class="kw">WHERE</span> transaction_date = <span class="st">'2024-01-15'</span>;</pre>
+        <div class="warn">
+          <strong>MSCK REPAIR limitation</strong>
+          MSCK REPAIR does a full HDFS directory scan — on large tables with hundreds or thousands of partitions, this can take 10–20 minutes and puts load on the NameNode. For a table with one year of daily partitions (365 directories), it's manageable. For a table with 5 years of hourly partitions (43,800 directories), you need a targeted approach instead.
+        </div>
+        <p><strong>Approach 2 — ALTER TABLE ADD PARTITION (targeted recovery).</strong> When you know exactly which partitions are missing — for example, you ran a monitoring query and identified specific dates — you add them directly rather than scanning everything:</p>
+<pre><span class="cm">-- Add specific missing partitions manually</span>
+<span class="kw">ALTER TABLE</span> enbd.transactions <span class="kw">ADD IF NOT EXISTS</span>
+    <span class="kw">PARTITION</span> (transaction_date=<span class="st">'2024-01-14'</span>)
+        <span class="kw">LOCATION</span> <span class="st">'/warehouse/enbd/transactions/transaction_date=2024-01-14'</span>
+    <span class="kw">PARTITION</span> (transaction_date=<span class="st">'2024-01-15'</span>)
+        <span class="kw">LOCATION</span> <span class="st">'/warehouse/enbd/transactions/transaction_date=2024-01-15'</span>;
+
+<span class="cm">-- IF NOT EXISTS prevents error if partition already registered</span></pre>
+        <p><strong>Approach 3 — PySpark programmatic recovery (best for large date ranges).</strong> For one year of daily partitions, I would script the recovery in PySpark rather than writing 365 manual ALTER TABLE statements:</p>
+<pre><span class="kw">from</span> datetime <span class="kw">import</span> date, timedelta
+
+start_date = date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">1</span>)
+end_date   = date(<span class="nm">2024</span>, <span class="nm">12</span>, <span class="nm">31</span>)
+base_path  = <span class="st">"/warehouse/enbd/transactions"</span>
+
+current = start_date
+<span class="kw">while</span> current <= end_date:
+    dt_str   = current.strftime(<span class="st">"%Y-%m-%d"</span>)
+    part_path = <span class="st">f"{base_path}/transaction_date={dt_str}"</span>
+
+    <span class="cm"># Check if physical partition files exist in HDFS</span>
+    <span class="kw">try</span>:
+        files = spark._jvm.org.apache.hadoop.fs.FileSystem \
+            .get(spark._jsc.hadoopConfiguration()) \
+            .listStatus(spark._jvm.org.apache.hadoop.fs.Path(part_path))
+        <span class="kw">if</span> len(files) > <span class="nm">0</span>:
+            spark.sql(<span class="st">f"""
+                ALTER TABLE enbd.transactions
+                ADD IF NOT EXISTS
+                PARTITION (transaction_date='{dt_str}')
+                LOCATION '{part_path}'
+            """</span>)
+            print(<span class="st">f"Registered: {dt_str}"</span>)
+    <span class="kw">except</span>:
+        print(<span class="st">f"No data found for: {dt_str}, skipping"</span>)
+
+    current += timedelta(days=<span class="nm">1</span>)</pre>
+        <div class="bridge">
+          <strong>My Delta Lake equivalent — why this problem doesn't exist there</strong>
+          "In my Azure Databricks / Delta Lake environment, this partition metadata problem doesn't occur because Delta's transaction log is the authoritative source of truth for all file locations — not the Hive Metastore. When a Delta table is queried, Spark reads the transaction log directly from ADLS, so there's no Metastore sync dependency. One of Delta Lake's key advantages over traditional Hive external tables is exactly this: you can never get into a state where files exist but the metadata doesn't know about them."
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3.2 -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet hive">Q-3.2</span>
+        <span class="q-text">For large datasets (e.g., one year of data), how do you recover partitions without full reprocessing?</span>
+      </div>
+      <div class="answer">
+        <p>The key insight here is that partition metadata loss in Hive is a <strong>Metastore problem, not a data problem</strong>. The underlying files in HDFS still exist — you haven't lost any data. You only lost the catalog entries that tell Hive where to find them. So recovery doesn't require touching the data at all.</p>
+        <p>The recovery strategy for a full year of daily partitions is:</p>
+        <p><strong>Step 1 — Confirm the data still exists in HDFS.</strong> Before doing anything, verify the physical directories are still there:</p>
+<pre><span class="cm"># HDFS shell command</span>
+hdfs dfs -ls /warehouse/enbd/transactions/ | head -<span class="nm">20</span>
+<span class="cm"># Expected: 365 directories named transaction_date=2024-01-01 through transaction_date=2024-12-31</span>
+
+<span class="cm"># Count them to confirm all dates present</span>
+hdfs dfs -ls /warehouse/enbd/transactions/ | grep <span class="st">"transaction_date"</span> | wc -l
+<span class="cm"># Expected: 365</span></pre>
+        <p><strong>Step 2 — Use MSCK REPAIR for tables under ~500 partitions.</strong> For one year of daily data, MSCK REPAIR is fast enough and safe:</p>
+<pre>MSCK REPAIR TABLE enbd.transactions;
+<span class="kw">SHOW PARTITIONS</span> enbd.transactions;  <span class="cm">-- should now show 365 entries</span></pre>
+        <p><strong>Step 3 — For larger tables or when you need to verify data integrity post-recovery.</strong> After the partition registration, run a validation query to confirm the recovered data is queryable and row counts are as expected:</p>
+<pre><span class="cm">-- Spot check: compare row count per partition against an audit log</span>
+<span class="kw">SELECT</span>
+    transaction_date,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> row_count
+<span class="kw">FROM</span> enbd.transactions
+<span class="kw">WHERE</span> transaction_date <span class="kw">BETWEEN</span> <span class="st">'2024-01-01'</span> <span class="kw">AND</span> <span class="st">'2024-12-31'</span>
+<span class="kw">GROUP BY</span> transaction_date
+<span class="kw">ORDER BY</span> transaction_date
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) < <span class="nm">1000</span>; <span class="cm">-- Flag suspiciously low-count partitions</span></pre>
+        <p>The critical point to emphasize: <strong>no data reprocessing is needed</strong>. The ETL jobs that wrote the data don't need to be re-run. You're only updating catalog metadata — the data itself was never touched.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — PYSPARK CODING
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="sec-hdr" onclick="togSec(this)">
+    <span class="sec-num pyspark">Section 4</span>
+    <span class="sec-title">PySpark / Data Processing Logic — Live Coding</span>
+    <span class="sec-toggle">▲ collapse</span>
+  </div>
+  <div class="sec-body">
+
+    <!-- Schema + Dataset -->
+    <div class="qgroup">
+      <div class="qline">
+        <span class="q-bullet py">SCHEMA</span>
+        <span class="q-text">Given: customer_id, transaction_id, transaction_date, amount — Find customers with transactions on exactly two distinct days.</span>
+      </div>
+      <div class="answer">
+        <p>Let me walk through this step by step the way I'd approach it in an actual interview — starting with understanding the problem, then the code, then the edge cases.</p>
+
+        <p><strong>First, let me set up the sample data so we can trace through the logic:</strong></p>
+<pre><span class="kw">from</span> pyspark.sql <span class="kw">import</span> SparkSession
+<span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, countDistinct
+<span class="kw">from</span> pyspark.sql.types <span class="kw">import</span> (
+    StructType, StructField, StringType, DateType, DecimalType
+)
+<span class="kw">from</span> decimal <span class="kw">import</span> Decimal
+<span class="kw">from</span> datetime <span class="kw">import</span> date
+
+spark = SparkSession.builder.appName(<span class="st">"ENBD_Q4"</span>).getOrCreate()
+
+<span class="sec-head-comment">## ── Sample Dataset ───────────────────────────────────</span>
+schema = StructType([
+    StructField(<span class="st">"customer_id"</span>,     StringType()),
+    StructField(<span class="st">"transaction_id"</span>,  StringType()),
+    StructField(<span class="st">"transaction_date"</span>, DateType()),
+    StructField(<span class="st">"amount"</span>,           DecimalType(<span class="nm">10</span>, <span class="nm">2</span>))
+])
+
+data = [
+    <span class="cm"># C001: 3 distinct days → should NOT appear in result</span>
+    (<span class="st">"C001"</span>, <span class="st">"T001"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">10</span>), Decimal(<span class="st">"500.00"</span>)),
+    (<span class="st">"C001"</span>, <span class="st">"T002"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">11</span>), Decimal(<span class="st">"300.00"</span>)),
+    (<span class="st">"C001"</span>, <span class="st">"T003"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">12</span>), Decimal(<span class="st">"200.00"</span>)),
+
+    <span class="cm"># C002: exactly 2 distinct days → SHOULD appear</span>
+    (<span class="st">"C002"</span>, <span class="st">"T004"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">10</span>), Decimal(<span class="st">"1000.00"</span>)),
+    (<span class="st">"C002"</span>, <span class="st">"T005"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">10</span>), Decimal(<span class="st">"200.00"</span>)), <span class="cm"># same day as T004</span>
+    (<span class="st">"C002"</span>, <span class="st">"T006"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">15</span>), Decimal(<span class="st">"750.00"</span>)),
+
+    <span class="cm"># C003: 1 distinct day → should NOT appear</span>
+    (<span class="st">"C003"</span>, <span class="st">"T007"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">20</span>), Decimal(<span class="st">"400.00"</span>)),
+    (<span class="st">"C003"</span>, <span class="st">"T008"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">20</span>), Decimal(<span class="st">"600.00"</span>)),
+
+    <span class="cm"># C004: exactly 2 distinct days → SHOULD appear</span>
+    (<span class="st">"C004"</span>, <span class="st">"T009"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">5</span>),  Decimal(<span class="st">"250.00"</span>)),
+    (<span class="st">"C004"</span>, <span class="st">"T010"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">18</span>), Decimal(<span class="st">"800.00"</span>)),
+
+    <span class="cm"># C005: null transaction_date edge case</span>
+    (<span class="st">"C005"</span>, <span class="st">"T011"</span>, <span class="cn">None</span>,              Decimal(<span class="st">"100.00"</span>)),
+    (<span class="st">"C005"</span>, <span class="st">"T012"</span>, date(<span class="nm">2024</span>, <span class="nm">1</span>, <span class="nm">10</span>), Decimal(<span class="st">"200.00"</span>)),
+]
+
+df = spark.createDataFrame(data, schema)
+df.show(truncate=<span class="cn">False</span>)</pre>
+
+        <p><strong>Step 1 — Filter out nulls on transaction_date.</strong> Always handle nulls first. A null date is not a valid transaction day and should not be counted.</p>
+<pre><span class="cm"># Remove records with null transaction_date before counting distinct days</span>
+clean_df = df.filter(col(<span class="st">"transaction_date"</span>).isNotNull())</pre>
+
+        <p><strong>Step 2 — Count distinct transaction days per customer.</strong> Group by <span class="t">customer_id</span> and use <span class="t">countDistinct("transaction_date")</span>. This is the key step — <span class="t">countDistinct</span> counts unique values, so two transactions on the same day count as one.</p>
+<pre><span class="cm"># Count distinct transaction days per customer</span>
+customer_days = (clean_df
+    .groupBy(<span class="st">"customer_id"</span>)
+    .agg(
+        countDistinct(<span class="st">"transaction_date"</span>).alias(<span class="st">"distinct_days"</span>)
+    )
+)
+customer_days.show()
+<span class="cm">
+# Output:
+# +-----------+-------------+
+# |customer_id|distinct_days|
+# +-----------+-------------+
+# |C001       |3            |
+# |C002       |2            |
+# |C003       |1            |
+# |C004       |2            |
+# |C005       |1            |  ← only 1 valid date after null filter
+# +-----------+-------------+</span></pre>
+
+        <p><strong>Step 3 — Filter for exactly 2 distinct days.</strong></p>
+<pre><span class="cm"># Filter for exactly 2 distinct transaction days</span>
+result = customer_days.filter(col(<span class="st">"distinct_days"</span>) == <span class="nm">2</span>)
+result.show()
+<span class="cm">
+# Expected output:
+# +-----------+-------------+
+# |customer_id|distinct_days|
+# +-----------+-------------+
+# |C002       |2            |
+# |C004       |2            |
+# +-----------+-------------+</span></pre>
+
+        <p><strong>Complete solution in one clean pipeline:</strong></p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, countDistinct
+
+result = (df
+    .filter(col(<span class="st">"transaction_date"</span>).isNotNull())    <span class="cm"># 1. Remove null dates</span>
+    .groupBy(<span class="st">"customer_id"</span>)                         <span class="cm"># 2. Group per customer</span>
+    .agg(
+        countDistinct(<span class="st">"transaction_date"</span>)             <span class="cm"># 3. Count distinct days</span>
+            .alias(<span class="st">"distinct_days"</span>)
+    )
+    .filter(col(<span class="st">"distinct_days"</span>) == <span class="nm">2</span>)             <span class="cm"># 4. Keep exactly 2</span>
+)
+
+result.show()
+<span class="cm">
+# +-----------+-------------+
+# |customer_id|distinct_days|
+# +-----------+-------------+
+# |C002       |2            |
+# |C004       |2            |
+# +-----------+-------------+</span></pre>
+
+        <hr class="divider">
+        <p><strong>Follow-up: What if the interviewer also wants the actual two dates returned?</strong></p>
+<pre><span class="kw">from</span> pyspark.sql.functions <span class="kw">import</span> col, countDistinct, collect_set, sort_array
+
+result_with_dates = (df
+    .filter(col(<span class="st">"transaction_date"</span>).isNotNull())
+    .groupBy(<span class="st">"customer_id"</span>)
+    .agg(
+        countDistinct(<span class="st">"transaction_date"</span>).alias(<span class="st">"distinct_days"</span>),
+        sort_array(collect_set(<span class="st">"transaction_date"</span>)).alias(<span class="st">"transaction_dates"</span>)
+    )
+    .filter(col(<span class="st">"distinct_days"</span>) == <span class="nm">2</span>)
+)
+
+result_with_dates.show(truncate=<span class="cn">False</span>)
+<span class="cm">
+# +-----------+-------------+-------------------------------+
+# |customer_id|distinct_days|transaction_dates              |
+# +-----------+-------------+-------------------------------+
+# |C002       |2            |[2024-01-10, 2024-01-15]       |
+# |C004       |2            |[2024-01-05, 2024-01-18]       |
+# +-----------+-------------+-------------------------------+</span></pre>
+
+        <hr class="divider">
+        <p><strong>Spark SQL equivalent — same result, different syntax:</strong></p>
+<pre>df.createOrReplaceTempView(<span class="st">"transactions"</span>)
+
+result_sql = spark.sql(<span class="st">"""
+    SELECT customer_id,
+           COUNT(DISTINCT transaction_date) AS distinct_days
+    FROM   transactions
+    WHERE  transaction_date IS NOT NULL
+    GROUP  BY customer_id
+    HAVING COUNT(DISTINCT transaction_date) = 2
+"""</span>)
+result_sql.show()</pre>
+
+        <div class="success">
+          <strong>Expected Final Output — Summary</strong>
+          From our sample dataset of 5 customers: C001 has 3 distinct days (excluded), C002 has 2 distinct days (included), C003 has 1 distinct day (excluded), C004 has 2 distinct days (included), C005 has 1 valid day after null filter (excluded). Result: C002 and C004.
+        </div>
+
+        <div class="note">
+          <strong>Key points to mention in the interview</strong>
+          1. countDistinct handles the same-day multiple transaction case automatically — two records on 2024-01-10 count as one distinct day. 2. The null filter must come before the groupBy, not after — a null date could inflate or deflate the distinct count depending on how your Spark version handles it. 3. The HAVING clause in SQL and the .filter() after .agg() in PySpark are semantically identical — both filter on the aggregated result, not the original rows. 4. Use collect_set with sort_array if the interviewer asks to return the actual dates — collect_set returns unique values as an array, sort_array makes the output deterministic and readable.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- footer -->
+<div style="text-align:center; padding:2rem 0 0; font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--muted);">
+  Sudheer Kumar M. · ENBD Technical Interview Prep · Section 2 of Questionnaire · April 2026
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+function togSec(hdr) {
+  const body    = hdr.nextElementSibling;
+  const lbl     = hdr.querySelector('.sec-toggle');
+  const isOpen  = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (lbl) lbl.textContent = isOpen ? '▼ expand' : '▲ collapse';
+}
+// All open on load
+document.querySelectorAll('.sec-body').forEach(b => b.style.display = 'block');
+</script>
+</body>
+</html>

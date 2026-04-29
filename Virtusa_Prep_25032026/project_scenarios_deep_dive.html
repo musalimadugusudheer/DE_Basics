@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a1a; font-size: 13px; line-height: 1.6; }
+
+/* Top nav - projects */
+.proj-nav { background: #0f172a; padding: 10px 16px; display: flex; gap: 6px; flex-wrap: wrap; position: sticky; top: 0; z-index: 200; }
+.proj-btn { font-size: 12px; padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: rgba(255,255,255,0.6); cursor: pointer; white-space: nowrap; }
+.proj-btn.active { color: #fff; font-weight: 600; }
+.proj-btn.p1.active { background: #0369a1; border-color: #0369a1; }
+.proj-btn.p2.active { background: #7c3aed; border-color: #7c3aed; }
+.proj-btn.p3.active { background: #b45309; border-color: #b45309; }
+
+/* Sub nav - scenarios */
+.sub-nav { background: #1e293b; padding: 8px 16px; display: flex; gap: 5px; flex-wrap: wrap; position: sticky; top: 45px; z-index: 190; }
+.sub-btn { font-size: 11px; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: rgba(255,255,255,0.5); cursor: pointer; white-space: nowrap; }
+.sub-btn.active { background: rgba(255,255,255,0.15); color: #fff; }
+
+.project { display: none; }
+.project.active { display: block; }
+.scenario { display: none; padding: 16px; max-width: 960px; margin: 0 auto; }
+.scenario.active { display: block; }
+
+h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
+h3 { font-size: 14px; font-weight: 600; color: #1e293b; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 1px solid #e2e8f0; }
+h4 { font-size: 12px; font-weight: 600; color: #475569; margin: 10px 0 5px; text-transform: uppercase; letter-spacing: .04em; }
+
+.proj-header { padding: 14px 16px; margin-bottom: 0; }
+.proj-meta { font-size: 12px; color: #94a3b8; margin-top: 3px; }
+
+.problem-box { background: #fff1f2; border: 1px solid #fecdd3; border-left: 4px solid #e11d48; border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 10px; }
+.problem-title { font-size: 12px; font-weight: 700; color: #9f1239; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.problem-body { font-size: 12px; color: #7f1d1d; line-height: 1.7; }
+
+.arch-box { background: #f0f9ff; border: 1px solid #bae6fd; border-left: 4px solid #0284c7; border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 10px; }
+.arch-title { font-size: 12px; font-weight: 700; color: #075985; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.arch-body { font-size: 12px; color: #0c4a6e; line-height: 1.7; }
+
+.solution-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 10px; }
+.solution-title { font-size: 12px; font-weight: 700; color: #14532d; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.solution-body { font-size: 12px; color: #14532d; line-height: 1.7; }
+
+.interview-box { background: #faf5ff; border: 1px solid #ddd6fe; border-left: 4px solid #7c3aed; border-radius: 0 8px 8px 0; padding: 12px 14px; margin-bottom: 10px; }
+.interview-title { font-size: 12px; font-weight: 700; color: #4c1d95; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .04em; }
+.interview-body { font-size: 12px; color: #3b0764; line-height: 1.8; }
+.interview-body b { color: #2e1065; }
+
+.code-wrap { background: #0f172a; border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+.code-label { background: #1e293b; padding: 6px 14px; font-size: 11px; color: #94a3b8; font-family: monospace; border-bottom: 1px solid #334155; }
+.code-block { padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.8; color: #e2e8f0; overflow-x: auto; white-space: pre; }
+.kw { color: #7dd3fc; }
+.fn { color: #86efac; }
+.str { color: #fde68a; }
+.cm { color: #64748b; font-style: italic; }
+.num { color: #f9a8d4; }
+.cls { color: #c4b5fd; }
+
+.step { display: flex; gap: 10px; margin-bottom: 10px; }
+.step-num { width: 22px; height: 22px; min-width: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.sn-blue { background: #dbeafe; color: #1d4ed8; }
+.sn-green { background: #dcfce7; color: #15803d; }
+.sn-red { background: #fee2e2; color: #b91c1c; }
+.step-body { font-size: 12px; color: #374151; line-height: 1.7; }
+.step-body b { color: #111827; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.card { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; }
+.card-title { font-size: 12px; font-weight: 600; color: #1e293b; margin-bottom: 5px; }
+.card-body { font-size: 12px; color: #475569; line-height: 1.6; }
+
+.badge { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 600; margin-left: 4px; vertical-align: middle; }
+.b-red { background: #fee2e2; color: #b91c1c; }
+.b-blue { background: #dbeafe; color: #1d4ed8; }
+.b-green { background: #dcfce7; color: #15803d; }
+.b-amber { background: #fef3c7; color: #b45309; }
+.b-purple { background: #ede9fe; color: #6d28d9; }
+
+.outcome { background: #fff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center; }
+.outcome-num { font-size: 22px; font-weight: 700; color: #0f172a; white-space: nowrap; }
+.outcome-desc { font-size: 12px; color: #475569; line-height: 1.5; }
+
+.divider { border: none; border-top: 1px solid #e2e8f0; margin: 14px 0; }
+code { font-family: 'Courier New', monospace; background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #7c3aed; }
+</style>
+</head>
+<body>
+
+<!-- PROJECT NAV -->
+<div class="proj-nav">
+  <button class="proj-btn p1 active" onclick="showProj('proj1', this)">Kahramaa — Qatar</button>
+  <button class="proj-btn p2" onclick="showProj('proj2', this)">Kyndryl — NAB Australia</button>
+  <button class="proj-btn p3" onclick="showProj('proj3', this)">Empower Retirement — JPMC</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- PROJECT 1: KAHRAMAA -->
+<!-- ============================================================ -->
+<div id="proj1" class="project active">
+  <div class="proj-header" style="background:linear-gradient(135deg,#0369a1,#0284c7);color:#fff;padding:14px 16px;">
+    <h2 style="color:#fff;">Kahramaa — Qatar General Electricity & Water</h2>
+    <div class="proj-meta">Nov 2023 – Present &nbsp;|&nbsp; Data & Business Analyst – Azure DevOps &nbsp;|&nbsp; Data Transformation & Self-service Digitization</div>
+  </div>
+
+  <div class="sub-nav" id="sub1">
+    <button class="sub-btn active" onclick="showScenario('proj1','s1_1',this)">S1: Heterogeneous ingestion</button>
+    <button class="sub-btn" onclick="showScenario('proj1','s1_2',this)">S2: IoT real-time streaming</button>
+    <button class="sub-btn" onclick="showScenario('proj1','s1_3',this)">S3: Oracle migration</button>
+    <button class="sub-btn" onclick="showScenario('proj1','s1_4',this)">S4: Data governance & PII</button>
+    <button class="sub-btn" onclick="showScenario('proj1','s1_5',this)">S5: Gold layer performance</button>
+    <button class="sub-btn" onclick="showScenario('proj1','s1_6',this)">S6: Self-service analytics</button>
+  </div>
+
+  <!-- SCENARIO 1.1 -->
+  <div id="s1_1" class="scenario active">
+    <h3>Scenario 1 — Heterogeneous multi-source ingestion architecture</h3>
+
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">
+        Kahramaa operated with data scattered across Oracle ERP (structured, batch), MySQL operational databases (structured, near-real-time), IoT sensor devices across the electricity and water grid (semi-structured JSON, high-frequency streaming), and REST APIs from third-party systems. Each had completely different latency profiles, formats, reliability characteristics, and ownership. There was no unified data platform — each system was siloed, engineers ran manual exports, and business teams waited days for reports. There was no single source of truth for any operational metric.
+      </div>
+    </div>
+
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision</div>
+      <div class="arch-body">
+        Designed a unified Lakehouse on ADLS Gen2 with a strict zone separation strategy. The key architectural decision was to <b>separate ingestion patterns by source latency profile</b> rather than building one generic pipeline for everything. Oracle ERP → ADF batch (daily/hourly schedule). MySQL → ADF with change watermark (15-min incremental). IoT sensors → Event Hubs + Structured Streaming (sub-minute latency). REST APIs → ADF HTTP connector with pagination (scheduled + event-triggered). Each path lands into the same Bronze zone but through optimised connectors. This avoids the anti-pattern of forcing low-latency IoT data through a batch pipeline, or wasting streaming resources on slowly changing ERP data.
+      </div>
+    </div>
+
+    <div class="solution-box">
+      <div class="solution-title">Technique: High-watermark incremental ingestion for MySQL</div>
+      <div class="solution-body">
+        Instead of full table dump on every run, track the last processed timestamp in a control table. Each run extracts only records where updated_at > last_watermark. Atomic watermark update only after successful load — guarantees no data loss if pipeline fails mid-run.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">PySpark — High-watermark incremental ingestion with control table (Kahramaa MySQL pattern)</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> SparkSession
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+<span class="kw">import</span> datetime
+
+spark = SparkSession.builder.appName(<span class="str">"KahramaaMySQLIngestion"</span>).getOrCreate()
+
+<span class="cm"># Step 1: Read the last successful watermark from control table</span>
+control_df = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/bronze/control/pipeline_watermarks"</span>)
+last_watermark = (
+    control_df
+    .filter(F.col(<span class="str">"source_table"</span>) == <span class="str">"operational_assets"</span>)
+    .filter(F.col(<span class="str">"pipeline_status"</span>) == <span class="str">"SUCCESS"</span>)
+    .orderBy(F.col(<span class="str">"run_timestamp"</span>).desc())
+    .select(<span class="str">"last_processed_ts"</span>)
+    .first()[<span class="str">"last_processed_ts"</span>]
+)
+<span class="cm"># Default to 7 days ago on first run</span>
+<span class="kw">if</span> last_watermark <span class="kw">is</span> <span class="kw">None</span>:
+    last_watermark = datetime.datetime.now() - datetime.timedelta(days=<span class="num">7</span>)
+
+print(f<span class="str">"Extracting from MySQL since: {last_watermark}"</span>)
+
+<span class="cm"># Step 2: Extract only changed records from MySQL using JDBC</span>
+jdbc_url = <span class="str">"jdbc:mysql://kahramaa-mysql.private:3306/operations"</span>
+source_df = (
+    spark.read.format(<span class="str">"jdbc"</span>)
+    .option(<span class="str">"url"</span>, jdbc_url)
+    .option(<span class="str">"dbtable"</span>, <span class="str">f"""(
+        SELECT asset_id, asset_type, location_code, operational_status,
+               last_reading_value, updated_at,
+               MD5(CONCAT(asset_id, operational_status, last_reading_value)) AS row_hash
+        FROM operational_assets
+        WHERE updated_at > '{last_watermark}'
+    ) AS incremental_extract"""</span>)
+    .option(<span class="str">"user"</span>, dbutils.secrets.get(<span class="str">"kahramaa-kv"</span>, <span class="str">"mysql-user"</span>))
+    .option(<span class="str">"password"</span>, dbutils.secrets.get(<span class="str">"kahramaa-kv"</span>, <span class="str">"mysql-password"</span>))
+    .option(<span class="str">"numPartitions"</span>, <span class="num">8</span>)
+    .option(<span class="str">"partitionColumn"</span>, <span class="str">"asset_id"</span>)
+    .option(<span class="str">"lowerBound"</span>, <span class="num">1</span>)
+    .option(<span class="str">"upperBound"</span>, <span class="num">9999999</span>)
+    .load()
+)
+
+<span class="cm"># Step 3: Add ingestion metadata before writing to Bronze</span>
+bronze_df = source_df.withColumn(<span class="str">"_ingestion_ts"</span>, F.current_timestamp()) \
+                     .withColumn(<span class="str">"_source_system"</span>, F.lit(<span class="str">"mysql_operations"</span>)) \
+                     .withColumn(<span class="str">"_batch_id"</span>, F.lit(datetime.datetime.now().strftime(<span class="str">"%Y%m%d%H%M"</span>)))
+
+<span class="cm"># Step 4: Write to Bronze (append - never overwrite raw data)</span>
+current_max_ts = source_df.agg(F.max(<span class="str">"updated_at"</span>)).first()[<span class="num">0</span>]
+<span class="kw">if</span> current_max_ts <span class="kw">is not None</span>:
+    bronze_df.write.format(<span class="str">"delta"</span>) \
+        .mode(<span class="str">"append"</span>) \
+        .partitionBy(<span class="str">"_batch_id"</span>) \
+        .save(<span class="str">"/mnt/bronze/operational_assets"</span>)
+
+    <span class="cm"># Step 5: Update watermark ONLY after successful write (atomically)</span>
+    watermark_update = spark.createDataFrame([{
+        <span class="str">"source_table"</span>: <span class="str">"operational_assets"</span>,
+        <span class="str">"last_processed_ts"</span>: current_max_ts,
+        <span class="str">"run_timestamp"</span>: datetime.datetime.now(),
+        <span class="str">"records_loaded"</span>: bronze_df.count(),
+        <span class="str">"pipeline_status"</span>: <span class="str">"SUCCESS"</span>
+    }])
+    watermark_update.write.format(<span class="str">"delta"</span>).mode(<span class="str">"append"</span>) \
+        .save(<span class="str">"/mnt/bronze/control/pipeline_watermarks"</span>)
+    print(f<span class="str">"Watermark advanced to: {current_max_ts}"</span>)
+<span class="kw">else</span>:
+    print(<span class="str">"No new records since last watermark — pipeline complete"</span>)</div>
+    </div>
+
+    <div class="interview-box">
+      <div class="interview-title">How to say this in the interview</div>
+      <div class="interview-body">
+        "The first architectural challenge at Kahramaa was that we had four completely different source systems with incompatible latency profiles. The mistake most teams make is building one generic pipeline for everything — typically a daily batch job. That would mean IoT sensor data, which needed sub-minute freshness for operational dashboards, sitting in an overnight queue next to ERP data that only updates weekly.<br><br>
+        <b>My architectural decision was to separate ingestion patterns by source latency, not by source type.</b> I classified sources into three tiers: real-time (IoT → Event Hubs streaming), near-real-time (MySQL → incremental JDBC with high-watermark), and batch (Oracle ERP → ADF scheduled). Each tier had its own ingestion cluster, its own SLA, and its own alerting threshold. All paths converged in the same Bronze zone on ADLS Gen2 — so downstream Silver processing was unified regardless of how the data arrived.<br><br>
+        The watermark pattern I implemented for MySQL was critical for reliability — the watermark was only advanced after a confirmed successful write to Delta Lake. If the pipeline failed mid-run, the next run would re-extract from the last confirmed watermark. No data loss, no duplication."
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 1.2 -->
+  <div id="s1_2" class="scenario">
+    <h3>Scenario 2 — IoT real-time streaming with late-arriving device data</h3>
+
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">
+        Kahramaa's electricity grid and water network had thousands of IoT sensors reporting readings every 30 seconds. Many sensors operated in remote areas with intermittent connectivity — a sensor could go offline for hours and then flood the pipeline with buffered readings when it reconnected. The original approach was to ingest these via hourly ADF batch jobs, which meant: (1) a sensor that went offline at 10:00 and reconnected at 14:00 would send 4 hours of readings at 14:00, all of which would be stamped with ingestion time 14:00 — completely destroying the time-series accuracy of the operational dashboard. (2) Any anomaly detection based on reading timestamp would fail because the timestamps were wrong.
+      </div>
+    </div>
+
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Event-time streaming with two-path late arrival handling</div>
+      <div class="arch-body">
+        Replaced ADF batch with Event Hubs + Databricks Structured Streaming. Key decision: process on <b>event_time</b> (the timestamp the sensor took the reading) not <b>processing_time</b> (when it arrived at the pipeline). Implemented a 90-minute watermark based on measurement of P99 offline duration across the sensor fleet. Events arriving within 90 minutes of event_time are included in the correct window automatically. Events arriving later than 90 minutes route to a late-arrival staging table, corrected in a nightly MERGE job using Delta time travel for audit.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">PySpark Structured Streaming — IoT event-time processing with watermark + late arrival routing</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> pyspark.sql.types <span class="kw">import</span> StructType, StructField, StringType, DoubleType, TimestampType
+
+<span class="cm"># IoT payload schema — always define explicitly, never infer in streaming</span>
+iot_schema = StructType([
+    StructField(<span class="str">"sensor_id"</span>,       StringType(),    <span class="kw">False</span>),
+    StructField(<span class="str">"asset_id"</span>,         StringType(),    <span class="kw">False</span>),
+    StructField(<span class="str">"reading_value"</span>,     DoubleType(),    <span class="kw">True</span>),
+    StructField(<span class="str">"unit"</span>,              StringType(),    <span class="kw">True</span>),
+    StructField(<span class="str">"event_time"</span>,        TimestampType(), <span class="kw">False</span>),  <span class="cm"># sensor reading timestamp</span>
+    StructField(<span class="str">"battery_level"</span>,     DoubleType(),    <span class="kw">True</span>),
+    StructField(<span class="str">"transmission_type"</span>, StringType(),    <span class="kw">True</span>)   <span class="cm"># "live" or "buffered"</span>
+])
+
+<span class="cm"># Read from Event Hubs</span>
+raw_stream = (
+    spark.readStream.format(<span class="str">"eventhubs"</span>)
+    .options(**{
+        <span class="str">"eventhubs.connectionString"</span>: dbutils.secrets.get(<span class="str">"kahramaa-kv"</span>, <span class="str">"eventhub-conn"</span>),
+        <span class="str">"eventhubs.consumerGroup"</span>: <span class="str">"iot-silver-consumer"</span>,
+        <span class="str">"eventhubs.maxEventsPerTrigger"</span>: <span class="str">"50000"</span>  <span class="cm"># backpressure control</span>
+    })
+    .load()
+    .select(F.from_json(F.col(<span class="str">"body"</span>).cast(<span class="str">"string"</span>), iot_schema).alias(<span class="str">"data"</span>), <span class="str">"enqueuedTime"</span>)
+    .select(<span class="str">"data.*"</span>, <span class="str">"enqueuedTime"</span>)
+)
+
+<span class="cm"># Classify late arrivals BEFORE watermark logic</span>
+classified_stream = raw_stream.withColumn(
+    <span class="str">"arrival_lag_minutes"</span>,
+    (F.unix_timestamp(<span class="str">"enqueuedTime"</span>) - F.unix_timestamp(<span class="str">"event_time"</span>)) / <span class="num">60</span>
+).withColumn(
+    <span class="str">"arrival_class"</span>,
+    F.when(F.col(<span class="str">"arrival_lag_minutes"</span>) > <span class="num">90</span>, <span class="str">"LATE"</span>)
+     .when(F.col(<span class="str">"arrival_lag_minutes"</span>) < <span class="num">0</span>,  <span class="str">"FUTURE"</span>)  <span class="cm"># clock skew</span>
+     .otherwise(<span class="str">"ON_TIME"</span>)
+)
+
+<span class="cm"># PATH 1: On-time events — windowed aggregation on event_time</span>
+ontime_stream = classified_stream.filter(F.col(<span class="str">"arrival_class"</span>) == <span class="str">"ON_TIME"</span>)
+
+windowed_readings = (
+    ontime_stream
+    .withWatermark(<span class="str">"event_time"</span>, <span class="str">"90 minutes"</span>)
+    .groupBy(
+        F.window(<span class="str">"event_time"</span>, <span class="str">"5 minutes"</span>),
+        <span class="str">"sensor_id"</span>,
+        <span class="str">"asset_id"</span>
+    )
+    .agg(
+        F.avg(<span class="str">"reading_value"</span>).alias(<span class="str">"avg_reading"</span>),
+        F.min(<span class="str">"reading_value"</span>).alias(<span class="str">"min_reading"</span>),
+        F.max(<span class="str">"reading_value"</span>).alias(<span class="str">"max_reading"</span>),
+        F.count(<span class="str">"*"</span>).alias(<span class="str">"reading_count"</span>),
+        F.first(<span class="str">"unit"</span>).alias(<span class="str">"unit"</span>)
+    )
+    .withColumn(<span class="str">"window_start"</span>, F.col(<span class="str">"window.start"</span>))
+    .withColumn(<span class="str">"window_end"</span>,   F.col(<span class="str">"window.end"</span>))
+    .drop(<span class="str">"window"</span>)
+)
+
+<span class="cm"># Write windowed aggregates to Silver — append mode for time-series</span>
+q1 = (
+    windowed_readings.writeStream
+    .format(<span class="str">"delta"</span>)
+    .outputMode(<span class="str">"append"</span>)
+    .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/checkpoints/iot_windowed"</span>)
+    .partitionBy(<span class="str">"window_start"</span>)
+    .trigger(processingTime=<span class="str">"30 seconds"</span>)
+    .start(<span class="str">"/mnt/silver/iot_readings_windowed"</span>)
+)
+
+<span class="cm"># PATH 2: Late events — route to staging for nightly correction</span>
+late_stream = classified_stream.filter(F.col(<span class="str">"arrival_class"</span>) == <span class="str">"LATE"</span>)
+
+q2 = (
+    late_stream.writeStream
+    .format(<span class="str">"delta"</span>)
+    .outputMode(<span class="str">"append"</span>)
+    .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/checkpoints/iot_late_staging"</span>)
+    .trigger(processingTime=<span class="str">"30 seconds"</span>)
+    .start(<span class="str">"/mnt/silver/iot_late_arrival_staging"</span>)
+)
+
+spark.streams.awaitAnyTermination()</div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Nightly late arrival correction job (Delta MERGE + time travel audit)</div>
+      <div class="code-block"><span class="cm"># Nightly job: merge late IoT events into historical windowed aggregates</span>
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+<span class="kw">import</span> datetime
+
+yesterday = (datetime.date.today() - datetime.timedelta(days=<span class="num">1</span>)).isoformat()
+
+<span class="cm"># Load late events that belong to yesterday's windows</span>
+late_events = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/silver/iot_late_arrival_staging"</span>) \
+    .filter(F.to_date(F.col(<span class="str">"event_time"</span>)) == yesterday)
+
+<span class="cm"># Re-aggregate the late events into 5-min windows</span>
+late_agg = (
+    late_events
+    .groupBy(
+        F.window(<span class="str">"event_time"</span>, <span class="str">"5 minutes"</span>),
+        <span class="str">"sensor_id"</span>, <span class="str">"asset_id"</span>
+    )
+    .agg(
+        F.avg(<span class="str">"reading_value"</span>).alias(<span class="str">"late_avg"</span>),
+        F.count(<span class="str">"*"</span>).alias(<span class="str">"late_count"</span>)
+    )
+    .withColumn(<span class="str">"window_start"</span>, F.col(<span class="str">"window.start"</span>))
+    .drop(<span class="str">"window"</span>)
+)
+
+<span class="cm"># MERGE into Silver — update existing windows to include late data</span>
+silver_table = DeltaTable.forPath(spark, <span class="str">"/mnt/silver/iot_readings_windowed"</span>)
+
+silver_table.alias(<span class="str">"target"</span>).merge(
+    late_agg.alias(<span class="str">"source"</span>),
+    <span class="str">"""target.sensor_id   = source.sensor_id
+       AND target.asset_id    = source.asset_id
+       AND target.window_start = source.window_start"""</span>
+).whenMatchedUpdate(set={
+    <span class="cm"># Weighted average combining original and late readings</span>
+    <span class="str">"avg_reading"</span>: <span class="str">"""(
+        (target.avg_reading * target.reading_count) +
+        (source.late_avg    * source.late_count)
+    ) / (target.reading_count + source.late_count)"""</span>,
+    <span class="str">"reading_count"</span>: <span class="str">"target.reading_count + source.late_count"</span>,
+    <span class="str">"_late_corrected"</span>: <span class="str">"true"</span>,
+    <span class="str">"_correction_ts"</span>: <span class="str">"current_timestamp()"</span>
+}).whenNotMatchedInsert(values={
+    <span class="cm"># Window existed only in late data — insert fresh</span>
+    <span class="str">"sensor_id"</span>:      <span class="str">"source.sensor_id"</span>,
+    <span class="str">"asset_id"</span>:       <span class="str">"source.asset_id"</span>,
+    <span class="str">"window_start"</span>:   <span class="str">"source.window_start"</span>,
+    <span class="str">"avg_reading"</span>:    <span class="str">"source.late_avg"</span>,
+    <span class="str">"reading_count"</span>:  <span class="str">"source.late_count"</span>,
+    <span class="str">"_late_corrected"</span>: <span class="str">"true"</span>
+}).execute()
+
+print(f<span class="str">"Late arrival correction complete for {yesterday}"</span>)
+<span class="cm"># Delta time travel preserves pre-correction state:
+# SELECT * FROM delta.`/mnt/silver/iot_readings_windowed` TIMESTAMP AS OF '2025-03-25 01:59:00'</span></div>
+    </div>
+
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">
+        "A key architectural challenge at Kahramaa was IoT sensors in remote areas of the grid going offline and reconnecting with batches of buffered readings. The original ADF batch approach stamped everything with ingestion time — destroying time-series accuracy.<br><br>
+        <b>My solution was a two-path event-time streaming architecture.</b> I moved to Event Hubs + Databricks Structured Streaming, processing on sensor event_time not pipeline processing_time. I measured the P99 offline duration across the sensor fleet — it was 72 minutes — and set a 90-minute watermark as the primary path. 99% of late events were handled automatically by the watermark.<br><br>
+        For the remaining 1% arriving after 90 minutes — usually sensors in truly remote locations — I classified them at ingestion and routed to a late-arrival staging table. A nightly correction job ran a weighted-average MERGE back into the historical windowed aggregates using Delta Lake. Critically, Delta time travel preserved the pre-correction state — so if the correction itself had an error, we could roll back and the audit trail was intact."
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 1.3 -->
+  <div id="s1_3" class="scenario">
+    <h3>Scenario 3 — Oracle to Azure migration with zero downtime</h3>
+
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">
+        Kahramaa's core operational data lived in Oracle databases running on-premise. The migration to Azure had to be done with zero downtime — operations could not stop for a maintenance window. Additionally, the Oracle schemas were legacy with poor documentation, had circular foreign key dependencies, and some tables had 10+ years of data (hundreds of millions of rows). A naive lift-and-shift would replicate the same poor data model into Azure — missing the opportunity to redesign for modern analytics.
+      </div>
+    </div>
+
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Lift-and-extend with parallel run validation</div>
+      <div class="arch-body">
+        Three-phase migration: (1) Shadow phase — ADF Integration Runtime replicates Oracle to Bronze in Azure while Oracle remains the system of record; (2) Parallel run — both Oracle and Azure Gold layer are live, business users validate Azure numbers match Oracle; (3) Cutover — Oracle set to read-only, Azure becomes system of record. Key design: Oracle schemas were NOT replicated as-is into Azure. Bronze preserved the raw Oracle structure (lift), Silver cleaned and conformed it, Gold redesigned into a star schema (extend). This separated the migration risk from the redesign risk.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Oracle to Delta Lake migration with schema profiling + SCD2 transformation</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> pyspark.sql.window <span class="kw">import</span> Window
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+
+<span class="cm"># ── PHASE 1: Extract from Oracle with parallel JDBC partitioning ──────────────</span>
+oracle_url = <span class="str">"jdbc:oracle:thin:@//kahramaa-oracle.private:1521/OPER"</span>
+
+oracle_df = (
+    spark.read.format(<span class="str">"jdbc"</span>)
+    .option(<span class="str">"url"</span>, oracle_url)
+    .option(<span class="str">"dbtable"</span>, <span class="str">"OPERATIONS.ASSET_MASTER"</span>)
+    .option(<span class="str">"user"</span>,     dbutils.secrets.get(<span class="str">"kahramaa-kv"</span>, <span class="str">"oracle-user"</span>))
+    .option(<span class="str">"password"</span>, dbutils.secrets.get(<span class="str">"kahramaa-kv"</span>, <span class="str">"oracle-pass"</span>))
+    .option(<span class="str">"driver"</span>,   <span class="str">"oracle.jdbc.driver.OracleDriver"</span>)
+    .option(<span class="str">"numPartitions"</span>, <span class="num">16</span>)          <span class="cm"># parallel read threads</span>
+    .option(<span class="str">"partitionColumn"</span>, <span class="str">"ASSET_ID"</span>)
+    .option(<span class="str">"lowerBound"</span>, <span class="num">1</span>)
+    .option(<span class="str">"upperBound"</span>, <span class="num">10000000</span>)
+    .option(<span class="str">"fetchsize"</span>,  <span class="num">10000</span>)          <span class="cm"># fetch 10k rows per JDBC batch</span>
+    .load()
+)
+
+<span class="cm"># ── PHASE 2: Data profiling before writing Bronze ─────────────────────────────</span>
+profile = oracle_df.select([
+    F.count(<span class="str">"*"</span>).alias(<span class="str">"total_rows"</span>),
+    F.countDistinct(<span class="str">"ASSET_ID"</span>).alias(<span class="str">"distinct_assets"</span>),
+    F.sum(F.when(F.col(<span class="str">"ASSET_STATUS"</span>).isNull(), <span class="num">1</span>).otherwise(<span class="num">0</span>)).alias(<span class="str">"null_status_count"</span>),
+    F.min(<span class="str">"INSTALL_DATE"</span>).alias(<span class="str">"earliest_install"</span>),
+    F.max(<span class="str">"LAST_MODIFIED"</span>).alias(<span class="str">"latest_modified"</span>)
+])
+profile.show()
+
+<span class="cm"># ── PHASE 3: Write to Bronze preserving Oracle structure exactly ──────────────</span>
+bronze_df = oracle_df \
+    .withColumn(<span class="str">"_src_system"</span>,  F.lit(<span class="str">"oracle_operations"</span>)) \
+    .withColumn(<span class="str">"_extract_ts"</span>,  F.current_timestamp()) \
+    .withColumn(<span class="str">"_extract_date"</span>, F.current_date())
+
+bronze_df.write.format(<span class="str">"delta"</span>) \
+    .mode(<span class="str">"overwrite"</span>) \
+    .option(<span class="str">"overwriteSchema"</span>, <span class="str">"true"</span>) \
+    .partitionBy(<span class="str">"_extract_date"</span>) \
+    .save(<span class="str">"/mnt/bronze/oracle/asset_master"</span>)
+
+<span class="cm"># ── PHASE 4: Silver transformation — clean, conform, add SCD2 keys ───────────</span>
+silver_input = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/bronze/oracle/asset_master"</span>) \
+    .filter(F.col(<span class="str">"_extract_date"</span>) == F.current_date())
+
+<span class="cm"># Rename Oracle columns to business-friendly names, cast types, clean nulls</span>
+silver_df = silver_input.select(
+    F.col(<span class="str">"ASSET_ID"</span>).alias(<span class="str">"asset_id"</span>),
+    F.col(<span class="str">"ASSET_TYPE_CD"</span>).alias(<span class="str">"asset_type"</span>),
+    F.col(<span class="str">"LOCATION_CODE"</span>).alias(<span class="str">"location_code"</span>),
+    F.upper(F.trim(F.col(<span class="str">"ASSET_STATUS"</span>))).alias(<span class="str">"asset_status"</span>),
+    F.to_date(F.col(<span class="str">"INSTALL_DATE"</span>), <span class="str">"DD-MON-YYYY"</span>).alias(<span class="str">"install_date"</span>),
+    F.col(<span class="str">"LAST_MODIFIED"</span>).alias(<span class="str">"source_updated_at"</span>)
+).withColumn(
+    <span class="str">"row_hash"</span>,
+    F.md5(F.concat_ws(<span class="str">"|"</span>, <span class="str">"asset_type"</span>, <span class="str">"location_code"</span>, <span class="str">"asset_status"</span>))
+)
+
+<span class="cm"># SCD Type 2 MERGE into Silver dimension</span>
+dim_table = DeltaTable.forPath(spark, <span class="str">"/mnt/silver/dim_asset"</span>)
+
+dim_table.alias(<span class="str">"tgt"</span>).merge(
+    silver_df.alias(<span class="str">"src"</span>),
+    <span class="str">"tgt.asset_id = src.asset_id AND tgt.is_current = true"</span>
+).whenMatchedUpdate(
+    condition=<span class="str">"tgt.row_hash != src.row_hash"</span>,   <span class="cm"># only update if something changed</span>
+    set={
+        <span class="str">"is_current"</span>:    <span class="str">"false"</span>,
+        <span class="str">"effective_end"</span>: <span class="str">"current_timestamp()"</span>
+    }
+).whenNotMatchedInsert(values={
+    <span class="str">"asset_surr_key"</span>: <span class="str">"monotonically_increasing_id()"</span>,
+    <span class="str">"asset_id"</span>:       <span class="str">"src.asset_id"</span>,
+    <span class="str">"asset_type"</span>:     <span class="str">"src.asset_type"</span>,
+    <span class="str">"location_code"</span>:  <span class="str">"src.location_code"</span>,
+    <span class="str">"asset_status"</span>:   <span class="str">"src.asset_status"</span>,
+    <span class="str">"row_hash"</span>:       <span class="str">"src.row_hash"</span>,
+    <span class="str">"effective_start"</span>: <span class="str">"current_timestamp()"</span>,
+    <span class="str">"effective_end"</span>:  <span class="str">"'9999-12-31'"</span>,
+    <span class="str">"is_current"</span>:     <span class="str">"true"</span>
+}).execute()</div>
+    </div>
+
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">
+        "The Oracle migration at Kahramaa had two constraints that ruled out a simple lift-and-shift: zero downtime requirement, and the Oracle schema was 10+ years of accumulated technical debt that we didn't want to replicate into Azure.<br><br>
+        <b>I designed a lift-and-extend migration with three phases.</b> In the shadow phase, ADF Integration Runtime ran alongside Oracle — replicating every change to Bronze in Azure while Oracle remained the system of record. In the parallel run phase, both systems were live and business users validated that Azure Gold layer numbers matched Oracle exactly. Once parity was confirmed over a 2-week validation window, we cut over — Oracle went read-only, Azure became the source of truth.<br><br>
+        The 'extend' part was the Silver transformation — rather than preserving Oracle's messy column names, date formats, and circular dependencies, I redesigned the data model into clean dimension and fact tables with SCD2 tracking. The MERGE was hash-based — I computed an MD5 of the business-critical columns, and only triggered an SCD2 new-row insertion when the hash changed. This meant Oracle records that hadn't changed in years didn't generate unnecessary new rows in the dimension table."
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 1.4 -->
+  <div id="s1_4" class="scenario">
+    <h3>Scenario 4 — Data governance, RBAC & PII compliance framework</h3>
+
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">
+        Kahramaa's data included customer personal information — names, national IDs, addresses, consumption data — all regulated under Qatar's data protection regulations. The original setup had no access controls — any engineer with ADLS access could read any data. There was no data classification, no audit trail of who accessed what, and no lineage showing where customer PII flowed. A compliance audit was approaching and the organisation had no defensible position.
+      </div>
+    </div>
+
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Four-pillar governance framework</div>
+      <div class="arch-body">
+        Implemented a governance framework across four dimensions simultaneously: (1) <b>Classification</b> — automated PII tag detection and column-level tagging in Unity Catalog; (2) <b>Access control</b> — Unity Catalog RBAC with four personas (data_engineer, data_analyst, business_user, compliance_officer), each with different privilege levels per zone; (3) <b>Dynamic masking</b> — sensitive columns auto-masked for non-privileged roles — analysts see masked national_id, compliance officers see full values; (4) <b>Lineage + audit</b> — Unity Catalog system tables + Azure Monitor for complete data access audit trail.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">SQL — Unity Catalog RBAC + dynamic masking setup (Kahramaa governance framework)</div>
+      <div class="code-block"><span class="cm">-- ── 1. Catalog and schema structure reflecting zone isolation ────────────────</span>
+<span class="kw">CREATE CATALOG IF NOT EXISTS</span> kahramaa_prod;
+<span class="kw">CREATE SCHEMA IF NOT EXISTS</span> kahramaa_prod.bronze;
+<span class="kw">CREATE SCHEMA IF NOT EXISTS</span> kahramaa_prod.silver;
+<span class="kw">CREATE SCHEMA IF NOT EXISTS</span> kahramaa_prod.gold;
+<span class="kw">CREATE SCHEMA IF NOT EXISTS</span> kahramaa_prod.quarantine;  <span class="cm">-- dead-letter zone</span>
+
+<span class="cm">-- ── 2. Role hierarchy ─────────────────────────────────────────────────────────</span>
+<span class="kw">CREATE ROLE IF NOT EXISTS</span> data_engineer;
+<span class="kw">CREATE ROLE IF NOT EXISTS</span> data_analyst;
+<span class="kw">CREATE ROLE IF NOT EXISTS</span> business_user;
+<span class="kw">CREATE ROLE IF NOT EXISTS</span> compliance_officer;
+
+<span class="cm">-- Engineers: full access to Bronze/Silver, read Gold</span>
+<span class="kw">GRANT</span> ALL PRIVILEGES <span class="kw">ON</span> SCHEMA kahramaa_prod.bronze <span class="kw">TO</span> data_engineer;
+<span class="kw">GRANT</span> ALL PRIVILEGES <span class="kw">ON</span> SCHEMA kahramaa_prod.silver <span class="kw">TO</span> data_engineer;
+<span class="kw">GRANT</span> SELECT            <span class="kw">ON</span> SCHEMA kahramaa_prod.gold   <span class="kw">TO</span> data_engineer;
+
+<span class="cm">-- Analysts: read Gold only, no Bronze/Silver</span>
+<span class="kw">GRANT</span> SELECT <span class="kw">ON</span> SCHEMA kahramaa_prod.gold <span class="kw">TO</span> data_analyst;
+
+<span class="cm">-- Business users: read curated views only (subset of Gold)</span>
+<span class="kw">GRANT</span> SELECT <span class="kw">ON</span> VIEW kahramaa_prod.gold.vw_operational_kpis     <span class="kw">TO</span> business_user;
+<span class="kw">GRANT</span> SELECT <span class="kw">ON</span> VIEW kahramaa_prod.gold.vw_consumption_summary   <span class="kw">TO</span> business_user;
+
+<span class="cm">-- Compliance: read all zones including raw PII (unmasked)</span>
+<span class="kw">GRANT</span> SELECT <span class="kw">ON</span> CATALOG kahramaa_prod <span class="kw">TO</span> compliance_officer;
+
+<span class="cm">-- ── 3. PII column tagging ─────────────────────────────────────────────────────</span>
+<span class="kw">ALTER TABLE</span> kahramaa_prod.silver.dim_customer
+    <span class="kw">ALTER COLUMN</span> national_id  <span class="kw">SET TAGS</span> (<span class="str">'pii'</span> = <span class="str">'true'</span>, <span class="str">'pii_type'</span> = <span class="str">'national_id'</span>);
+<span class="kw">ALTER TABLE</span> kahramaa_prod.silver.dim_customer
+    <span class="kw">ALTER COLUMN</span> phone_number <span class="kw">SET TAGS</span> (<span class="str">'pii'</span> = <span class="str">'true'</span>, <span class="str">'pii_type'</span> = <span class="str">'contact'</span>);
+
+<span class="cm">-- ── 4. Dynamic masking function — masks for non-compliance roles ──────────────</span>
+<span class="kw">CREATE OR REPLACE FUNCTION</span> kahramaa_prod.silver.mask_national_id(national_id STRING)
+<span class="kw">RETURN CASE</span>
+    <span class="kw">WHEN</span> is_member(<span class="str">'compliance_officer'</span>) <span class="kw">THEN</span> national_id           <span class="cm">-- full value</span>
+    <span class="kw">WHEN</span> is_member(<span class="str">'data_engineer'</span>)      <span class="kw">THEN</span> national_id           <span class="cm">-- full value</span>
+    <span class="kw">ELSE</span> CONCAT(REPEAT(<span class="str">'*'</span>, LENGTH(national_id) - <span class="num">4</span>),
+                RIGHT(national_id, <span class="num">4</span>))                               <span class="cm">-- last 4 only</span>
+<span class="kw">END</span>;
+
+<span class="kw">ALTER TABLE</span> kahramaa_prod.silver.dim_customer
+    <span class="kw">ALTER COLUMN</span> national_id <span class="kw">SET MASK</span> kahramaa_prod.silver.mask_national_id;
+
+<span class="cm">-- ── 5. Row-level security — analysts see only their region's data ─────────────</span>
+<span class="kw">CREATE OR REPLACE FUNCTION</span> kahramaa_prod.gold.row_filter_by_region(region_code STRING)
+<span class="kw">RETURN</span> is_member(<span class="str">'compliance_officer'</span>)   <span class="cm">-- all regions</span>
+    <span class="kw">OR</span> is_member(<span class="str">'data_engineer'</span>)        <span class="cm">-- all regions</span>
+    <span class="kw">OR</span> region_code = current_user_region(); <span class="cm">-- analysts: own region only</span>
+
+<span class="kw">ALTER TABLE</span> kahramaa_prod.gold.fact_consumption
+    <span class="kw">SET ROW FILTER</span> kahramaa_prod.gold.row_filter_by_region <span class="kw">ON</span> (region_code);</div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 1.5 -->
+  <div id="s1_5" class="scenario">
+    <h3>Scenario 5 — Gold layer query performance optimisation</h3>
+
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">
+        After migrating data to Azure and building the Gold layer, Power BI dashboard queries against the Gold consumption tables were timing out. A simple "total consumption by region for the last 30 days" query was scanning 3 years of data and taking 4–6 minutes. Business users found the dashboards unusable. Root cause: no partitioning strategy, no Z-order clustering, and the Gold layer had accumulated thousands of small files from incremental Databricks writes.
+      </div>
+    </div>
+
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Three-layer optimisation strategy</div>
+      <div class="arch-body">
+        Applied optimisations in three layers: (1) <b>Partition pruning</b> — partition Gold fact table by consumption_date so date-filtered queries skip 99% of data; (2) <b>Z-order clustering</b> — co-locate rows with the same region_code and asset_type on the same files so region/type filters need fewer file reads; (3) <b>Compaction</b> — OPTIMIZE to merge thousands of small files into fewer large files, reducing file-open overhead. Scheduled OPTIMIZE on cold partitions (>1 day old) at 2 AM — never on active streaming partitions.
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-label">PySpark + SQL — Partition strategy, Z-order, OPTIMIZE, and VACUUM</div>
+      <div class="code-block"><span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+<span class="kw">import</span> datetime
+
+<span class="cm"># ── 1. Create Gold fact table with explicit partition strategy ────────────────</span>
+spark.sql(<span class="str">"""
+CREATE TABLE IF NOT EXISTS kahramaa_prod.gold.fact_consumption (
+    consumption_surr_key  BIGINT     NOT NULL,
+    asset_surr_key        BIGINT     NOT NULL,
+    customer_surr_key     BIGINT     NOT NULL,
+    date_key              INT        NOT NULL,
+    region_code           STRING     NOT NULL,
+    asset_type            STRING     NOT NULL,
+    consumption_kwh       DOUBLE,
+    consumption_m3        DOUBLE,
+    reading_count         INT,
+    anomaly_flag          BOOLEAN    DEFAULT FALSE,
+    _load_ts              TIMESTAMP  DEFAULT current_timestamp(),
+    consumption_date      DATE       NOT NULL    -- PARTITION KEY
+)
+USING DELTA
+PARTITIONED BY (consumption_date)
+LOCATION '/mnt/gold/fact_consumption'
+TBLPROPERTIES (
+    'delta.autoOptimize.optimizeWrite' = 'true',   -- auto-merge small files on write
+    'delta.autoOptimize.autoCompact'   = 'true',   -- background compaction
+    'delta.tuneFileSizesForRewrites'   = 'true',
+    'delta.logRetentionDuration'       = 'interval 30 days',
+    'delta.deletedFileRetentionDuration' = 'interval 7 days'
+)
+"""</span>)
+
+<span class="cm"># ── 2. Scheduled OPTIMIZE — cold partitions only (yesterday and older) ────────</span>
+yesterday = (datetime.date.today() - datetime.timedelta(days=<span class="num">1</span>)).isoformat()
+
+<span class="cm"># Z-order on the columns most commonly used in WHERE clauses</span>
+<span class="cm"># Choose based on query patterns: region_code filters in 90% of dashboard queries</span>
+<span class="cm"># asset_type filters in 70% of queries — co-locate both</span>
+spark.sql(f<span class="str">"""
+    OPTIMIZE kahramaa_prod.gold.fact_consumption
+    WHERE consumption_date <= '{yesterday}'
+    ZORDER BY (region_code, asset_type)
+"""</span>)
+
+print(f<span class="str">"OPTIMIZE complete on partitions up to {yesterday}"</span>)
+
+<span class="cm"># ── 3. VACUUM — safe retention window ────────────────────────────────────────</span>
+<span class="cm"># NEVER vacuum shorter than longest running query (set to 7 days)</span>
+spark.sql(<span class="str">"""
+    VACUUM kahramaa_prod.gold.fact_consumption
+    RETAIN 168 HOURS
+"""</span>)
+
+<span class="cm"># ── 4. Measure impact — file count and size before/after ──────────────────────</span>
+detail = spark.sql(<span class="str">"""
+    DESCRIBE DETAIL kahramaa_prod.gold.fact_consumption
+"""</span>)
+detail.select(<span class="str">"numFiles"</span>, <span class="str">"sizeInBytes"</span>).show()
+
+<span class="cm"># ── 5. Query pattern validation — confirm pruning works ───────────────────────</span>
+spark.sql(<span class="str">"""
+    EXPLAIN COST
+    SELECT region_code, SUM(consumption_kwh)
+    FROM kahramaa_prod.gold.fact_consumption
+    WHERE consumption_date BETWEEN '2025-02-23' AND '2025-03-25'
+      AND region_code = 'DOHA_NORTH'
+    GROUP BY region_code
+"""</span>).show(truncate=<span class="kw">False</span>)
+<span class="cm"># Should show: partitionFilters = [consumption_date BETWEEN ...] meaning pruning active</span>
+<span class="cm"># dataFilters = [region_code = 'DOHA_NORTH'] Z-order reducing file reads</span></div>
+    </div>
+
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">
+        "Power BI dashboards at Kahramaa were timing out — 4 to 6 minutes for a 30-day regional consumption query. I diagnosed this as three compounding problems: no partition pruning (every query scanned 3 years of data), no Z-order (region filter required reading every file), and small-file fragmentation from incremental writes (thousands of tiny Parquet files per partition).<br><br>
+        <b>I applied a three-layer optimisation.</b> First, I re-partitioned the Gold fact table by consumption_date — date-filtered queries now skip 99% of the data at the storage level. Second, Z-order clustering on region_code and asset_type — the two most common filter columns in business queries. This meant rows for the same region were physically co-located, so a region filter needed to read 5 files instead of 500. Third, a scheduled OPTIMIZE job at 2 AM targeting only cold partitions — never touching partitions that still had active streaming writes, to avoid the compaction-freshness conflict.<br><br>
+        Result: the 30-day regional query dropped from 4–6 minutes to under 15 seconds. Dashboard freshness was maintained because OPTIMIZE never ran on the current day's partition."
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:10px;">
+      <div class="outcome"><div class="outcome-num">60%+</div><div class="outcome-desc">Reduction in query retrieval time — from 4–6 min to under 15 seconds</div></div>
+      <div class="outcome"><div class="outcome-num">~95%</div><div class="outcome-desc">Reduction in files scanned per query after Z-order + partitioning</div></div>
+    </div>
+  </div>
+
+  <!-- SCENARIO 1.6 -->
+  <div id="s1_6" class="scenario">
+    <h3>Scenario 6 — Self-service analytics & Power BI architecture</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">Business teams at Kahramaa were fully dependent on IT for every report. Analysts had no access to data directly — they submitted requests, waited days, and received static Excel exports. The data platform needed to enable business users to answer their own questions without writing SQL or needing engineering support.</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Semantic layer with DirectQuery + Import hybrid</div>
+      <div class="arch-body">Built a semantic layer between the Gold Delta tables and Power BI using Databricks SQL endpoints. Power BI connects via the native Databricks connector. For operational dashboards needing freshness (updated every 30 min): DirectQuery mode — queries execute live against Databricks SQL. For historical/analytical dashboards where freshness can be daily: Import mode with scheduled refresh — data loaded into Power BI in-memory for maximum query speed. This hybrid approach balances freshness against performance per dashboard type.</div>
+    </div>
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">"Self-service analytics at Kahramaa required more than just making the data available — it required a semantic layer that business users could trust and navigate. I designed a two-tier Power BI architecture: operational dashboards connected via DirectQuery to Databricks SQL endpoints for live freshness, and analytical dashboards used Import mode for maximum performance on large historical datasets. The key architectural decision was not to give users raw table access — instead I published pre-defined, business-friendly views from the Gold layer with proper metric definitions, ensuring everyone used the same definition of 'consumption' and 'revenue'. This eliminated the classic problem of two business units reporting different numbers for the same metric."</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PROJECT 2: KYNDRYL / NAB -->
+<!-- ============================================================ -->
+<div id="proj2" class="project">
+  <div class="proj-header" style="background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;padding:14px 16px;">
+    <h2 style="color:#fff;">Kyndryl India — National Australia Bank (NAB)</h2>
+    <div class="proj-meta">Mar 2022 – Nov 2023 &nbsp;|&nbsp; Lead Data Engineer (DevOps) &nbsp;|&nbsp; Network Change Automation & Digital Twin</div>
+  </div>
+
+  <div class="sub-nav" id="sub2">
+    <button class="sub-btn active" onclick="showScenario('proj2','s2_1',this)">S1: Graph topology model</button>
+    <button class="sub-btn" onclick="showScenario('proj2','s2_2',this)">S2: Idempotent CDC pipeline</button>
+    <button class="sub-btn" onclick="showScenario('proj2','s2_3',this)">S3: Scheduling optimisation</button>
+    <button class="sub-btn" onclick="showScenario('proj2','s2_4',this)">S4: Pre/post change validation</button>
+    <button class="sub-btn" onclick="showScenario('proj2','s2_5',this)">S5: Real-time telemetry</button>
+  </div>
+
+  <div id="s2_1" class="scenario active">
+    <h3>Scenario 1 — Graph-based network topology model in Delta Lake</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">NAB's hybrid network (on-premise + AWS Public Cloud Connect) had thousands of devices — routers, switches, firewalls, load balancers — with complex dependency relationships. A change to one device could cascade and break ten others. The traditional approach was manual dependency mapping in spreadsheets — incomplete, always out-of-date, and unable to detect circular dependencies. This made automated change eligibility assessment impossible — you couldn't safely automate a change without knowing its blast radius.</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Graph topology as Delta Lake edge/node tables</div>
+      <div class="arch-body">Modelled the network as a graph: devices as nodes (with SCD2 versioned configuration state), connections as edges (with directionality and dependency type). Stored as two Delta tables: dim_network_node (device configuration history) and fact_network_edge (connection relationships with effective dates). PySpark graph traversal algorithms computed blast radius and dependency chains on demand. This enabled the automation engine to evaluate: "if I change device X, which downstream devices are affected, and do any of those have active SLAs?"</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Graph-based blast radius computation using GraphFrames</div>
+      <div class="code-block"><span class="kw">from</span> graphframes <span class="kw">import</span> GraphFrame
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+
+<span class="cm"># Load current network topology from Silver</span>
+nodes = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/silver/dim_network_node"</span>) \
+    .filter(F.col(<span class="str">"is_current"</span>) == <span class="kw">True</span>) \
+    .select(
+        F.col(<span class="str">"device_surr_key"</span>).alias(<span class="str">"id"</span>),
+        <span class="str">"device_id"</span>, <span class="str">"device_type"</span>, <span class="str">"config_state"</span>,
+        <span class="str">"sla_tier"</span>, <span class="str">"change_risk_score"</span>
+    )
+
+edges = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/silver/fact_network_edge"</span>) \
+    .filter(F.col(<span class="str">"is_active"</span>) == <span class="kw">True</span>) \
+    .select(
+        F.col(<span class="str">"src_device_surr_key"</span>).alias(<span class="str">"src"</span>),
+        F.col(<span class="str">"dst_device_surr_key"</span>).alias(<span class="str">"dst"</span>),
+        <span class="str">"dependency_type"</span>, <span class="str">"traffic_volume_gbps"</span>
+    )
+
+graph = GraphFrame(nodes, edges)
+
+<span class="cm"># BFS from the device being changed — find all downstream dependents</span>
+<span class="kw">def</span> <span class="fn">compute_blast_radius</span>(device_id_to_change: str, max_hops: int = <span class="num">5</span>):
+    target_node = nodes.filter(F.col(<span class="str">"device_id"</span>) == device_id_to_change) \
+                       .select(<span class="str">"id"</span>).first()[<span class="str">"id"</span>]
+
+    <span class="cm"># BFS traversal to find all reachable nodes</span>
+    blast_radius = graph.bfs(
+        fromExpr=f<span class="str">"id = {target_node}"</span>,
+        toExpr=<span class="str">"id != -1"</span>,          <span class="cm"># reach all nodes</span>
+        maxPathLength=max_hops
+    )
+
+    <span class="cm"># Flag if any downstream device has high SLA tier</span>
+    sla_risk = blast_radius.join(
+        nodes.select(<span class="str">"id"</span>, <span class="str">"sla_tier"</span>, <span class="str">"device_id"</span>),
+        blast_radius[<span class="str">"to"</span>][<span class="str">"id"</span>] == nodes[<span class="str">"id"</span>]
+    ).filter(F.col(<span class="str">"sla_tier"</span>) == <span class="str">"CRITICAL"</span>)
+
+    change_eligible = sla_risk.count() == <span class="num">0</span>
+
+    <span class="kw">return</span> {
+        <span class="str">"device_id"</span>:        device_id_to_change,
+        <span class="str">"blast_radius_count"</span>: blast_radius.count(),
+        <span class="str">"critical_sla_impact"</span>: sla_risk.count(),
+        <span class="str">"auto_eligible"</span>:    change_eligible,
+        <span class="str">"reason"</span>: <span class="str">"ELIGIBLE"</span> <span class="kw">if</span> change_eligible <span class="kw">else</span> <span class="str">"BLOCKED: downstream CRITICAL SLA device"</span>
+    }
+
+result = compute_blast_radius(<span class="str">"NEXUS-CORE-001"</span>)
+print(result)</div>
+    </div>
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">"At Kyndryl for NAB, the core data modelling problem was representing a live network topology in a way that could support automated change eligibility assessment. A traditional relational model couldn't capture the dependency chains — you'd need recursive CTEs to traverse device relationships, which don't perform at scale.<br><br><b>My architectural decision was to model the network as a graph stored in two Delta Lake tables</b> — nodes (devices with SCD2 configuration history) and edges (connections with effective dates). GraphFrames on Databricks enabled BFS traversal to compute blast radius — given a device to change, traverse all downstream dependents and flag any with critical SLA tiers. This ran in seconds on a network of thousands of devices, where a recursive SQL query would time out. The SCD2 on the node table meant we always knew the exact configuration state of any device at any point — critical for post-incident reviews."</div>
+    </div>
+  </div>
+
+  <div id="s2_2" class="scenario">
+    <h3>Scenario 2 — Idempotent CDC pipeline with deduplication</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">ServiceNow change requests were the input to the automation engine. ServiceNow had an unreliable webhook delivery mechanism — the same change request could be delivered 2–3 times due to retries. Additionally, Databricks cluster restarts during peak load caused pipeline restarts that would re-read from the same Event Hubs offset range. Without deduplication, the automation engine would attempt to deploy the same network change multiple times — with potentially catastrophic consequences for the live banking network.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Idempotent CDC with deterministic event_id deduplication</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+
+<span class="cm"># ── Step 1: Assign deterministic event_id at Bronze ingestion ─────────────────</span>
+<span class="cm"># Hash of business fields — same event always gets same ID regardless of retries</span>
+raw_changes = (
+    spark.readStream.format(<span class="str">"eventhubs"</span>)
+    .options(**eh_conf)
+    .load()
+    .select(F.from_json(F.col(<span class="str">"body"</span>).cast(<span class="str">"string"</span>), change_schema).alias(<span class="str">"d"</span>))
+    .select(<span class="str">"d.*"</span>)
+    .withColumn(
+        <span class="str">"event_id"</span>,
+        F.md5(F.concat_ws(<span class="str">"||"</span>,
+            F.col(<span class="str">"change_request_id"</span>),
+            F.col(<span class="str">"requested_change_type"</span>),
+            F.col(<span class="str">"target_device_id"</span>),
+            F.col(<span class="str">"source_submitted_ts"</span>).cast(<span class="str">"string"</span>)
+        ))
+    )
+)
+
+<span class="cm"># ── Step 2: Write ALL events to Bronze (including duplicates) — raw zone ──────</span>
+raw_changes.writeStream.format(<span class="str">"delta"</span>) \
+    .outputMode(<span class="str">"append"</span>) \
+    .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/chk/snow_bronze"</span>) \
+    .start(<span class="str">"/mnt/bronze/servicenow_changes"</span>)
+
+<span class="cm"># ── Step 3: Silver deduplication — keep latest per event_id ───────────────────</span>
+<span class="kw">def</span> <span class="fn">dedup_and_merge_silver</span>(micro_batch_df, batch_id):
+    <span class="cm"># Within this micro-batch: keep only latest version of each event_id</span>
+    <span class="kw">from</span> pyspark.sql.window <span class="kw">import</span> Window
+    w = Window.partitionBy(<span class="str">"event_id"</span>).orderBy(F.col(<span class="str">"source_submitted_ts"</span>).desc())
+
+    deduped = (
+        micro_batch_df
+        .withColumn(<span class="str">"rn"</span>, F.row_number().over(w))
+        .filter(F.col(<span class="str">"rn"</span>) == <span class="num">1</span>)
+        .drop(<span class="str">"rn"</span>)
+    )
+
+    <span class="cm"># MERGE into Silver — idempotent: second run with same event_id = no-op</span>
+    silver = DeltaTable.forPath(spark, <span class="str">"/mnt/silver/change_requests"</span>)
+    silver.alias(<span class="str">"tgt"</span>).merge(
+        deduped.alias(<span class="str">"src"</span>),
+        <span class="str">"tgt.event_id = src.event_id"</span>
+    ).whenMatchedUpdate(
+        condition=<span class="str">"src.source_submitted_ts > tgt.source_submitted_ts"</span>,
+        set={<span class="str">"change_status"</span>: <span class="str">"src.change_status"</span>,
+             <span class="str">"updated_ts"</span>:     <span class="str">"current_timestamp()"</span>}
+    ).whenNotMatchedInsert(values={
+        <span class="str">"event_id"</span>:             <span class="str">"src.event_id"</span>,
+        <span class="str">"change_request_id"</span>:    <span class="str">"src.change_request_id"</span>,
+        <span class="str">"target_device_id"</span>:     <span class="str">"src.target_device_id"</span>,
+        <span class="str">"change_status"</span>:        <span class="str">"src.change_status"</span>,
+        <span class="str">"auto_eligible"</span>:        <span class="str">"false"</span>,
+        <span class="str">"processed"</span>:           <span class="str">"false"</span>,
+        <span class="str">"ingested_ts"</span>:         <span class="str">"current_timestamp()"</span>
+    }).execute()
+
+    print(f<span class="str">"Batch {batch_id}: {deduped.count()} unique changes merged to Silver"</span>)
+
+<span class="cm"># foreachBatch applies dedup + merge per micro-batch — exactly-once semantics</span>
+(raw_stream.writeStream
+    .foreachBatch(<span class="fn">dedup_and_merge_silver</span>)
+    .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/chk/snow_silver"</span>)
+    .trigger(processingTime=<span class="str">"60 seconds"</span>)
+    .start()
+)</div>
+    </div>
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">"At Kyndryl, duplicates weren't just a data quality problem — they were a safety risk. A duplicate network change request could trigger the same configuration push twice to a live banking router. <b>My solution was two-layer deduplication with a deterministic event_id.</b> At Bronze, I hashed the business-key fields of each change request — change_request_id + change_type + target_device + submitted_timestamp. This hash was the event_id — identical regardless of how many times ServiceNow delivered the same event. Bronze stored everything including duplicates. At Silver, I used foreachBatch with a MERGE on event_id — the second delivery of the same event matched on event_id and either updated the status or was a no-op. The automation engine downstream only read from Silver, which was guaranteed to have exactly one record per unique change request."</div>
+    </div>
+  </div>
+
+  <div id="s2_3" class="scenario">
+    <h3>Scenario 3 — Change window scheduling optimisation with OR-Tools</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">NAB's weekend change window had hard constraints: maximum 200 changes per 4-hour window, changes must be sequenced to avoid dependency conflicts, high-risk changes require human approval slots, and certain device types cannot be changed simultaneously. Manual scheduling by network engineers took hours and still produced suboptimal results — often leaving 30–40% of the window capacity unused.</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Integer Linear Programming solver on PySpark</div>
+      <div class="arch-body">Used Google OR-Tools (Integer Linear Programming) to optimise change scheduling as a constraint satisfaction problem. Variables: binary assignment of each eligible change to each available time slot. Objective: maximise total changes scheduled. Constraints: dependency ordering, risk tier limits per slot, device type concurrency limits, SLA protection. PySpark computed the input data (eligible changes, graph-based dependencies, risk scores) from the Silver layer and fed it to OR-Tools. The solver ran in minutes and produced a schedule that consistently utilised 90%+ of the window.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark + OR-Tools — Change window scheduling optimiser</div>
+      <div class="code-block"><span class="kw">from</span> ortools.sat.python <span class="kw">import</span> cp_model
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+
+<span class="cm"># ── Step 1: Load eligible changes from Silver ─────────────────────────────────</span>
+eligible_changes = (
+    spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/silver/change_requests"</span>)
+    .filter(
+        (F.col(<span class="str">"auto_eligible"</span>) == <span class="kw">True</span>) &
+        (F.col(<span class="str">"change_status"</span>)  == <span class="str">"APPROVED"</span>) &
+        (F.col(<span class="str">"processed"</span>)      == <span class="kw">False</span>)
+    )
+    .select(<span class="str">"change_request_id"</span>, <span class="str">"target_device_id"</span>,
+            <span class="str">"risk_score"</span>, <span class="str">"estimated_duration_min"</span>, <span class="str">"device_type"</span>)
+    .collect()
+)
+
+changes = [row.asDict() <span class="kw">for</span> row <span class="kw">in</span> eligible_changes]
+num_changes = len(changes)
+num_slots   = <span class="num">20</span>  <span class="cm"># 20 × 12-min slots = 4-hour window</span>
+MAX_PER_SLOT       = <span class="num">10</span>
+MAX_HIGH_RISK_SLOT = <span class="num">2</span>
+
+<span class="cm"># ── Step 2: Build OR-Tools CP-SAT model ──────────────────────────────────────</span>
+model = cp_model.CpModel()
+
+<span class="cm"># Binary variable: assigned[i][j] = 1 if change i scheduled in slot j</span>
+assigned = {}
+<span class="kw">for</span> i <span class="kw">in</span> range(num_changes):
+    <span class="kw">for</span> j <span class="kw">in</span> range(num_slots):
+        assigned[(i, j)] = model.NewBoolVar(f<span class="str">"change_{i}_slot_{j}"</span>)
+
+<span class="cm"># Constraint 1: Each change scheduled in at most one slot</span>
+<span class="kw">for</span> i <span class="kw">in</span> range(num_changes):
+    model.AddAtMostOne(assigned[(i, j)] <span class="kw">for</span> j <span class="kw">in</span> range(num_slots))
+
+<span class="cm"># Constraint 2: Max 10 changes per slot</span>
+<span class="kw">for</span> j <span class="kw">in</span> range(num_slots):
+    model.Add(sum(assigned[(i, j)] <span class="kw">for</span> i <span class="kw">in</span> range(num_changes)) <= MAX_PER_SLOT)
+
+<span class="cm"># Constraint 3: Max 2 high-risk changes per slot</span>
+<span class="kw">for</span> j <span class="kw">in</span> range(num_slots):
+    high_risk_in_slot = [
+        assigned[(i, j)] <span class="kw">for</span> i, c <span class="kw">in</span> enumerate(changes)
+        <span class="kw">if</span> c[<span class="str">"risk_score"</span>] > <span class="num">0.7</span>
+    ]
+    <span class="kw">if</span> high_risk_in_slot:
+        model.Add(sum(high_risk_in_slot) <= MAX_HIGH_RISK_SLOT)
+
+<span class="cm"># Objective: maximise total changes scheduled (weighted by risk inverse)</span>
+model.Maximize(
+    sum(
+        assigned[(i, j)] * int((<span class="num">1</span> - changes[i][<span class="str">"risk_score"</span>]) * <span class="num">100</span>)
+        <span class="kw">for</span> i <span class="kw">in</span> range(num_changes)
+        <span class="kw">for</span> j <span class="kw">in</span> range(num_slots)
+    )
+)
+
+<span class="cm"># ── Step 3: Solve and write schedule to Gold ─────────────────────────────────</span>
+solver   = cp_model.CpSolver()
+status   = solver.Solve(model)
+
+schedule = []
+<span class="kw">if</span> status <span class="kw">in</span> (cp_model.OPTIMAL, cp_model.FEASIBLE):
+    <span class="kw">for</span> i <span class="kw">in</span> range(num_changes):
+        <span class="kw">for</span> j <span class="kw">in</span> range(num_slots):
+            <span class="kw">if</span> solver.Value(assigned[(i, j)]):
+                schedule.append({
+                    <span class="str">"change_request_id"</span>: changes[i][<span class="str">"change_request_id"</span>],
+                    <span class="str">"assigned_slot"</span>:     j,
+                    <span class="str">"slot_start_time"</span>:   f<span class="str">"Saturday 22:00 + {j*12} min"</span>
+                })
+
+schedule_df = spark.createDataFrame(schedule)
+schedule_df.write.format(<span class="str">"delta"</span>).mode(<span class="str">"overwrite"</span>) \
+    .save(<span class="str">"/mnt/gold/change_schedule_weekend"</span>)
+
+print(f<span class="str">"Scheduled {len(schedule)} / {num_changes} eligible changes"</span>)
+<span class="cm"># Typical result: 180+ of 200 eligible → 90%+ utilisation vs 60% manual</span></div>
+    </div>
+  </div>
+
+  <div id="s2_4" class="scenario">
+    <h3>Scenario 4 — Pre/post change validation framework</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">Automated changes had to be safer than manual ones — not just faster. For a network change to be auto-deployed, the system needed to: (1) validate the target device was in an expected state before deployment, (2) verify the change config was syntactically and semantically valid, (3) confirm the change succeeded post-deployment, and (4) automatically roll back if post-validation failed. Without this, one bad automated change could take down a core banking network component.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Pre/post validation pipeline with automated rollback trigger</div>
+      <div class="code-block"><span class="kw">import</span> requests, json
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+
+<span class="kw">def</span> <span class="fn">execute_change_with_validation</span>(change_request_id: str):
+    <span class="cm"># ── PRE-VALIDATION ────────────────────────────────────────────────────────</span>
+    change = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/silver/change_requests"</span>) \
+        .filter(F.col(<span class="str">"change_request_id"</span>) == change_request_id).first()
+
+    <span class="cm"># Check current device state matches expected pre-change state</span>
+    current_state = get_device_state(change[<span class="str">"target_device_id"</span>])
+    expected_pre  = change[<span class="str">"expected_pre_state_hash"</span>]
+
+    <span class="kw">if</span> hash_state(current_state) != expected_pre:
+        log_validation_result(change_request_id, <span class="str">"PRE_FAIL"</span>,
+            <span class="str">"Device state changed since eligibility assessment — blocking auto-deploy"</span>)
+        <span class="kw">return False</span>
+
+    <span class="cm"># ── DEPLOY via Ansible/Terraform API ─────────────────────────────────────</span>
+    deploy_result = requests.post(
+        <span class="str">"https://ansible-tower.internal/api/v2/job_templates/network-change/launch/"</span>,
+        headers={<span class="str">"Authorization"</span>: f<span class="str">"Bearer {get_token()}"</span>},
+        json={<span class="str">"extra_vars"</span>: {
+            <span class="str">"device_id"</span>:   change[<span class="str">"target_device_id"</span>],
+            <span class="str">"change_type"</span>: change[<span class="str">"change_type"</span>],
+            <span class="str">"config_diff"</span>: change[<span class="str">"config_diff"</span>]
+        }}
+    )
+
+    <span class="cm"># ── POST-VALIDATION ───────────────────────────────────────────────────────</span>
+    <span class="kw">import</span> time; time.sleep(<span class="num">30</span>)   <span class="cm"># allow device to stabilise</span>
+
+    post_state    = get_device_state(change[<span class="str">"target_device_id"</span>])
+    expected_post = change[<span class="str">"expected_post_state_hash"</span>]
+
+    <span class="kw">if</span> hash_state(post_state) != expected_post:
+        <span class="cm"># ── AUTOMATED ROLLBACK ───────────────────────────────────────────────</span>
+        rollback = requests.post(
+            <span class="str">"https://ansible-tower.internal/api/v2/job_templates/network-rollback/launch/"</span>,
+            headers={<span class="str">"Authorization"</span>: f<span class="str">"Bearer {get_token()}"</span>},
+            json={<span class="str">"extra_vars"</span>: {
+                <span class="str">"device_id"</span>:     change[<span class="str">"target_device_id"</span>],
+                <span class="str">"rollback_config"</span>: change[<span class="str">"pre_change_config_snapshot"</span>]
+            }}
+        )
+        log_validation_result(change_request_id, <span class="str">"POST_FAIL_ROLLED_BACK"</span>,
+            <span class="str">"Post-change validation failed — automatic rollback executed"</span>)
+        <span class="kw">return False</span>
+
+    log_validation_result(change_request_id, <span class="str">"SUCCESS"</span>, <span class="str">"Change validated and confirmed"</span>)
+    <span class="kw">return True</span></div>
+    </div>
+  </div>
+
+  <div id="s2_5" class="scenario">
+    <h3>Scenario 5 — Real-time telemetry pipeline for post-change monitoring</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">After a network change was deployed, NAB engineers needed to know within 60 seconds if the change had caused any network degradation — packet loss, latency spikes, throughput drops. The existing monitoring was poll-based (every 5 minutes) — far too slow to detect and respond to incidents before they impacted banking customers.</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Event Hubs + Continuous Processing mode + anomaly detection</div>
+      <div class="arch-body">Replaced poll-based monitoring with push-based telemetry via Cisco Nexus Insights streaming to Event Hubs. Databricks Continuous Processing (not micro-batch) for sub-5-second latency. Stateful streaming tracked rolling 60-second baseline metrics per device. Post-change: compared incoming telemetry against pre-change baseline — deviation beyond 2 standard deviations triggered an incident alert and kicked off automated rollback evaluation.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Real-time anomaly detection on network telemetry post-change</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> pyspark.sql.window <span class="kw">import</span> Window
+
+<span class="cm"># Load pre-change baseline metrics from Silver (computed during eligibility phase)</span>
+baseline = spark.read.format(<span class="str">"delta"</span>).load(<span class="str">"/mnt/silver/device_telemetry_baseline"</span>) \
+    .select(<span class="str">"device_id"</span>, <span class="str">"metric_name"</span>,
+            <span class="str">"baseline_mean"</span>, <span class="str">"baseline_stddev"</span>)
+
+<span class="cm"># Streaming telemetry from Cisco Nexus via Event Hubs</span>
+telemetry_stream = (
+    spark.readStream.format(<span class="str">"eventhubs"</span>)
+    .options(**nexus_conf)
+    .load()
+    .select(F.from_json(F.col(<span class="str">"body"</span>).cast(<span class="str">"string"</span>), telemetry_schema).alias(<span class="str">"t"</span>))
+    .select(<span class="str">"t.device_id"</span>, <span class="str">"t.metric_name"</span>, <span class="str">"t.metric_value"</span>, <span class="str">"t.event_time"</span>)
+)
+
+<span class="cm"># Join streaming telemetry with pre-change baseline</span>
+anomaly_stream = telemetry_stream.join(
+    baseline, on=[<span class="str">"device_id"</span>, <span class="str">"metric_name"</span>], how=<span class="str">"left"</span>
+).withColumn(
+    <span class="str">"z_score"</span>,
+    F.abs(F.col(<span class="str">"metric_value"</span>) - F.col(<span class="str">"baseline_mean"</span>)) / F.col(<span class="str">"baseline_stddev"</span>)
+).withColumn(
+    <span class="str">"anomaly_flag"</span>,
+    F.when(F.col(<span class="str">"z_score"</span>) > <span class="num">2.0</span>, <span class="kw">True</span>).otherwise(<span class="kw">False</span>)
+).withColumn(
+    <span class="str">"severity"</span>,
+    F.when(F.col(<span class="str">"z_score"</span>) > <span class="num">4.0</span>, <span class="str">"CRITICAL"</span>)
+     .when(F.col(<span class="str">"z_score"</span>) > <span class="num">2.0</span>, <span class="str">"WARNING"</span>)
+     .otherwise(<span class="str">"NORMAL"</span>)
+)
+
+<span class="cm"># Write anomalies to alert table — triggers downstream incident workflow</span>
+anomaly_stream.filter(F.col(<span class="str">"anomaly_flag"</span>) == <span class="kw">True</span>) \
+    .writeStream.format(<span class="str">"delta"</span>) \
+    .outputMode(<span class="str">"append"</span>) \
+    .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/chk/telemetry_anomalies"</span>) \
+    .trigger(continuous=<span class="str">"5 seconds"</span>)  <span class="cm"># continuous mode — not micro-batch</span> \
+    .start(<span class="str">"/mnt/gold/network_anomaly_alerts"</span>)</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:10px;">
+      <div class="outcome"><div class="outcome-num">40%+</div><div class="outcome-desc">Low-risk changes automated with 95%+ success rate</div></div>
+      <div class="outcome"><div class="outcome-num">&lt;60s</div><div class="outcome-desc">Post-change anomaly detection latency (vs 5 min polling)</div></div>
+      <div class="outcome"><div class="outcome-num">90%+</div><div class="outcome-desc">Change window utilisation vs 60% manual</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- PROJECT 3: EMPOWER RETIREMENT -->
+<!-- ============================================================ -->
+<div id="proj3" class="project">
+  <div class="proj-header" style="background:linear-gradient(135deg,#92400e,#b45309);color:#fff;padding:14px 16px;">
+    <h2 style="color:#fff;">Empower Retirement — JP Morgan JPMC CTE</h2>
+    <div class="proj-meta">Feb 2021 – Mar 2022 &nbsp;|&nbsp; Senior Data & Automation Engineer &nbsp;|&nbsp; Infrastructure Modernisation</div>
+  </div>
+
+  <div class="sub-nav" id="sub3">
+    <button class="sub-btn active" onclick="showScenario('proj3','s3_1',this)">S1: Legacy tool migration</button>
+    <button class="sub-btn" onclick="showScenario('proj3','s3_2',this)">S2: Auto Loader ingestion</button>
+    <button class="sub-btn" onclick="showScenario('proj3','s3_3',this)">S3: Schema drift handling</button>
+    <button class="sub-btn" onclick="showScenario('proj3','s3_4',this)">S4: Data quality framework</button>
+  </div>
+
+  <div id="s3_1" class="scenario active">
+    <h3>Scenario 1 — Legacy tool migration to Python-based pipelines</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">JPMC's Customer Test Environment ran three legacy tools — QP Tool, DBC, and EASY SQL Chooser — all dependent on X11 graphical sessions, Oracle database drivers, and a specific RHEL version. These tools managed access to production-grade financial data for test environments. When infrastructure was upgraded, the X11 dependencies broke — engineers lost access to financial data, blocking all testing for CTE. The tools had no documentation and the original developers had left.</div>
+    </div>
+    <div class="arch-box">
+      <div class="arch-title">Architectural Decision — Re-implement as headless Python CLI + Databricks pipelines</div>
+      <div class="arch-body">Reverse-engineered the three tools by reading their Oracle query patterns from DB audit logs. Re-implemented as Python CLI tools with the same input/output contract — engineers could use the same commands, same parameters, same output format. Under the hood: Python + JDBC to Oracle, outputs written to ADLS Gen2 via Auto Loader instead of local filesystem. No X11 dependency. Ran on any Linux node. Databricks pipelines replaced the ETL logic from EASY SQL Chooser.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">Python — Headless Oracle query tool replacing QP Tool (same interface, modern backend)</div>
+      <div class="code-block"><span class="kw">import</span> argparse, cx_Oracle, pandas <span class="kw">as</span> pd
+<span class="kw">from</span> azure.storage.blob <span class="kw">import</span> BlobServiceClient
+<span class="kw">import</span> os, hashlib, datetime
+
+<span class="kw">def</span> <span class="fn">get_oracle_connection</span>():
+    <span class="cm"># Credentials from environment — never hardcoded</span>
+    dsn = cx_Oracle.makedsn(
+        os.environ[<span class="str">"ORACLE_HOST"</span>],
+        os.environ[<span class="str">"ORACLE_PORT"</span>],
+        service_name=os.environ[<span class="str">"ORACLE_SID"</span>]
+    )
+    <span class="kw">return</span> cx_Oracle.connect(os.environ[<span class="str">"ORACLE_USER"</span>],
+                             os.environ[<span class="str">"ORACLE_PASS"</span>], dsn)
+
+<span class="kw">def</span> <span class="fn">run_query</span>(query_name: str, params: dict, output_path: str):
+    <span class="cm"># Query registry — parameterised, no SQL injection risk</span>
+    QUERIES = {
+        <span class="str">"customer_portfolio"</span>: <span class="str">"""
+            SELECT c.CUST_ID, c.CUST_NAME, p.PORTFOLIO_TYPE,
+                   p.NAV, p.LAST_VALUED_DATE
+            FROM   CUST_MASTER c
+            JOIN   PORTFOLIO_SUMMARY p ON c.CUST_ID = p.CUST_ID
+            WHERE  c.ACCOUNT_STATUS = :status
+            AND    p.LAST_VALUED_DATE >= :start_date
+        """</span>,
+        <span class="str">"transaction_summary"</span>: <span class="str">"""
+            SELECT t.TXN_ID, t.CUST_ID, t.TXN_TYPE,
+                   t.AMOUNT, t.TXN_DATE, t.SETTLEMENT_STATUS
+            FROM   TRANSACTIONS t
+            WHERE  t.TXN_DATE BETWEEN :start_date AND :end_date
+            AND    t.TXN_TYPE = :txn_type
+        """</span>
+    }
+
+    conn   = get_oracle_connection()
+    cursor = conn.cursor()
+    cursor.execute(QUERIES[query_name], params)
+
+    cols = [desc[<span class="num">0</span>].lower() <span class="kw">for</span> desc <span class="kw">in</span> cursor.description]
+    rows = cursor.fetchall()
+    df   = pd.DataFrame(rows, columns=cols)
+
+    <span class="cm"># Add provenance metadata</span>
+    df[<span class="str">"_extracted_by"</span>] = os.environ.get(<span class="str">"USER"</span>, <span class="str">"unknown"</span>)
+    df[<span class="str">"_extracted_ts"</span>]  = datetime.datetime.utcnow().isoformat()
+    df[<span class="str">"_query_hash"</span>]     = hashlib.md5(QUERIES[query_name].encode()).hexdigest()
+
+    <span class="cm"># Write to ADLS — replaces local file output of original QP Tool</span>
+    blob_client = BlobServiceClient.from_connection_string(os.environ[<span class="str">"ADLS_CONN_STR"</span>])
+    container   = blob_client.get_container_client(<span class="str">"bronze"</span>)
+    csv_bytes   = df.to_csv(index=<span class="kw">False</span>).encode()
+    container.upload_blob(output_path, csv_bytes, overwrite=<span class="kw">True</span>)
+
+    print(f<span class="str">"Extracted {len(df)} rows → {output_path}"</span>)
+    cursor.close(); conn.close()
+    <span class="kw">return</span> df
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    parser = argparse.ArgumentParser(description=<span class="str">"QP Tool replacement"</span>)
+    parser.add_argument(<span class="str">"--query"</span>,      required=<span class="kw">True</span>)
+    parser.add_argument(<span class="str">"--start-date"</span>, required=<span class="kw">True</span>)
+    parser.add_argument(<span class="str">"--end-date"</span>,   required=<span class="kw">True</span>)
+    parser.add_argument(<span class="str">"--output"</span>,     default=<span class="str">"bronze/extracts/output.csv"</span>)
+    args = parser.parse_args()
+
+    run_query(args.query,
+              {<span class="str">"start_date"</span>: args.start_date, <span class="str">"end_date"</span>: args.end_date},
+              args.output)</div>
+    </div>
+  </div>
+
+  <div id="s3_2" class="scenario">
+    <h3>Scenario 2 — Auto Loader for continuously arriving financial data files</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">JPMC's CTE environment received hundreds of financial data files daily from upstream systems — trade confirmations, settlement files, position reports. The original ingestion was a cron-scheduled script that listed the ADLS directory every 15 minutes and processed new files. At high-volume periods (market open/close), thousands of files arrived simultaneously — the listing script missed files, processed files out of order, and had no mechanism to handle partial file uploads or duplicate processing.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Auto Loader with schema evolution, file tracking, and dead-letter routing</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> pyspark.sql.types <span class="kw">import</span> StructType, StructField, StringType, DoubleType, DateType
+
+<span class="cm"># Expected schema for trade confirmation files</span>
+trade_schema = StructType([
+    StructField(<span class="str">"trade_id"</span>,        StringType(),  <span class="kw">False</span>),
+    StructField(<span class="str">"cusip"</span>,            StringType(),  <span class="kw">True</span>),
+    StructField(<span class="str">"trade_date"</span>,       DateType(),    <span class="kw">True</span>),
+    StructField(<span class="str">"settlement_date"</span>,  DateType(),    <span class="kw">True</span>),
+    StructField(<span class="str">"quantity"</span>,         DoubleType(),  <span class="kw">True</span>),
+    StructField(<span class="str">"price"</span>,            DoubleType(),  <span class="kw">True</span>),
+    StructField(<span class="str">"counterparty_id"</span>,  StringType(),  <span class="kw">True</span>)
+])
+
+<span class="kw">def</span> <span class="fn">ingest_with_validation</span>(micro_batch_df, batch_id):
+    <span class="cm"># Split into valid and invalid records</span>
+    valid_df = micro_batch_df.filter(
+        F.col(<span class="str">"trade_id"</span>).isNotNull() &
+        F.col(<span class="str">"price"</span>).isNotNull() &
+        (F.col(<span class="str">"price"</span>) > <span class="num">0</span>) &
+        (F.col(<span class="str">"settlement_date"</span>) >= F.col(<span class="str">"trade_date"</span>))
+    )
+    invalid_df = micro_batch_df.subtract(valid_df).withColumn(
+        <span class="str">"rejection_reason"</span>,
+        F.when(F.col(<span class="str">"trade_id"</span>).isNull(),     <span class="str">"NULL_TRADE_ID"</span>)
+         .when(F.col(<span class="str">"price"</span>).isNull(),        <span class="str">"NULL_PRICE"</span>)
+         .when(F.col(<span class="str">"price"</span>) <= <span class="num">0</span>,          <span class="str">"INVALID_PRICE"</span>)
+         .otherwise(<span class="str">"SETTLE_BEFORE_TRADE"</span>)
+    ).withColumn(<span class="str">"_batch_id"</span>, F.lit(batch_id))
+
+    <span class="cm"># Write valid to Bronze</span>
+    <span class="kw">if</span> valid_df.count() > <span class="num">0</span>:
+        valid_df.withColumn(<span class="str">"_source_file"</span>,   F.input_file_name()) \
+                .withColumn(<span class="str">"_ingestion_ts"</span>, F.current_timestamp()) \
+                .write.format(<span class="str">"delta"</span>).mode(<span class="str">"append"</span>) \
+                .partitionBy(<span class="str">"trade_date"</span>) \
+                .save(<span class="str">"/mnt/bronze/trade_confirmations"</span>)
+
+    <span class="cm"># Route invalid to dead-letter — never silently drop</span>
+    <span class="kw">if</span> invalid_df.count() > <span class="num">0</span>:
+        invalid_df.write.format(<span class="str">"delta"</span>).mode(<span class="str">"append"</span>) \
+            .save(<span class="str">"/mnt/bronze/dead_letter/trade_confirmations"</span>)
+        print(f<span class="str">"WARNING: {invalid_df.count()} records routed to dead-letter in batch {batch_id}"</span>)
+
+<span class="cm"># Auto Loader — event-driven, no directory polling, exactly-once file tracking</span>
+(spark.readStream
+    .format(<span class="str">"cloudFiles"</span>)
+    .option(<span class="str">"cloudFiles.format"</span>,         <span class="str">"csv"</span>)
+    .option(<span class="str">"cloudFiles.schemaLocation"</span>,  <span class="str">"/mnt/schema_store/trade_confirmations"</span>)
+    .option(<span class="str">"cloudFiles.inferColumnTypes"</span>, <span class="str">"true"</span>)
+    .option(<span class="str">"cloudFiles.maxFilesPerTrigger"</span>, <span class="str">"100"</span>)   <span class="cm"># backpressure</span>
+    .option(<span class="str">"cloudFiles.schemaEvolutionMode"</span>, <span class="str">"addNewColumns"</span>)  <span class="cm"># schema drift safe</span>
+    .option(<span class="str">"header"</span>, <span class="str">"true"</span>)
+    .schema(trade_schema)
+    .load(<span class="str">"/mnt/landing/trade_confirmations/"</span>)
+    .writeStream
+    .foreachBatch(<span class="fn">ingest_with_validation</span>)
+    .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/chk/trade_confirmations"</span>)
+    .trigger(processingTime=<span class="str">"2 minutes"</span>)
+    .start()
+)</div>
+    </div>
+  </div>
+
+  <div id="s3_3" class="scenario">
+    <h3>Scenario 3 — Schema drift handling in financial data pipelines</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">Upstream systems at JPMC periodically added new columns to their CSV/JSON exports without notice — a new regulatory field, a new counterparty attribute. The existing pipeline failed with a schema mismatch exception when this happened, blocking ingestion for hours until engineers manually updated the schema and restarted. In a financial environment, hours of ingestion downtime was unacceptable.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Schema drift detection and graceful evolution</div>
+      <div class="code-block"><span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+
+<span class="kw">def</span> <span class="fn">handle_schema_drift</span>(new_df, target_path: str, table_name: str):
+    <span class="kw">try</span>:
+        existing = spark.read.format(<span class="str">"delta"</span>).load(target_path)
+        existing_cols = set(existing.columns)
+        new_cols      = set(new_df.columns)
+
+        added_cols   = new_cols - existing_cols
+        removed_cols = existing_cols - new_cols - {<span class="str">"_ingestion_ts"</span>, <span class="str">"_source_file"</span>}
+
+        <span class="kw">if</span> added_cols:
+            print(f<span class="str">"SCHEMA DRIFT: New columns detected in {table_name}: {added_cols}"</span>)
+            <span class="cm"># Alert data steward — new column may need governance classification</span>
+            send_alert(f<span class="str">"Schema drift in {table_name}: new columns {added_cols}"</span>)
+            <span class="cm"># Auto-add new columns to Delta table with NULL for historical rows</span>
+            <span class="kw">for</span> col_name <span class="kw">in</span> added_cols:
+                spark.sql(f<span class="str">"ALTER TABLE delta.`{target_path}` ADD COLUMN {col_name} STRING"</span>)
+
+        <span class="kw">if</span> removed_cols:
+            print(f<span class="str">"SCHEMA DRIFT WARNING: Columns missing in new data: {removed_cols}"</span>)
+            <span class="cm"># Fill missing columns with NULL — do NOT fail the pipeline</span>
+            <span class="kw">for</span> col_name <span class="kw">in</span> removed_cols:
+                new_df = new_df.withColumn(col_name, F.lit(<span class="kw">None</span>).cast(<span class="str">"string"</span>))
+
+        <span class="cm"># Write with mergeSchema to handle any remaining drift</span>
+        new_df.write.format(<span class="str">"delta"</span>) \
+              .option(<span class="str">"mergeSchema"</span>, <span class="str">"true"</span>) \
+              .mode(<span class="str">"append"</span>).save(target_path)
+
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        <span class="cm"># On first run — table doesn't exist yet, create it</span>
+        <span class="kw">if</span> <span class="str">"is not a Delta table"</span> <span class="kw">in</span> str(e):
+            new_df.write.format(<span class="str">"delta"</span>).mode(<span class="str">"overwrite"</span>).save(target_path)
+        <span class="kw">else</span>:
+            <span class="kw">raise</span></div>
+    </div>
+    <div class="interview-box">
+      <div class="interview-title">Interview answer</div>
+      <div class="interview-body">"Schema drift was a recurring operational problem at Empower Retirement — upstream financial systems added new regulatory fields without notice, crashing our pipelines. <b>My solution was a schema drift handler that treated new columns as an event, not an error.</b> When Auto Loader detected columns not in the current Delta schema, the handler automatically added them to the Delta table (with NULL backfill for historical rows), sent a governance alert so the data steward could classify the new column, and continued ingestion — zero downtime. Removed columns were handled by filling with NULL rather than failing. This reduced schema-related pipeline failures from weekly occurrences to zero during my tenure."</div>
+    </div>
+  </div>
+
+  <div id="s3_4" class="scenario">
+    <h3>Scenario 4 — Great Expectations data quality framework in financial pipelines</h3>
+    <div class="problem-box">
+      <div class="problem-title">The Problem</div>
+      <div class="problem-body">Financial data in the CTE needed to meet strict accuracy standards before being used for testing. Bad test data caused false test failures — engineers would spend days debugging what they thought were application bugs, only to discover the test data was incorrect. There was no systematic validation — engineers eyeballed samples and hoped for the best.</div>
+    </div>
+    <div class="code-wrap">
+      <div class="code-label">PySpark — Great Expectations validation suite integrated into Databricks pipeline</div>
+      <div class="code-block"><span class="kw">import</span> great_expectations <span class="kw">as</span> ge
+<span class="kw">from</span> great_expectations.dataset <span class="kw">import</span> SparkDFDataset
+
+<span class="kw">def</span> <span class="fn">validate_trade_data</span>(df, batch_id: str) -> bool:
+    gdf = SparkDFDataset(df)
+
+    results = []
+
+    <span class="cm"># Completeness expectations</span>
+    results.append(gdf.expect_column_values_to_not_be_null(<span class="str">"trade_id"</span>))
+    results.append(gdf.expect_column_values_to_not_be_null(<span class="str">"price"</span>))
+    results.append(gdf.expect_column_values_to_not_be_null(<span class="str">"trade_date"</span>))
+
+    <span class="cm"># Business rule expectations</span>
+    results.append(gdf.expect_column_values_to_be_between(<span class="str">"price"</span>, min_value=<span class="num">0.01</span>, max_value=<span class="num">99999.99</span>))
+    results.append(gdf.expect_column_values_to_be_between(<span class="str">"quantity"</span>, min_value=<span class="num">1</span>))
+    results.append(gdf.expect_column_values_to_be_in_set(
+        <span class="str">"settlement_status"</span>, [<span class="str">"PENDING"</span>, <span class="str">"SETTLED"</span>, <span class="str">"FAILED"</span>, <span class="str">"CANCELLED"</span>]
+    ))
+
+    <span class="cm"># Referential integrity — counterparty_id must exist in reference table</span>
+    valid_counterparties = spark.read.format(<span class="str">"delta"</span>) \
+        .load(<span class="str">"/mnt/silver/dim_counterparty"</span>) \
+        .filter(F.col(<span class="str">"is_active"</span>) == <span class="kw">True</span>) \
+        .select(<span class="str">"counterparty_id"</span>) \
+        .rdd.flatMap(<span class="kw">lambda</span> x: x).collect()
+    results.append(gdf.expect_column_values_to_be_in_set(
+        <span class="str">"counterparty_id"</span>, valid_counterparties
+    ))
+
+    <span class="cm"># Uniqueness — no duplicate trade IDs</span>
+    results.append(gdf.expect_column_values_to_be_unique(<span class="str">"trade_id"</span>))
+
+    failed = [r <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if not</span> r[<span class="str">"success"</span>]]
+
+    <span class="kw">if</span> failed:
+        <span class="cm"># Log failures to quality metrics table</span>
+        quality_log = spark.createDataFrame([{
+            <span class="str">"batch_id"</span>:        batch_id,
+            <span class="str">"failed_checks"</span>:   str([f[<span class="str">"expectation_config"</span>][<span class="str">"expectation_type"</span>] <span class="kw">for</span> f <span class="kw">in</span> failed]),
+            <span class="str">"total_records"</span>:   df.count(),
+            <span class="str">"check_timestamp"</span>: datetime.datetime.utcnow().isoformat(),
+            <span class="str">"action"</span>:          <span class="str">"PIPELINE_HALTED"</span>
+        }])
+        quality_log.write.format(<span class="str">"delta"</span>).mode(<span class="str">"append"</span>) \
+            .save(<span class="str">"/mnt/bronze/quality_metrics/trade_validations"</span>)
+
+        print(f<span class="str">"QUALITY GATE FAILED: {len(failed)} checks failed. Pipeline halted."</span>)
+        <span class="kw">raise</span> ValueError(f<span class="str">"Data quality gate failed for batch {batch_id}: {failed}"</span>)
+
+    print(f<span class="str">"All {len(results)} quality checks passed for batch {batch_id}"</span>)
+    <span class="kw">return True</span></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:10px;">
+      <div class="outcome"><div class="outcome-num">Zero</div><div class="outcome-desc">Schema-related pipeline failures after drift handler implementation</div></div>
+      <div class="outcome"><div class="outcome-num">100%</div><div class="outcome-desc">Financial test data validated before use — eliminated false test failures</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showProj(projId, btn) {
+  document.querySelectorAll('.project').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.proj-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(projId).classList.add('active');
+  btn.classList.add('active');
+
+  const firstScenarioBtn = document.querySelector(`#${projId} .sub-btn`);
+  if (firstScenarioBtn) {
+    document.querySelectorAll(`#${projId} .scenario`).forEach(s => s.classList.remove('active'));
+    document.querySelectorAll(`#${projId} .sub-btn`).forEach(b => b.classList.remove('active'));
+    firstScenarioBtn.classList.add('active');
+    const firstScenario = document.querySelector(`#${projId} .scenario`);
+    if (firstScenario) firstScenario.classList.add('active');
+  }
+  window.scrollTo(0, 0);
+}
+
+function showScenario(projId, scenarioId, btn) {
+  document.querySelectorAll(`#${projId} .scenario`).forEach(s => s.classList.remove('active'));
+  document.querySelectorAll(`#${projId} .sub-btn`).forEach(b => b.classList.remove('active'));
+  document.getElementById(scenarioId).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 80);
+}
+</script>
+</body>
+</html>

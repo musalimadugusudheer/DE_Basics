@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kahramaa Project - Architectural Reference</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; margin: 40px; }
+h1 { color: #2c3e50; }
+h2 { color: #34495e; border-bottom: 1px solid #ccc; }
+table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+th, td { border: 1px solid #aaa; padding: 8px; vertical-align: top; }
+th { background-color: #f2f2f2; }
+code { background-color: #f4f4f4; padding: 2px 4px; }
+</style>
+</head>
+<body>
+
+<h1>Kahramaa Project: Comprehensive Architectural Reference Document</h1>
+<p><strong>Disclaimer:</strong> Estimates based on project description for Qatar’s national electricity & water utility (~2.9M population, ~2M smart meters). Replace with actual numbers from your deployed environment.</p>
+
+<h2>1. Source Types Breakdown (Estimated)</h2>
+<table>
+<tr><th>Source Type</th><th>Systems / Examples</th><th>Ingestion Method</th><th>Estimated Daily Records</th><th>Estimated Daily Volume (Raw)</th></tr>
+<tr><td>Real‑time Streaming</td><td>IoT smart meters (electricity/water), grid sensors</td><td>Azure Event Hubs / IoT Hub → Databricks Structured Streaming</td><td>~192 million</td><td>~150 GB</td></tr>
+<tr><td>Batch (High‑frequency)</td><td>Oracle ERP, MySQL CRM</td><td>ADF Copy Activity (hourly)</td><td>~5 million</td><td>~20 GB</td></tr>
+<tr><td>Batch (Daily)</td><td>Flat files (CSV/XML), meter logs</td><td>ADF pipelines (daily)</td><td>~500,000</td><td>~10 GB</td></tr>
+<tr><td>Batch (Weekly/Monthly)</td><td>Billing cycles, financial summaries</td><td>ADF (weekly/monthly)</td><td>~50,000</td><td>~5 GB</td></tr>
+</table>
+<p><strong>Total raw ingestion per day:</strong> ~185 GB &nbsp;|&nbsp; <strong>Per month:</strong> ~5.5 TB &nbsp;|&nbsp; <strong>Per year:</strong> ~65 TB</p>
+
+<h2>2. ADF Pipelines – Estimated Count & Categories</h2>
+<table>
+<tr><th>Category</th><th>Number</th><th>Example Names</th></tr>
+<tr><td>Ingestion – Batch</td><td>12</td><td><code>pl_ingest_oracle_erp</code>, <code>pl_ingest_mysql_crm</code></td></tr>
+<tr><td>Ingestion – Streaming</td><td>2</td><td><code>pl_stream_eh_to_bronze</code></td></tr>
+<tr><td>Orchestration</td><td>6</td><td><code>pl_orch_bronze_to_silver</code></td></tr>
+<tr><td>Post‑processing</td><td>4</td><td><code>pl_vacuum_optimize</code>, <code>pl_refresh_pbi_dataset</code></td></tr>
+<tr><td>Error Handling / Monitoring</td><td>3</td><td><code>pl_quarantine_reprocess</code></td></tr>
+<tr><td><strong>Total</strong></td><td><strong>27</strong></td><td></td></tr>
+</table>
+
+<h2>3. ADLS Gen2 Containers (Estimated)</h2>
+<table>
+<tr><th>Container</th><th>Layer</th><th>Monthly Growth</th></tr>
+<tr><td><code>landing</code></td><td>Transient raw</td><td>~5.5 TB</td></tr>
+<tr><td><code>bronze</code></td><td>Append‑only Delta</td><td>~4 TB</td></tr>
+<tr><td><code>silver</code></td><td>Cleaned Delta</td><td>~2 TB</td></tr>
+<tr><td><code>gold</code></td><td>Star schema Delta</td><td>~1 TB</td></tr>
+<tr><td><code>quarantine</code></td><td>Failed records</td><td>~50 GB</td></tr>
+<tr><td><code>logs</code></td><td>Pipeline logs</td><td>~20 GB</td></tr>
+</table>
+
+<h2>4. Database Objects – Synapse SQL Pool (Gold Layer)</h2>
+<table>
+<tr><th>Object Type</th><th>Estimated Count</th><th>Examples</th></tr>
+<tr><td>Tables</td><td>45</td><td><code>FactElectricityUsage</code>, <code>DimCustomer</code>, <code>DimMeter</code></td></tr>
+<tr><td>Views</td><td>30</td><td><code>vw_Customer360</code>, <code>vw_RegionalConsumption</code></td></tr>
+<tr><td>Functions</td><td>15</td><td><code>fn_GetPeakHours()</code></td></tr>
+<tr><td>Stored Procedures</td><td>20</td><td><code>usp_LoadMonthlyAgg</code></td></tr>
+<tr><td><strong>Total Objects</strong></td><td><strong>110</strong></td><td></td></tr>
+</table>
+
+<h2>5. Data Volume – Daily / Monthly / Yearly</h2>
+<table>
+<tr><th>Time Frame</th><th>Raw (Landing)</th><th>Bronze</th><th>Silver</th><th>Gold</th></tr>
+<tr><td>Daily</td><td>185 GB</td><td>150 GB</td><td>70 GB</td><td>30 GB</td></tr>
+<tr><td>Monthly</td><td>5.5 TB</td><td>4.5 TB</td><td>2.1 TB</td><td>0.9 TB</td></tr>
+<tr><td>Yearly</td><td>65 TB</td><td>54 TB</td><td>25 TB</td><td>11 TB</td></tr>
+</table>
+
+<h2>6. Databricks Cluster Configurations (Estimated)</h2>
+<table>
+<tr><th>Cluster Name</th><th>Purpose</th><th>Node Type</th><th>Auto‑scaling</th><th>Runtime</th></tr>
+<tr><td><code>cluster_bronze_streaming</code></td><td>Real‑time ingestion</td><td>Standard_D4ds_v5</td><td>2–6 nodes</td><td>13.3 LTS</td></tr>
+<tr><td><code>cluster_silver_transform</code></td><td>Batch dedup & enrichment</td><td>Standard_E8ds_v4</td><td>4–20 nodes</td><td>13.3 LTS ML</td></tr>
+<tr><td><code>cluster_gold_aggregate</code></td><td>Star schema aggregations</td><td>Standard_D8ds_v5</td><td>2–12 nodes</td><td>13.3 LTS</td></tr>
+<tr><td><code>cluster_dev_interactive</code></td><td>Development</td><td>Standard_D4ds_v5</td><td>1–4 nodes</td><td>13.3 LTS</td></tr>
+</table>
+
+<h2>7. Synapse SQL Pool – Estimated Configuration</h2>
+<table>
+<tr><th>Property</th><th>Value</th></tr>
+<tr><td>Pool name</td><td><code>sql_kahramaa_gold</code></td></tr>
+<tr><td>Service Level</td><td>DWU500c (scalable to DWU1000c)</td></tr>
+<tr><td>Distribution</td><td>Hash on <code>customer_id</code> for facts, replicate small dims</td></tr>
+<tr><td>Indexing</td><td>Clustered columnstore for facts</td></tr>
+<tr><td>Backup / DR</td><td>Geo‑redundant storage, snapshots every 8 hours</td></tr>
+</table>
+
+<h2>8. Star Schema – Core Entities</h2>
+<table>
+<tr><th>Fact Table</th><th>Grain</th><th>Estimated Year 1 Rows</th></tr>
+<tr><td><code>FactElectricityUsage</code></td><td>Daily per meter</td><td>730M</td></tr>
+<tr><td><code>FactWaterUsage</code></td><td>Daily per meter</td><td>548M</td></tr>
+<tr><td><code>FactBilling</code></td><td>Per bill</td><td>12M</td></tr>
+<tr><td><code>FactMeterHealth</code></td><td>Daily per meter</td><td>730M</td></tr>
+</table>
+<p><strong>Key dimensions:</strong> <code>DimCustomer</code> (~3M rows, SCD Type 2), <code>DimMeter</code> (2M), <code>DimDate</code> (~7k), <code>DimLocation</code> (50k), <code>DimTariff</code> (~100).</p>
+
+<h2>9. Complete Object Catalog (Key Examples)</h2>
+<table>
+<tr><th>Service</th><th>Object Name</th><th>Type</th><th>Description</th></tr>
+<tr><td>ADF</td><td><code>pl_ingest_oracle_erp</code></td><td>Pipeline</td><td>Hourly incremental from Oracle billing</td></tr>
+<tr><td>ADF</td><td><code>pl_orch_bronze_to_silver</code></td><td>Pipeline</td><td>Triggers Databricks notebook</td></tr>
+<tr><td>Databricks</td><td><code>nb_stream_eh_to_bronze</code></td><td>Notebook</td><td>Structured Streaming to Bronze Delta</td></tr>
+<tr><td>Synapse</td><td><code>usp_LoadGoldFromSilver</code></td><td>Procedure</td><td>MERGE from Silver to Gold</td></tr>
+<tr><td>Synapse</td><td><code>vw_DailyConsumptionByZone</code></td><td>View</td><td>Used by Power BI operations dashboard</td></tr>
+<tr><td>ADLS</td><td><code>landing</code></td><td>Container</td><td>Transient raw files</td></tr>
+<tr><td>Event Hubs</td><td><code>eh-smart-meters</code></td><td>Namespace</td><td>32 partitions</td></tr>
+</table>
+
+<p><strong>How to replace estimates with actual numbers:</strong></p>
+<ul>
+<li><strong>ADF pipelines:</strong> ADF Studio → Author → Pipelines</li>
+<li><strong>Synapse object counts:</strong> Run <code>SELECT COUNT(*) FROM sys.tables</code> etc.</li>
+<li><strong>Cluster configs:</strong> Databricks workspace → Compute → each cluster’s JSON</li>
+<li><strong>Data volumes:</strong> Azure Monitor → Log Analytics → ADF/Databricks logs</li>
+</ul>
+
+<p><em>Document generated for Kahramaa “Data Transformation & Self-Service Digitization” project. Use as living reference.</em></p>
+</body>
+</html>

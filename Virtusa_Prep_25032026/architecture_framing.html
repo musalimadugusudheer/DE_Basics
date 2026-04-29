@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  body { font-family: sans-serif; margin: 0; padding: 0; background: #fff; color: #1a1a1a; }
+  .tabs { display:flex; gap:8px; padding:1rem 1rem 0; flex-wrap:wrap; }
+  .tab { font-size:12px; padding:5px 13px; border-radius:8px; border:1px solid #ccc; background:transparent; color:#666; cursor:pointer; }
+  .tab.active { background:#dbeafe; color:#1d4ed8; border-color:transparent; font-weight:500; }
+  .panel { display:none; padding:1rem; }
+  .panel.active { display:block; }
+  .q { font-size:13px; font-weight:500; background:#f1f5f9; padding:10px 12px; border-left:3px solid #3b82f6; margin-bottom:12px; line-height:1.5; }
+  .bad { font-size:12px; color:#991b1b; background:#fee2e2; padding:10px 12px; border-radius:8px; margin-bottom:8px; }
+  .good { font-size:12px; color:#14532d; background:#dcfce7; padding:10px 12px; border-radius:8px; margin-bottom:8px; line-height:1.8; }
+  .lbl { font-size:11px; font-weight:500; margin-bottom:4px; }
+  .lbl.r { color:#dc2626; }
+  .lbl.g { color:#16a34a; }
+  .why { font-size:12px; color:#555; padding:8px 12px; border-radius:8px; border:1px solid #e5e7eb; margin-top:4px; line-height:1.6; }
+  .framework { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:10px 14px; margin-bottom:10px; }
+  .fw-title { font-size:13px; font-weight:500; margin-bottom:6px; }
+  .fw-body { font-size:12px; color:#555; line-height:1.7; }
+  .fw-body code { font-family:monospace; background:#f1f5f9; padding:1px 5px; border-radius:3px; font-size:11px; }
+  .pill { display:inline-block; font-size:11px; padding:1px 8px; border-radius:10px; margin-right:4px; }
+  .pb { background:#dbeafe; color:#1d4ed8; }
+  .pg { background:#dcfce7; color:#15803d; }
+  .pa { background:#fef3c7; color:#b45309; }
+</style>
+</head>
+<body>
+<div class="tabs">
+  <button class="tab active" onclick="sw('q1',this)">Walk me through your architecture</button>
+  <button class="tab" onclick="sw('q2',this)">Data quality strategy</button>
+  <button class="tab" onclick="sw('q3',this)">Migration strategy</button>
+  <button class="tab" onclick="sw('q4',this)">Data security</button>
+  <button class="tab" onclick="sw('q5',this)">PACE framework</button>
+</div>
+
+<div id="q1" class="panel active">
+  <div class="q">"Walk me through a data architecture you designed for a large, complex system."</div>
+  <div class="lbl r">Weak answer (engineer framing)</div>
+  <div class="bad">"At Kahramaa I built ADF pipelines to pull from Oracle and IoT devices into ADLS. Then I used Databricks to transform the data and loaded it into Power BI dashboards."</div>
+  <div class="lbl g" style="margin-top:10px;">Strong answer (architect framing)</div>
+  <div class="good">
+    "At Kahramaa — a utility managing electricity and water for Qatar — I was responsible for the end-to-end data architecture for their digital transformation programme.<br><br>
+    The core challenge was ingesting from heterogeneous sources: Oracle ERP, MySQL, IoT sensors, and REST APIs — each with different latency, volume, and reliability profiles. So I defined a <b>zone-based Lakehouse architecture</b> on ADLS Gen2 with three layers: Bronze for raw immutable ingestion; Silver for cleansed, conformed data with schema enforcement and SCD2 dimensions; and Gold as the consumption layer optimised for BI and self-service analytics.<br><br>
+    For the ingestion strategy, I separated batch and streaming workloads — ADF for scheduled batch, Databricks Structured Streaming for near-real-time IoT telemetry — preventing streaming latency from being blocked by heavy batch loads.<br><br>
+    For reliability, I implemented Delta Lake with ACID transactions and time travel so any data quality issue could be rolled back to a clean checkpoint without full reprocessing. Query performance on Gold was optimised through partitioning by date and Z-order clustering, reducing retrieval time by over 60%.<br><br>
+    The architecture served both operational reporting and self-service analytics via Power BI, with governance enforced through RBAC and PII classification across all zones."
+  </div>
+  <div class="why">Why this works: Business context → architectural decision → rationale → technical choices → outcome. That is the full architect arc.</div>
+</div>
+
+<div id="q2" class="panel">
+  <div class="q">"How do you approach data quality at scale?"</div>
+  <div class="lbl r">Weak answer</div>
+  <div class="bad">"I used Great Expectations in Databricks to run quality checks on the data."</div>
+  <div class="lbl g" style="margin-top:10px;">Strong answer</div>
+  <div class="good">
+    "I treat data quality as a layered strategy, not a single tool.<br><br>
+    At the <b>ingestion layer</b> I enforce schema validation and null checks at Bronze — reject or quarantine malformed records early before they propagate downstream. In Empower Retirement I used Databricks Auto Loader with schema inference and drift detection so unexpected fields were flagged rather than silently dropped.<br><br>
+    At the <b>transformation layer</b> in Silver, I implemented Great Expectations within Databricks workflows — defining expectations around completeness, referential integrity, and value ranges. Failed expectations halted the pipeline rather than loading bad data into Gold.<br><br>
+    At the <b>consumption layer</b>, I use data profiling — row counts, null rates, distribution checks — compared across pipeline runs to catch silent degradation before any dashboard consumer sees it.<br><br>
+    Governance-wise, Unity Catalog lineage tracking means when a quality issue is found, we can trace exactly which source record caused it and which downstream reports are affected."
+  </div>
+  <div class="why">Covers the full lifecycle: prevention → validation → monitoring → traceability. That is quality architecture, not just a tool mention.</div>
+</div>
+
+<div id="q3" class="panel">
+  <div class="q">"How do you define a workload migration strategy from on-prem to cloud?"</div>
+  <div class="lbl r">Weak answer</div>
+  <div class="bad">"I migrated Oracle databases to Azure using Databricks and ADF."</div>
+  <div class="lbl g" style="margin-top:10px;">Strong answer</div>
+  <div class="good">
+    "I follow a phased approach: assess, design, execute, validate.<br><br>
+    <b>Assess:</b> Catalogue existing workloads — volumes, query patterns, SLAs, dependencies, data sensitivity. At Kahramaa we mapped every Oracle schema, classified tables as hot/warm/cold, and identified PII data requiring masking during migration.<br><br>
+    <b>Design:</b> Choose the migration pattern. For Kahramaa we used lift-and-extend — not just lifting to Azure, but redesigning into a Lakehouse architecture, replacing Oracle views with Delta tables and Spark transformations.<br><br>
+    <b>Execute:</b> Migrate in waves — non-critical historical data first, then operational tables in parallel-run mode where both Oracle and Azure were live simultaneously. ADF Integration Runtime maintained secure hybrid connectivity during the transition.<br><br>
+    <b>Validate:</b> Row counts, checksums, and business KPI comparisons before every cutover. No wave signed off without reconciliation reports approved by the business.<br><br>
+    Risk management throughout — every wave had a rollback plan, and Oracle source remained read-only for 30 days post-cutover as a safety net."
+  </div>
+  <div class="why">Structured thinking + risk awareness + business alignment = architect-level answer.</div>
+</div>
+
+<div id="q4" class="panel">
+  <div class="q">"How do you approach data security and governance in a large architecture?"</div>
+  <div class="lbl r">Weak answer</div>
+  <div class="bad">"I implemented RBAC and PII compliance using Unity Catalog and Azure Key Vault."</div>
+  <div class="lbl g" style="margin-top:10px;">Strong answer</div>
+  <div class="good">
+    "I treat security as a four-pillar framework: access control, data classification, encryption, and auditability.<br><br>
+    <b>Access control:</b> RBAC at platform level via Unity Catalog — fine-grained privileges at catalog, schema, and table level. Engineers write to Bronze/Silver, analysts read Gold, business users access curated views only. At Kyndryl for NAB I also enforced Azure Private Endpoints so all data traffic stayed within the private network — no public internet exposure.<br><br>
+    <b>Data classification:</b> Automated PII detection and tagging — national IDs, phone numbers, account numbers are tagged in Unity Catalog and those tags drive dynamic masking policies automatically for non-privileged roles.<br><br>
+    <b>Encryption:</b> At rest via ADLS Gen2 built-in encryption, in transit via TLS. All secrets — API keys, connection strings — stored in Azure Key Vault, never hardcoded.<br><br>
+    <b>Auditability:</b> Unity Catalog audit logs combined with Azure Monitor give a complete trail — who accessed what data, when, and from where. This was critical for NAB where regulatory compliance required demonstrable access controls."
+  </div>
+  <div class="why">Four-pillar structure is memorable and comprehensive. Interviewers can follow each dimension clearly.</div>
+</div>
+
+<div id="q5" class="panel">
+  <div class="fw-title" style="margin-bottom:12px;">The PACE framework — structure every architecture answer</div>
+  <div class="framework">
+    <div class="fw-title"><span class="pill pb">P</span> Problem — what was the business challenge?</div>
+    <div class="fw-body">Start with business context, not technology. "Kahramaa needed to move from manual reporting to self-service analytics across electricity and water operations." This anchors everything that follows in real impact.</div>
+  </div>
+  <div class="framework">
+    <div class="fw-title"><span class="pill pa">A</span> Architecture decision — what did you design and why?</div>
+    <div class="fw-body">Describe structure and reasoning. <code>why Delta Lake</code> not just <code>used Delta Lake</code>. <code>why separate batch and streaming</code> not just <code>built streaming</code>. The "why" is what separates architects from engineers.</div>
+  </div>
+  <div class="framework">
+    <div class="fw-title"><span class="pill pa">C</span> Challenges — what risks or constraints did you navigate?</div>
+    <div class="fw-body">Mention at least one: data quality issues, legacy constraints, compliance, performance, skill gaps. Architects are known for managing complexity, not pretending it doesn't exist.</div>
+  </div>
+  <div class="framework">
+    <div class="fw-title"><span class="pill pg">E</span> Evidence — what was the measurable outcome?</div>
+    <div class="fw-body">Quantify where possible: <code>40% automation</code>, <code>60% query improvement</code>, <code>95% success rate</code>. If no metric, describe business impact: "enabled self-service analytics for business teams for the first time."</div>
+  </div>
+  <div class="why" style="margin-top:10px;">Apply PACE to every architecture question. Takes 30 seconds to mentally structure before speaking — and makes you sound like someone who operates at a senior level routinely.</div>
+</div>
+
+<script>
+function sw(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

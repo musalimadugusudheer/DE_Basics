@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #1a1a1a; font-size: 13px; line-height: 1.6; }
+
+.nav { background: #1e293b; padding: 12px 16px; position: sticky; top: 0; z-index: 100; display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-btn { font-size: 11px; padding: 4px 11px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: rgba(255,255,255,0.7); cursor: pointer; white-space: nowrap; }
+.nav-btn.active { background: #3b82f6; color: #fff; border-color: transparent; font-weight: 500; }
+
+.page { display: none; padding: 16px; max-width: 900px; margin: 0 auto; }
+.page.active { display: block; }
+
+h2 { font-size: 17px; font-weight: 600; color: #1e293b; margin-bottom: 4px; }
+h3 { font-size: 14px; font-weight: 600; color: #334155; margin: 16px 0 6px; }
+h4 { font-size: 12px; font-weight: 600; color: #475569; margin: 10px 0 4px; text-transform: uppercase; letter-spacing: .04em; }
+
+.subtitle { font-size: 12px; color: #64748b; margin-bottom: 14px; }
+
+.card { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+.card-title { font-size: 13px; font-weight: 600; color: #1e293b; margin-bottom: 6px; }
+.card-body { font-size: 12px; color: #475569; line-height: 1.7; }
+
+.q-block { background: #f1f5f9; border-left: 3px solid #3b82f6; padding: 10px 14px; border-radius: 0 8px 8px 0; margin-bottom: 10px; font-size: 13px; font-weight: 500; color: #1e293b; }
+.answer { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 14px; font-size: 12px; color: #14532d; line-height: 1.8; margin-bottom: 8px; }
+.answer b { color: #166534; }
+.warn-box { background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #713f12; line-height: 1.7; margin-bottom: 8px; }
+.danger-box { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #7f1d1d; line-height: 1.7; margin-bottom: 8px; }
+.info-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #1e3a8a; line-height: 1.7; margin-bottom: 8px; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+.badge { display: inline-block; font-size: 10px; padding: 1px 7px; border-radius: 10px; font-weight: 500; margin-left: 4px; }
+.b-blue { background: #dbeafe; color: #1d4ed8; }
+.b-green { background: #dcfce7; color: #15803d; }
+.b-amber { background: #fef3c7; color: #b45309; }
+.b-red { background: #fee2e2; color: #b91c1c; }
+.b-purple { background: #ede9fe; color: #6d28d9; }
+
+.step { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+.step-num { width: 24px; height: 24px; border-radius: 50%; background: #3b82f6; color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.step-body { font-size: 12px; color: #475569; line-height: 1.7; }
+.step-body b { color: #1e293b; }
+
+code { font-family: 'Courier New', monospace; background: #f1f5f9; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: #7c3aed; }
+
+.code-block { background: #1e293b; color: #e2e8f0; border-radius: 8px; padding: 12px 14px; font-family: 'Courier New', monospace; font-size: 11px; line-height: 1.7; margin-bottom: 10px; overflow-x: auto; }
+.code-block .kw { color: #7dd3fc; }
+.code-block .cm { color: #64748b; }
+.code-block .str { color: #86efac; }
+
+.tier { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; }
+.tier-label { font-size: 12px; font-weight: 600; width: 80px; flex-shrink: 0; }
+.tier-desc { font-size: 12px; color: #475569; }
+
+.divider { border: none; border-top: 1px solid #e2e8f0; margin: 16px 0; }
+
+.tradeoff { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.pro { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px; }
+.con { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px; }
+.pro-title { font-size: 11px; font-weight: 600; color: #15803d; margin-bottom: 4px; }
+.con-title { font-size: 11px; font-weight: 600; color: #b91c1c; margin-bottom: 4px; }
+.pro li, .con li { font-size: 12px; color: #374151; margin-left: 14px; margin-bottom: 2px; }
+
+.interview-tip { background: #faf5ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #4c1d95; line-height: 1.7; margin-top: 10px; }
+.interview-tip b { color: #3b0764; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="show('p1',this)">1. Architecture Strategy</button>
+  <button class="nav-btn" onclick="show('p2',this)">2. Data Correctness</button>
+  <button class="nav-btn" onclick="show('p3',this)">3. Idempotency & Dedup</button>
+  <button class="nav-btn" onclick="show('p4',this)">4. Watermarking & Late Data</button>
+  <button class="nav-btn" onclick="show('p5',this)">5. Streaming Architecture</button>
+  <button class="nav-btn" onclick="show('p6',this)">6. Fault Tolerance & Scale</button>
+  <button class="nav-btn" onclick="show('p7',this)">7. Compaction & Freshness</button>
+  <button class="nav-btn" onclick="show('p8',this)">8. Your Story — Full Arc</button>
+</div>
+
+<!-- PAGE 1: ARCHITECTURE STRATEGY -->
+<div id="p1" class="page active">
+  <h2>Large-scale data architecture — strategy & roadmap</h2>
+  <p class="subtitle">How a principal architect thinks about designing for a complex organisation — not just a pipeline</p>
+
+  <h3>The 5-layer architecture thinking model</h3>
+  <p style="font-size:12px;color:#475569;margin-bottom:10px;">Every large-scale data architecture decision sits in one of five layers. When you talk about architecture, walk through these layers — it shows you think systemically, not just technically.</p>
+
+  <div class="tier" style="background:#fef3c7;">
+    <div class="tier-label" style="color:#b45309;">Business</div>
+    <div class="tier-desc"><b>What outcomes does data need to enable?</b> Self-service analytics, regulatory reporting, ML models, operational dashboards. This layer drives all decisions below it.</div>
+  </div>
+  <div class="tier" style="background:#ede9fe;">
+    <div class="tier-label" style="color:#6d28d9;">Governance</div>
+    <div class="tier-desc"><b>Who owns data, who can access it, and how is it trusted?</b> Data ownership, stewardship, classification, lineage, quality SLAs, compliance requirements.</div>
+  </div>
+  <div class="tier" style="background:#dbeafe;">
+    <div class="tier-label" style="color:#1d4ed8;">Semantic</div>
+    <div class="tier-desc"><b>What does the data mean?</b> Data models, business glossary, conformed dimensions, metric definitions. The layer that makes data consistent across teams.</div>
+  </div>
+  <div class="tier" style="background:#dcfce7;">
+    <div class="tier-label" style="color:#15803d;">Processing</div>
+    <div class="tier-desc"><b>How does data move and transform?</b> Ingestion patterns, pipeline orchestration, transformation logic, batch vs streaming, SCD handling, quality checks.</div>
+  </div>
+  <div class="tier" style="background:#f1f5f9;">
+    <div class="tier-label" style="color:#475569;">Storage</div>
+    <div class="tier-desc"><b>Where does data live and in what format?</b> Lakehouse zones, table formats (Delta, Iceberg), partitioning, compaction, hot/warm/cold tiering.</div>
+  </div>
+
+  <div class="interview-tip" style="margin-top:14px;"><b>Interview answer:</b> "When I approach a large-scale architecture, I start from the business layer — what decisions does this organisation need to make with data? Then I work down: what governance model supports that, what semantic layer makes data consistent across teams, what processing architecture meets the SLAs, and what storage strategy balances cost, performance, and freshness. Every technology choice is a consequence of decisions made in the layers above it."</div>
+
+  <hr class="divider"/>
+
+  <h3>Building a data strategy & roadmap — the 4-phase model</h3>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body"><b>Current state assessment (As-Is)</b><br>
+    Inventory all data sources, systems, volumes, formats. Map data flows end-to-end. Identify pain points: data silos, no single source of truth, manual reporting, poor data quality, compliance gaps. At Kahramaa this meant mapping Oracle ERP, MySQL, IoT sensors — each with different owners, update frequencies, and reliability.
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body"><b>Target state design (To-Be)</b><br>
+    Define the target architecture aligned to business outcomes. Key decisions: centralised vs federated (data mesh), batch vs streaming, single DWH vs Lakehouse vs data fabric, cloud-native vs hybrid. Document architecture decision records (ADRs) — every major choice with alternatives considered and reasoning.
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body"><b>Gap analysis & prioritisation</b><br>
+    What needs to change to get from As-Is to To-Be? Prioritise by business value vs effort. Typical priority matrix: quick wins (high value, low effort) → strategic (high value, high effort) → fill-ins (low value, low effort) → deprioritise (low value, high effort).
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body"><b>Phased roadmap with milestones</b><br>
+    Phase 1 (0-3 months): Foundation — core ingestion, governance framework, first Gold layer domain.<br>
+    Phase 2 (3-9 months): Scale — additional domains, self-service analytics, data quality automation.<br>
+    Phase 3 (9-18 months): Optimise — real-time capabilities, ML feature store, data products.<br>
+    Each phase has measurable outcomes — not just technical deliverables but business outcomes.
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Architecture patterns for large, complex organisations</h3>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Medallion Lakehouse <span class="badge b-green">your primary pattern</span></div>
+      <div class="card-body">Bronze (raw) → Silver (conformed) → Gold (domain-optimised). Best for organisations needing both analytical flexibility and governed consumption. You implemented this at Kahramaa and Kyndryl. Key decision: Gold layer can be further split into domain-specific marts.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Data Mesh <span class="badge b-blue">emerging pattern</span></div>
+      <div class="card-body">Decentralised — each business domain owns its data as a product. Central platform team provides infrastructure. Best for large enterprises with autonomous teams. Requires strong data product contracts and federated governance. Know this exists but don't overclaim experience.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Lambda Architecture <span class="badge b-amber">legacy but asked about</span></div>
+      <div class="card-body">Separate batch layer (recomputes full history) and speed layer (real-time approximate). Complex to maintain — two codebases for same logic. Largely replaced by Kappa or Delta Lake unified approach. Know it conceptually.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Kappa Architecture <span class="badge b-purple">modern streaming</span></div>
+      <div class="card-body">Everything is a stream — historical reprocessing done by replaying event log. Simpler than Lambda. Requires a replayable log (Kafka, Event Hubs). Your Kyndryl streaming work is closer to Kappa than Lambda.</div>
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Key architectural decisions — what architects get asked</h3>
+
+  <div class="q-block">"When would you choose a Lakehouse over a traditional Data Warehouse?"</div>
+  <div class="answer">
+    "Traditional DWH (Synapse, Snowflake, Redshift) is excellent for structured, governed, SQL-based analytics with predictable query patterns. I'd choose it when the organisation has well-defined reporting needs and BI tooling is the primary consumer.<br><br>
+    I'd choose a Lakehouse when: (1) the organisation has diverse data types — structured, semi-structured, unstructured — and we need to store raw data before the schema is known; (2) ML workloads need access to the same data as BI; (3) we need to support both streaming and batch on the same storage layer; (4) cost at scale is a concern — ADLS Gen2 storage is far cheaper than DWH compute+storage bundles.<br><br>
+    At Kahramaa, the Lakehouse was the right choice because we had IoT sensor data (semi-structured), Oracle relational data, and API JSON — a traditional DWH would have forced us to define schema before we understood the data. The Bronze zone let us land everything raw and figure out the right model in Silver."
+  </div>
+
+  <div class="q-block">"How do you design for scalability in a data platform?"</div>
+  <div class="answer">
+    "Scalability in data platforms has four dimensions: volume, velocity, variety, and concurrency.<br><br>
+    <b>Volume:</b> Partition strategy is everything. Partitioning by date is the most common — it enables partition pruning so queries only scan relevant data. Z-order clustering on high-cardinality filter columns (customer_id, product_id) further reduces scan size. At Empower Retirement I reduced query retrieval time by 60% through these techniques alone.<br><br>
+    <b>Velocity:</b> Separate ingestion paths for batch and streaming. Don't let heavy batch jobs compete with streaming for cluster resources. Use auto-scaling clusters in Databricks — streaming jobs get dedicated clusters, batch jobs scale to workload.<br><br>
+    <b>Variety:</b> Schema-on-read for raw ingestion (Bronze), schema enforcement at Silver using Delta's schema evolution controls. Auto Loader in Databricks handles continuously arriving files without manual intervention.<br><br>
+    <b>Concurrency:</b> Separate compute from storage (core Lakehouse principle). Multiple teams can query the Gold layer simultaneously without contention because each spins up its own compute against shared ADLS storage."
+  </div>
+</div>
+
+<!-- PAGE 2: DATA CORRECTNESS -->
+<div id="p2" class="page">
+  <h2>Data correctness — ensuring accuracy end-to-end</h2>
+  <p class="subtitle">A principal architect's view of correctness — it's a system property, not a check at one point</p>
+
+  <h3>The correctness pyramid</h3>
+  <p style="font-size:12px;color:#475569;margin-bottom:10px;">Data correctness operates at multiple levels simultaneously. Architects define correctness contracts at each level.</p>
+
+  <div class="card">
+    <div class="card-title">Level 1 — Schema correctness</div>
+    <div class="card-body">Does the data have the right shape? Correct column names, data types, nullability constraints. <b>How you enforce it:</b> Delta Lake schema enforcement (mergeSchema=false for strict mode), Great Expectations schema validation, Auto Loader schema inference with drift alerts. Failure action: quarantine to a dead-letter zone, alert, do not propagate.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Level 2 — Completeness correctness</div>
+    <div class="card-body">Is all expected data present? No missing rows, no truncated files, no partial loads. <b>How you enforce it:</b> Row count validation between source and target after each pipeline run. Checksum or hash comparison for critical tables. Watermark tracking — if yesterday's batch delivered 1M rows and today's delivers 50K, trigger an alert before loading Gold. This is especially critical for financial data.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Level 3 — Referential correctness</div>
+    <div class="card-body">Do foreign keys resolve? Do fact table keys exist in dimension tables? <b>How you enforce it:</b> Referential integrity checks in Great Expectations or dbt tests. In Databricks, a custom PySpark check: anti-join between fact and dimension — any orphaned fact rows get flagged and routed to a quarantine table with the reason logged.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Level 4 — Business rule correctness</div>
+    <div class="card-body">Does data conform to domain logic? Order amount cannot be negative. Transaction date cannot be in the future. Customer age must be between 0-120. <b>How you enforce it:</b> Business rule engine in Silver transformation — parameterised rule configs (so business teams can update rules without code changes), failed records to quarantine with rule violation logged, metrics dashboard showing violation rates over time.</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Level 5 — Consistency correctness</div>
+    <div class="card-body">Is the same fact reported identically across all systems? The total revenue in the finance dashboard must match the sales dashboard must match the data warehouse. <b>How you enforce it:</b> Conformed dimensions and conformed metrics — single definitions of revenue, customer, and product agreed across business domains and enforced at the Gold layer. Metric store (e.g. dbt metrics) ensures one definition, many consumers.</div>
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Data quality SLA framework — how architects define it</h3>
+
+  <div class="three-col">
+    <div class="card">
+      <div class="card-title">Timeliness SLA</div>
+      <div class="card-body">Data must be available in Gold layer within X minutes/hours of source system update. Define per domain: operational data = 15 min, financial reporting = 4 hours, historical analytics = next day. Monitor with pipeline duration alerting.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Completeness SLA</div>
+      <div class="card-body">95% of expected records must arrive within the SLA window. 99% within 2x the window. Define acceptable late-arrival tolerance per domain. Track with daily completeness scorecards.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Accuracy SLA</div>
+      <div class="card-body">Less than 0.01% of records may fail business rule validation. Any breach triggers automated rollback of the affected batch and incident creation. Critical financial data may require 100% accuracy — zero tolerance.</div>
+    </div>
+  </div>
+
+  <div class="interview-tip"><b>Your Kahramaa story:</b> "At Kahramaa I implemented a data quality framework across all three layers. At Bronze, schema validation on ingestion. At Silver, Great Expectations checks for completeness, referential integrity, and value range validation — failed records were quarantined to a dead-letter table rather than propagating to Gold. At Gold, we ran cross-system reconciliation reports daily — the Power BI consumption layer numbers had to reconcile with the source Oracle system within 0.01%. Unity Catalog lineage meant when a discrepancy was found, we could trace it to the exact pipeline run and source record within minutes."</div>
+</div>
+
+<!-- PAGE 3: IDEMPOTENCY & DEDUP -->
+<div id="p3" class="page">
+  <h2>Replay-safe ingestion — idempotency & deduplication</h2>
+  <p class="subtitle">Critical for production-grade pipelines — this is where senior engineers separate from architects</p>
+
+  <h3>What is idempotency and why does it matter?</h3>
+  <div class="info-box">
+    An operation is <b>idempotent</b> if running it multiple times produces the same result as running it once. In data pipelines: if a pipeline runs twice due to a failure and retry, the target table should look exactly the same as if it ran once. Without idempotency, retries cause duplicate records, double-counted metrics, and corrupted aggregations.
+  </div>
+
+  <h3>Three levels of idempotency in your architecture</h3>
+
+  <div class="card">
+    <div class="card-title">Level 1 — Idempotent writes (Delta Lake MERGE)</div>
+    <div class="card-body">
+      The most important technique. Instead of INSERT (which duplicates on retry), use MERGE INTO — match on a natural/surrogate key, UPDATE if exists, INSERT if new. Delta Lake's MERGE is ACID — it either fully succeeds or fully rolls back.<br><br>
+      <b>Your experience:</b> You implemented this at Kyndryl for SCD2 — MERGE INTO on the dimension table matching on device_id + is_current, closing old rows and inserting new ones. If the pipeline retried, the MERGE was idempotent — same result every time.
+    </div>
+  </div>
+
+  <div class="code-block">
+<span class="cm">-- Idempotent SCD2 MERGE in Delta Lake (from your Kyndryl work)</span>
+<span class="kw">MERGE INTO</span> silver.dim_network_device <span class="kw">AS</span> target
+<span class="kw">USING</span> (
+  <span class="kw">SELECT</span> device_id, config_hash, config_state, current_timestamp() <span class="kw">AS</span> effective_from
+  <span class="kw">FROM</span> bronze.network_changes_staging
+  <span class="kw">WHERE</span> batch_id = <span class="str">'2025-03-25-001'</span>  <span class="cm">-- deterministic batch key</span>
+) <span class="kw">AS</span> source
+<span class="kw">ON</span> target.device_id = source.device_id <span class="kw">AND</span> target.is_current = <span class="kw">true</span>
+<span class="kw">WHEN MATCHED AND</span> target.config_hash != source.config_hash <span class="kw">THEN</span>
+  <span class="kw">UPDATE SET</span> target.is_current = <span class="kw">false</span>, target.effective_to = source.effective_from
+<span class="kw">WHEN NOT MATCHED THEN</span>
+  <span class="kw">INSERT</span> (device_id, config_hash, config_state, effective_from, effective_to, is_current)
+  <span class="kw">VALUES</span> (source.device_id, source.config_hash, source.config_state, source.effective_from, <span class="str">'9999-12-31'</span>, <span class="kw">true</span>)
+  </div>
+
+  <div class="card">
+    <div class="card-title">Level 2 — Deterministic batch keys</div>
+    <div class="card-body">
+      Every pipeline run must have a unique, deterministic batch_id — typically the processing date + sequence number. This batch_id is written to every record. On retry, the pipeline first deletes records with that batch_id (or uses MERGE), then re-inserts. Because the batch_id is the same on retry, the result is identical to the first run.<br><br>
+      <b>Anti-pattern:</b> Using <code>current_timestamp()</code> as a pipeline run ID — every retry generates a new ID, making deduplication impossible.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Level 3 — Checkpoint-based resumption</div>
+    <div class="card-body">
+      For streaming pipelines, Databricks Structured Streaming uses checkpoints to track exactly which offsets have been processed. On restart, it resumes from the last committed checkpoint — not from the beginning, not from "now". This is the streaming equivalent of idempotency — exactly-once processing semantics with Delta Lake as the sink.<br><br>
+      <b>Your Kyndryl work:</b> Your Event Hubs + Structured Streaming pipeline used checkpoints stored in ADLS. When a node failed, the stream restarted from the last checkpoint — no data loss, no duplicates.
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Deduplication strategies</h3>
+
+  <div class="q-block">"How do you handle duplicate records in a high-volume ingestion pipeline?"</div>
+  <div class="answer">
+    "Deduplication strategy depends on where duplicates originate and what the volume is.<br><br>
+    <b>Source-level duplicates</b> (same event sent multiple times by the source): I assign a deterministic event_id at ingestion — typically a hash of the key business fields (source_system + entity_id + event_timestamp). At Bronze I log all records including duplicates. At Silver, I deduplicate using <code>ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY ingestion_timestamp DESC) = 1</code> — keeping the latest version of each event_id.<br><br>
+    <b>Pipeline retry duplicates</b> (retry after failure re-processes the same batch): Handled by idempotent MERGE writes at Silver and Gold — the natural key match ensures existing records are updated, not duplicated.<br><br>
+    <b>Streaming deduplication</b>: Databricks Structured Streaming with <code>dropDuplicates(['event_id'])</code> within a watermark window. This maintains a state store of seen event_ids within the window. Beyond the window, Delta Lake's MERGE handles any late-arriving duplicates.<br><br>
+    At scale — say 100M events/day — full in-memory deduplication is expensive. I use a bloom filter approach: fast probabilistic check first (is this event_id likely seen?), only query the state store on positive hits. This reduces state store lookups by 95%+ for typical duplicate rates."
+  </div>
+
+  <div class="code-block">
+<span class="cm"># Deduplication in PySpark Structured Streaming (your Kyndryl pattern)</span>
+<span class="kw">from</span> pyspark.sql <span class="kw">import</span> functions <span class="kw">as</span> F
+
+deduplicated_stream = (
+  raw_stream
+  .withWatermark(<span class="str">"event_timestamp"</span>, <span class="str">"2 hours"</span>)   <span class="cm"># late arrival tolerance</span>
+  .dropDuplicates([<span class="str">"event_id"</span>, <span class="str">"event_timestamp"</span>])  <span class="cm"># within watermark window</span>
+)
+
+<span class="cm"># Write with exactly-once semantics to Delta Lake</span>
+query = (
+  deduplicated_stream.writeStream
+  .format(<span class="str">"delta"</span>)
+  .outputMode(<span class="str">"append"</span>)
+  .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/mnt/checkpoints/network_events"</span>)
+  .trigger(processingTime=<span class="str">"30 seconds"</span>)
+  .start(<span class="str">"/mnt/silver/network_events"</span>)
+)
+  </div>
+</div>
+
+<!-- PAGE 4: WATERMARKING & LATE DATA -->
+<div id="p4" class="page">
+  <h2>Watermarking, late-arriving & out-of-order data</h2>
+  <p class="subtitle">The hardest streaming problem — and one most engineers get wrong</p>
+
+  <h3>Event time vs processing time — the core concept</h3>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title">Event time <span class="badge b-blue">what happened when</span></div>
+      <div class="card-body">The timestamp when the event actually occurred in the real world. An IoT sensor reading at 14:32:05. A transaction completed at 09:15:22. This is what you want to aggregate on for correct analytics.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Processing time <span class="badge b-amber">when we saw it</span></div>
+      <div class="card-body">When the event arrived at the pipeline. Always later than event time — due to network latency, device offline time, retry delays. Processing-time windows are simple but give wrong results for late data.</div>
+    </div>
+  </div>
+
+  <div class="warn-box"><b>The problem:</b> An IoT device goes offline at 14:30 and reconnects at 16:00, sending all buffered events. At 16:00, your pipeline receives events with timestamps from 14:30–16:00. If you've already closed the 14:30–15:00 aggregation window, do you reopen it? For how long? This is exactly the problem watermarking solves.</div>
+
+  <h3>Watermarking — the architecture decision</h3>
+  <div class="info-box">
+    A <b>watermark</b> is a threshold that defines how late data can arrive and still be included in a window. It tells the engine: "I will wait up to X minutes for late data. After that, I close the window and emit the result."<br><br>
+    <code>withWatermark("event_timestamp", "2 hours")</code> means: the current window stays open until the max event_timestamp seen so far minus 2 hours. Any event arriving after this threshold is either discarded or routed to a late-arrival correction path.
+  </div>
+
+  <div class="q-block">"How do you design a system to handle late-arriving and out-of-order events?"</div>
+  <div class="answer">
+    "I design a two-path system: the primary streaming path and a late-arrival correction path.<br><br>
+    <b>Primary path — streaming with watermark:</b> I configure watermarks based on the observed late-arrival distribution of each source. For Kahramaa IoT devices, I measured that 99% of events arrived within 30 minutes of event time. So I set a 45-minute watermark — covering 99th percentile with buffer. This keeps state store memory bounded while tolerating almost all late arrivals.<br><br>
+    <b>Watermark setting strategy:</b> Don't guess — measure. Run a historical analysis: <code>MAX(processing_time - event_time)</code> grouped by source and hour of day. Set watermark at P99 of that distribution. Review monthly as source behaviour changes.<br><br>
+    <b>Late-arrival correction path:</b> Events arriving after the watermark are not discarded — they're routed to a late_arrival_staging table. A daily batch job (running at 2 AM) replays these events against the affected Delta Lake partitions using a MERGE, correcting the historical aggregations. Delta Lake time travel means the pre-correction state is preserved for audit.<br><br>
+    <b>Out-of-order handling:</b> Structured Streaming processes events in arrival order but attributes them to the correct event-time window. Z-order indexing on event_timestamp in Delta Lake means retroactive corrections only scan the relevant partition — no full table scan needed.<br><br>
+    At Kyndryl, this pattern handled NAB's weekend change window backlog — thousands of network events arriving Monday morning with Friday timestamps — without corrupting the Saturday/Sunday operational metrics."
+  </div>
+
+  <div class="code-block">
+<span class="cm"># Two-path late arrival architecture (your pattern, articulated)</span>
+
+<span class="cm"># Path 1: Primary streaming with watermark</span>
+windowed_agg = (
+  stream
+  .withWatermark(<span class="str">"event_time"</span>, <span class="str">"45 minutes"</span>)
+  .groupBy(
+    F.window(<span class="str">"event_time"</span>, <span class="str">"15 minutes"</span>),
+    <span class="str">"device_id"</span>
+  )
+  .agg(F.count(<span class="str">"*"</span>).alias(<span class="str">"event_count"</span>), F.avg(<span class="str">"metric_value"</span>).alias(<span class="str">"avg_metric"</span>))
+)
+
+<span class="cm"># Path 2: Route truly late events to staging</span>
+late_events = (
+  stream
+  .filter(F.col(<span class="str">"event_time"</span>) < F.current_timestamp() - F.expr(<span class="str">"INTERVAL 45 MINUTES"</span>))
+  .writeStream.format(<span class="str">"delta"</span>)
+  .option(<span class="str">"checkpointLocation"</span>, <span class="str">"/chk/late_staging"</span>)
+  .start(<span class="str">"/mnt/silver/late_arrival_staging"</span>)
+)
+
+<span class="cm"># Nightly correction job: MERGE late events into final aggregation table</span>
+<span class="cm"># Delta time travel preserves pre-correction state for audit</span>
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Watermark trade-off — what architects must articulate</h3>
+  <div class="tradeoff">
+    <div class="pro">
+      <div class="pro-title">Longer watermark window</div>
+      <ul>
+        <li>More late events included automatically</li>
+        <li>Higher result accuracy</li>
+        <li>Better for devices with long offline periods</li>
+      </ul>
+    </div>
+    <div class="con">
+      <div class="con-title">Cost of longer window</div>
+      <ul>
+        <li>Larger state store in memory</li>
+        <li>Higher latency to emit results</li>
+        <li>More cluster memory needed</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="interview-tip"><b>Architect answer:</b> "The watermark is fundamentally a latency-accuracy trade-off. I set it based on SLA requirements — if the business needs real-time fraud signals within 30 seconds, I cannot afford a 2-hour watermark. Instead I use a shorter watermark for the real-time path and a late-arrival correction job for accuracy. If the business needs correct historical aggregations above all else, I use a longer watermark and accept higher latency. I always make this trade-off explicitly, with the business, documented in the architecture decision record."</div>
+</div>
+
+<!-- PAGE 5: STREAMING ARCHITECTURE -->
+<div id="p5" class="page">
+  <h2>Streaming architecture — fraud detection & real-time transaction processing</h2>
+  <p class="subtitle">Low-latency, fault-tolerant streaming design — the kind asked in architect interviews</p>
+
+  <h3>Real-time fraud detection architecture — full design</h3>
+  <div class="q-block">"Design a low-latency streaming architecture for real-time fraud detection signals."</div>
+  <div class="answer">
+    "I'd design this as a three-tier streaming architecture: ingestion, enrichment, and decisioning — each with different latency and durability requirements.<br><br>
+    <b>Tier 1 — Ingestion (sub-100ms):</b> Transactions arrive via Azure Event Hubs with 32 partitions (scaled to throughput). Event Hubs provides durable, ordered, replayable ingestion with consumer group isolation — the fraud detection consumer reads independently from the analytics consumer. Partition key = account_id, ensuring all transactions for the same account land in the same partition and are processed in order.<br><br>
+    <b>Tier 2 — Enrichment (100ms-500ms):</b> Databricks Structured Streaming reads from Event Hubs. For each transaction, enrich with: (a) customer profile from Delta Live Tables (pre-materialised, cached); (b) account velocity features — transaction count, total amount, unique merchants in last 1/5/60 minutes, computed using stateful streaming with watermark; (c) device fingerprint from a Redis cache (sub-millisecond lookup).<br><br>
+    <b>Tier 3 — Decisioning (500ms-1s total):</b> Enriched event passed to a Databricks MLflow-served model (pre-loaded in memory, not loaded per request). Model scores the transaction — high score triggers real-time alert to downstream systems via Event Hubs output topic. Low score routes to Delta Lake for batch review.<br><br>
+    <b>Fault tolerance:</b> Every tier has checkpointing. If Tier 2 fails, it restarts from the last Event Hubs offset checkpoint — no data loss, no reprocessing from the beginning. The stateful velocity features are stored in a RocksDB state store on the worker — on restart, state is restored from the checkpoint.<br><br>
+    <b>Latency budget breakdown:</b> Event Hubs ingestion 10ms + Structured Streaming micro-batch 30s is too slow for fraud. So I configure trigger(continuous='100 milliseconds') for the fraud path — Databricks Continuous Processing mode — giving true low-latency streaming, not micro-batches."
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Auto Loader — efficient ingestion for continuously arriving files</h3>
+  <div class="q-block">"Files are continuously arriving in ADLS. Design an efficient ingestion system."</div>
+  <div class="answer">
+    "The naive approach — schedule an ADF pipeline every 5 minutes to scan the folder — doesn't scale. At high file volumes, directory listing becomes expensive and you risk processing the same file twice or missing files between scans.<br><br>
+    <b>The right approach is Databricks Auto Loader with Azure Event Grid notifications.</b><br><br>
+    Auto Loader subscribes to Event Grid file creation events from ADLS — instead of polling the directory, it gets a notification the instant a file lands. This scales to millions of files with no directory listing overhead.<br><br>
+    Key configurations I use:<br>
+    - <code>cloudFiles.schemaLocation</code>: Auto Loader infers schema from first files and stores it. If new files have extra columns (schema drift), it merges the schema automatically rather than failing — new columns appear as nulls in historical data.<br>
+    - <code>cloudFiles.inferColumnTypes=true</code>: Infers correct types rather than defaulting everything to string.<br>
+    - <code>cloudFiles.maxFilesPerTrigger</code>: Throttle file ingestion rate to prevent overwhelming downstream Silver transformations.<br><br>
+    <b>Idempotency:</b> Auto Loader tracks which files have been processed in a RocksDB checkpoint. Restarting the stream never re-processes already-ingested files — exactly-once file ingestion.<br><br>
+    At Empower Retirement, I used this exact pattern to replace a scheduled ADF pipeline that was missing files during high-volume periods. Auto Loader handled the backlog during peak and maintained sub-5-minute file-to-Bronze latency consistently."
+  </div>
+</div>
+
+<!-- PAGE 6: FAULT TOLERANCE & SCALE -->
+<div id="p6" class="page">
+  <h2>Fault-tolerant, scalable pipeline design</h2>
+  <p class="subtitle">High-volume transaction data — the design decisions that matter at scale</p>
+
+  <h3>The 5 pillars of fault-tolerant data pipeline design</h3>
+
+  <div class="card">
+    <div class="card-title">Pillar 1 — Idempotent writes <span class="badge b-green">already covered</span></div>
+    <div class="card-body">MERGE over INSERT. Deterministic batch keys. Every retry produces the same result. Never use mutable state that doesn't survive a restart.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pillar 2 — Checkpointing & resumption</div>
+    <div class="card-body">
+      Batch: Track the last successfully processed watermark (max processed timestamp or batch_id) in a metadata table. On restart, read this watermark and process only new data. Never re-scan from the beginning of time.<br><br>
+      Streaming: Databricks Structured Streaming checkpoints to ADLS automatically. Checkpoint = committed offsets + state store snapshot. Restart is exactly from the last committed state — not from "latest" (which would miss events) and not from "earliest" (which would reprocess everything).
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pillar 3 — Dead-letter queue pattern</div>
+    <div class="card-body">
+      Never fail the whole pipeline because of one bad record. Route malformed, schema-violating, or business-rule-failing records to a dead-letter Delta table with: original payload, failure reason, pipeline run ID, timestamp. A separate alerting job monitors the dead-letter table — if dead-letter rate exceeds threshold (e.g. 0.1%), trigger incident.<br><br>
+      <b>Architecture benefit:</b> The main pipeline continues processing good records while bad records are investigated separately. In financial systems this is critical — a single corrupt record should not halt transaction processing.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pillar 4 — Backpressure management</div>
+    <div class="card-body">
+      When the source produces faster than the sink can consume, the pipeline must not crash — it must slow down gracefully.<br><br>
+      For Structured Streaming: <code>maxOffsetsPerTrigger</code> limits how many Event Hubs messages are read per micro-batch. If downstream is slow, the trigger waits — the messages sit safely in Event Hubs (durable, replayable) rather than overwhelming the processing cluster.<br><br>
+      For batch: ADF concurrency limits on pipeline activities. Databricks job cluster auto-scaling — adds workers when queue depth grows, scales down during idle.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pillar 5 — Circuit breaker pattern</div>
+    <div class="card-body">
+      If a downstream system (Gold layer, API, downstream pipeline) is consistently failing, stop sending data to it rather than building up a backlog of failed writes. Define: failure threshold (e.g. 5 consecutive failures), open state (stop sending, route to staging), half-open state (test with one record), closed state (resume normal flow).<br><br>
+      In practice implemented as a pipeline health metadata table — each pipeline writes its status. Downstream pipelines read their dependency's status before running. If upstream is in circuit-open state, downstream waits rather than processing on stale data.
+    </div>
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>High-volume transaction data — specific design patterns</h3>
+
+  <div class="q-block">"Design a fault-tolerant, scalable pipeline for 10 billion transactions per day."</div>
+  <div class="answer">
+    "At 10B transactions/day that's roughly 115,000 transactions per second on average, with likely 10x peaks during business hours — up to 1M TPS at peak.<br><br>
+    <b>Ingestion layer:</b> Azure Event Hubs with 100 partitions (scale unit). Partition key = account_id for ordering guarantees per account. Event Hubs retains events for 7 days — this is the replay buffer for any downstream failure.<br><br>
+    <b>Bronze landing:</b> Auto Loader consuming from Event Hubs, writing to Delta Lake partitioned by date and hour. Trigger every 30 seconds. At 1M TPS peak, each micro-batch processes ~30M events — Databricks cluster of 20 workers (16 vCPU each) handles this comfortably with Spark's parallel partition processing.<br><br>
+    <b>Silver transformation:</b> Separate cluster from Bronze — compute isolation prevents ingestion from competing with transformation. Silver runs every 5 minutes, processes the last completed Bronze hour partitions. MERGE for SCD2 dimension updates, INSERT OVERWRITE for fact partitions (idempotent — overwrites the same partition on retry).<br><br>
+    <b>Partition strategy:</b> Fact table partitioned by transaction_date + transaction_hour. Z-order on account_id and merchant_id. This means a fraud analyst querying "all transactions for account X in the last 24 hours" scans at most 24 hourly partitions, Z-order filtered to that account — not 10B rows.<br><br>
+    <b>Monitoring:</b> Azure Monitor alerts on: Event Hubs consumer lag (are we keeping up?), Bronze pipeline duration (degrading over time?), dead-letter rate (data quality degrading?), Silver MERGE duration (dimension growth slowing merges?)."
+  </div>
+</div>
+
+<!-- PAGE 7: COMPACTION & FRESHNESS -->
+<div id="p7" class="page">
+  <h2>Compaction vs freshness SLA — the architect's trade-off</h2>
+  <p class="subtitle">One of the most nuanced Delta Lake topics — shows deep operational understanding</p>
+
+  <h3>Why this trade-off exists</h3>
+  <div class="info-box">
+    Delta Lake uses an <b>append-only transaction log</b>. Every streaming micro-batch or small file write creates a new Parquet file. After 1 day of 30-second micro-batches, you have 2,880 small files for that partition. Reading that partition requires opening 2,880 files — massive overhead. <b>Compaction (OPTIMIZE)</b> merges these into fewer, larger files — dramatically improving read performance. But OPTIMIZE rewrites the partition files, which takes time and blocks concurrent writes on that partition.
+  </div>
+
+  <div class="q-block">"How do you balance compaction with freshness SLAs in a streaming Delta Lake pipeline?"</div>
+  <div class="answer">
+    "This is a core operational decision I've made explicitly in production. The tension is: OPTIMIZE improves read performance but creates a write-pause on the partition being compacted — during which, new streaming micro-batches either queue or skip that partition.<br><br>
+    <b>Strategy 1 — Time-window OPTIMIZE (my primary approach):</b><br>
+    Run OPTIMIZE only on partitions that are no longer receiving active streaming writes. For hourly partitions, the previous day's partitions are 'cold' — no new streaming data will arrive. Schedule OPTIMIZE on cold partitions at 2 AM daily. Current and previous hour partitions are never compacted during business hours — they're small-file-fragmented but that's acceptable because freshness SLA is paramount for those partitions.<br><br>
+    <b>Strategy 2 — Separate read-optimised copy:</b><br>
+    For high-concurrency read workloads (fraud analysts, real-time dashboards), maintain a second Delta table that is compacted — a clone of the streaming table, compacted every 15 minutes on a rolling basis. Streaming writes go to the primary table. Reads go to the compacted copy, which may be 15 minutes stale. Acceptable if the freshness SLA allows it.<br><br>
+    <b>Strategy 3 — Delta Lake liquid clustering (modern approach):</b><br>
+    In newer Delta Lake versions, liquid clustering replaces both partitioning and Z-order with an incremental clustering approach that runs in the background without blocking writes. This eliminates the compaction-freshness trade-off for most cases — I advocate moving to this for new pipelines.<br><br>
+    <b>VACUUM consideration:</b> VACUUM removes old file versions beyond the retention period. Never run VACUUM with a retention period shorter than your longest running query — a query that started before VACUUM runs may reference file versions that VACUUM just deleted, causing FileNotFoundException. I set retention to 7 days minimum and alert if any query runs longer than 6 hours."
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>The full compaction configuration I use in production</h3>
+
+  <div class="code-block">
+<span class="cm"># Strategy 1: Targeted OPTIMIZE on cold partitions only</span>
+<span class="kw">from</span> delta.tables <span class="kw">import</span> DeltaTable
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime, timedelta
+
+cold_date = (datetime.now() - timedelta(days=1)).strftime(<span class="str">"%Y-%m-%d"</span>)
+
+<span class="cm"># Only optimize yesterday's partitions - never touch today's (streaming active)</span>
+DeltaTable.forPath(spark, <span class="str">"/mnt/silver/transactions"</span>) \
+  .optimize() \
+  .where(f<span class="str">"transaction_date = '{cold_date}'"</span>) \
+  .executeZOrderBy(<span class="str">"account_id"</span>, <span class="str">"merchant_id"</span>)
+
+<span class="cm"># Auto-compact for active streaming partitions (smaller benefit, zero blocking)</span>
+spark.conf.set(<span class="str">"spark.databricks.delta.autoCompact.enabled"</span>, <span class="str">"true"</span>)
+spark.conf.set(<span class="str">"spark.databricks.delta.autoCompact.minNumFiles"</span>, <span class="str">"50"</span>)
+
+<span class="cm"># VACUUM with safe retention window</span>
+spark.sql(<span class="str">"""
+  VACUUM delta.`/mnt/silver/transactions`
+  RETAIN 168 HOURS  -- 7 days minimum, never shorter than longest query runtime
+"""</span>)
+  </div>
+
+  <div class="tradeoff">
+    <div class="pro">
+      <div class="pro-title">Compacting aggressively</div>
+      <ul>
+        <li>Fewer files, faster reads</li>
+        <li>Lower storage costs (fewer small files)</li>
+        <li>Better BI dashboard query speed</li>
+      </ul>
+    </div>
+    <div class="con">
+      <div class="con-title">Risk of aggressive compaction</div>
+      <ul>
+        <li>Write-pause during OPTIMIZE</li>
+        <li>Streaming freshness degraded</li>
+        <li>VACUUM too short = query failures</li>
+        <li>Rewrite cost on large partitions</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="interview-tip"><b>Architect answer that shows mastery:</b> "The compaction-freshness trade-off is ultimately a SLA negotiation. I sit with the business and ask two questions: what's the maximum query latency they'll accept for historical data (drives how aggressively I compact cold partitions), and what's the maximum acceptable data age for operational dashboards (drives how aggressively I can compact recent partitions). Once those are documented, the compaction schedule follows automatically. I never make this decision unilaterally as a technical choice — it's a business SLA decision with technical implementation."</div>
+</div>
+
+<!-- PAGE 8: YOUR STORY -->
+<div id="p8" class="page">
+  <h2>Your complete architecture story — stitched together</h2>
+  <p class="subtitle">This is how you answer "describe a large-scale end-to-end data management solution you architected"</p>
+
+  <div class="q-block">"Tell me about the most complex data architecture you've designed and delivered end-to-end."</div>
+
+  <div class="answer" style="font-size:13px;">
+    <b>Opening — business context (30 seconds):</b><br>
+    "The most architecturally complex system I've designed was at Kyndryl for National Australia Bank. NAB had a critical problem: their weekend change window for network infrastructure was severely congested. Hundreds of network changes were being queued manually, with engineers working through the weekend. My mandate was to build a data platform that could automate the assessment, scheduling, and deployment of low-risk changes — turning a manual, risk-prone process into an automated, data-driven one."<br><br>
+
+    <b>Architecture decisions (90 seconds):</b><br>
+    "I designed a Lakehouse architecture on Azure with three zones. Bronze ingested raw telemetry from ServiceNow, Cisco Nexus controllers, and network validation systems — all heterogeneous sources with different schemas and reliability characteristics. I used Azure Event Hubs for streaming telemetry and ADF for batch ServiceNow data, giving me separation of streaming and batch ingestion paths.<br><br>
+    Silver was where the intelligence lived. I built a graph-based network topology model in Delta Lake — devices as nodes, connections as edges — updated via CDC watermarking from the network controllers. I implemented SCD Type 2 on the device dimension, using surrogate keys and MERGE INTO operations, so we always knew the exact configuration state of any device at any point in time. This was critical for compliance — auditors needed to see what the network looked like when any change was deployed.<br><br>
+    The Gold layer served two consumers: a scheduling optimisation engine using PySpark and OR-Tools integer linear programming to maximise change throughput within risk constraints, and Databricks SQL endpoints for operational reporting. I implemented deduplication using deterministic event IDs and idempotent MERGE writes throughout — the pipeline could restart from any checkpoint with zero data loss or duplication."<br><br>
+
+    <b>Challenges (30 seconds):</b><br>
+    "The hardest challenge was late-arriving telemetry. Network events from remote devices could arrive hours after the fact. I implemented a two-path architecture — primary streaming with a 2-hour watermark for the automated scheduling path, and a nightly late-arrival correction job that replayed delayed events against the historical Delta partitions using time travel. This meant the scheduling engine always made decisions on the most complete data available."<br><br>
+
+    <b>Outcome (20 seconds):</b><br>
+    "The result was 40% of low-risk change requests automated with a 95%+ success rate, reducing manual weekend workload dramatically and increasing the number of changes that could be processed per window. The architecture has been running in production for NAB since mid-2023."
+  </div>
+
+  <hr class="divider"/>
+
+  <h3>Quick-fire technical answers — memorise these</h3>
+
+  <div class="card">
+    <div class="card-title">"What's the difference between exactly-once and at-least-once semantics?"</div>
+    <div class="card-body"><b>At-least-once:</b> Every event is processed, but may be processed more than once on retry. Requires idempotent writes to be safe. Easier to implement, higher throughput.<br><b>Exactly-once:</b> Every event processed exactly once — no duplicates, no loss. Structured Streaming + Delta Lake provides this via checkpointing + ACID transactions. Slight performance overhead. Use for financial transactions where duplicate processing = double charge.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"What is CDC and how do you implement it?"</div>
+    <div class="card-body">Change Data Capture — capturing only the rows that changed in a source system, not full table dumps. Implementation options: (1) Database log-based CDC (Debezium reads Oracle redo log — lowest source impact, sub-second latency); (2) Timestamp-based CDC (query WHERE updated_at > last_watermark — simple but misses hard deletes); (3) Hash-based CDC (compute row hash, compare with previous run — detects all changes but full scan needed). At Kahramaa I used timestamp-based CDC for Oracle with a high-watermark pattern, and Delta Lake MERGE for applying changes. At Kyndryl I implemented CDC watermarking for the streaming network telemetry path.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"How do you handle schema evolution in a production pipeline?"</div>
+    <div class="card-body">Three scenarios: (1) New column added — Auto Loader with mergeSchema=true handles automatically, new column appears with nulls in historical data; (2) Column renamed — breaking change, requires pipeline versioning and a migration script; (3) Column type changed (e.g. int to string) — Delta Lake rejects by default, requires explicit schema override. My approach: schema changes are events, treated like code changes — reviewed, versioned, tested in lower environments before production. Unity Catalog schema versioning tracks history.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">"What is data lineage and why does it matter architecturally?"</div>
+    <div class="card-body">Data lineage tracks the complete journey of a data element — from source system through every transformation to every consumption point. Architecturally it matters for: (1) Impact analysis — if an Oracle column changes, lineage tells you every dashboard and ML model that will break; (2) Incident root cause — when a Gold layer metric is wrong, lineage traces it to the exact pipeline and source record; (3) Compliance — GDPR right-to-erasure requires knowing everywhere a customer's data exists — lineage makes this tractable. I implemented end-to-end lineage using Unity Catalog at Kahramaa and Azure Purview at Kyndryl.</div>
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  body { font-family: sans-serif; margin: 0; padding: 0; background: #fff; color: #1a1a1a; }
+  .tab-bar { display: flex; gap: 8px; padding: 1rem 1rem 0; }
+  .tab { font-size: 13px; padding: 6px 16px; border-radius: 8px; border: 1px solid #ccc; background: transparent; color: #666; cursor: pointer; }
+  .tab.active { background: #dbeafe; color: #1d4ed8; border-color: transparent; font-weight: 500; }
+  .schema-view { display: none; padding: 0 1rem 1rem; }
+  .schema-view.active { display: block; }
+  .note { font-size: 12px; color: #555; margin-top: 10px; padding: 8px 12px; background: #f1f5f9; border-radius: 8px; line-height: 1.6; }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  .compare-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 1rem; }
+  .compare-card-title { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .compare-card-body { font-size: 12px; color: #555; line-height: 1.9; }
+  .tip { font-size: 12px; margin-top: 12px; padding: 8px 12px; background: #f0fdf4; border-radius: 8px; color: #166534; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="show('star', this)">Star schema</button>
+  <button class="tab" onclick="show('snow', this)">Snowflake schema</button>
+  <button class="tab" onclick="show('compare', this)">When to use which</button>
+</div>
+
+<div id="star" class="schema-view active">
+<svg width="100%" viewBox="0 0 680 400">
+<defs>
+  <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- Fact table -->
+<rect x="255" y="150" width="170" height="100" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#92400e" x="340" y="182" text-anchor="middle" dominant-baseline="central">Fact: Sales</text>
+<text font-family="sans-serif" font-size="12" fill="#b45309" x="340" y="202" text-anchor="middle" dominant-baseline="central">sales_key PK</text>
+<text font-family="sans-serif" font-size="12" fill="#b45309" x="340" y="218" text-anchor="middle" dominant-baseline="central">date_key FK · prod_key FK</text>
+<text font-family="sans-serif" font-size="12" fill="#b45309" x="340" y="234" text-anchor="middle" dominant-baseline="central">amount · qty · discount</text>
+
+<!-- Dim: Date -->
+<rect x="40" y="155" width="160" height="90" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#134e4a" x="120" y="185" text-anchor="middle" dominant-baseline="central">Dim: Date</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="120" y="205" text-anchor="middle" dominant-baseline="central">date_key PK</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="120" y="221" text-anchor="middle" dominant-baseline="central">day · month · quarter · year</text>
+
+<!-- Dim: Product -->
+<rect x="480" y="155" width="160" height="90" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#134e4a" x="560" y="185" text-anchor="middle" dominant-baseline="central">Dim: Product</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="560" y="205" text-anchor="middle" dominant-baseline="central">prod_key PK</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="560" y="221" text-anchor="middle" dominant-baseline="central">name · category · brand</text>
+
+<!-- Dim: Customer -->
+<rect x="255" y="30" width="170" height="80" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#134e4a" x="340" y="57" text-anchor="middle" dominant-baseline="central">Dim: Customer</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="340" y="76" text-anchor="middle" dominant-baseline="central">cust_key PK</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="340" y="92" text-anchor="middle" dominant-baseline="central">name · segment · region</text>
+
+<!-- Dim: Store -->
+<rect x="255" y="295" width="170" height="80" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#134e4a" x="340" y="322" text-anchor="middle" dominant-baseline="central">Dim: Store</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="340" y="342" text-anchor="middle" dominant-baseline="central">store_key PK</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="340" y="358" text-anchor="middle" dominant-baseline="central">name · city · region</text>
+
+<!-- Connectors -->
+<line x1="255" y1="200" x2="200" y2="200" stroke="#888" stroke-width="1.2" marker-end="url(#a)"/>
+<line x1="425" y1="200" x2="480" y2="200" stroke="#888" stroke-width="1.2" marker-end="url(#a)"/>
+<line x1="340" y1="150" x2="340" y2="110" stroke="#888" stroke-width="1.2" marker-end="url(#a)"/>
+<line x1="340" y1="250" x2="340" y2="295" stroke="#888" stroke-width="1.2" marker-end="url(#a)"/>
+</svg>
+<div class="note">All dimension tables connect directly to the fact table. Simple joins, fast queries, easy to understand. Best for most analytical use cases.</div>
+</div>
+
+<div id="snow" class="schema-view">
+<svg width="100%" viewBox="0 0 680 420">
+<defs>
+  <marker id="b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+</defs>
+
+<!-- Fact -->
+<rect x="255" y="170" width="170" height="80" rx="8" fill="#fef3c7" stroke="#d97706" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#92400e" x="340" y="200" text-anchor="middle" dominant-baseline="central">Fact: Sales</text>
+<text font-family="sans-serif" font-size="12" fill="#b45309" x="340" y="220" text-anchor="middle" dominant-baseline="central">date_key · prod_key · amount</text>
+
+<!-- Dim: Date -->
+<rect x="60" y="170" width="150" height="80" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#134e4a" x="135" y="198" text-anchor="middle" dominant-baseline="central">Dim: Date</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="135" y="216" text-anchor="middle" dominant-baseline="central">date_key · month_key FK</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="135" y="232" text-anchor="middle" dominant-baseline="central">day · week</text>
+
+<!-- Sub-dim: Month -->
+<rect x="30" y="50" width="150" height="70" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+<text font-family="sans-serif" font-size="13" font-weight="500" fill="#4c1d95" x="105" y="75" text-anchor="middle" dominant-baseline="central">Sub-dim: Month</text>
+<text font-family="sans-serif" font-size="12" fill="#6d28d9" x="105" y="95" text-anchor="middle" dominant-baseline="central">month_key · quarter_key FK</text>
+
+<!-- Sub-dim: Quarter -->
+<rect x="200" y="50" width="120" height="70" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+<text font-family="sans-serif" font-size="13" font-weight="500" fill="#4c1d95" x="260" y="75" text-anchor="middle" dominant-baseline="central">Sub-dim: Qtr</text>
+<text font-family="sans-serif" font-size="12" fill="#6d28d9" x="260" y="95" text-anchor="middle" dominant-baseline="central">quarter_key · year</text>
+
+<!-- Dim: Product -->
+<rect x="480" y="170" width="155" height="80" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1"/>
+<text font-family="sans-serif" font-size="14" font-weight="500" fill="#134e4a" x="557" y="198" text-anchor="middle" dominant-baseline="central">Dim: Product</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="557" y="216" text-anchor="middle" dominant-baseline="central">prod_key · cat_key FK</text>
+<text font-family="sans-serif" font-size="12" fill="#0f766e" x="557" y="232" text-anchor="middle" dominant-baseline="central">name · brand</text>
+
+<!-- Sub-dim: Category -->
+<rect x="490" y="310" width="135" height="70" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+<text font-family="sans-serif" font-size="13" font-weight="500" fill="#4c1d95" x="557" y="335" text-anchor="middle" dominant-baseline="central">Sub-dim: Category</text>
+<text font-family="sans-serif" font-size="12" fill="#6d28d9" x="557" y="355" text-anchor="middle" dominant-baseline="central">cat_key · dept_key FK</text>
+
+<!-- Sub-dim: Dept -->
+<rect x="490" y="50" width="135" height="70" rx="8" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+<text font-family="sans-serif" font-size="13" font-weight="500" fill="#4c1d95" x="557" y="75" text-anchor="middle" dominant-baseline="central">Sub-dim: Dept</text>
+<text font-family="sans-serif" font-size="12" fill="#6d28d9" x="557" y="95" text-anchor="middle" dominant-baseline="central">dept_key · dept_name</text>
+
+<!-- Connectors -->
+<line x1="255" y1="210" x2="210" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#b)"/>
+<line x1="425" y1="210" x2="480" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#b)"/>
+<line x1="120" y1="170" x2="105" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#b)"/>
+<line x1="150" y1="170" x2="260" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#b)"/>
+<line x1="557" y1="250" x2="557" y2="310" stroke="#888" stroke-width="1.2" marker-end="url(#b)"/>
+<line x1="557" y1="170" x2="557" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#b)"/>
+</svg>
+<div class="note">Dimensions are normalized into sub-dimensions. Saves storage and avoids redundancy, but requires more joins. Better when dimensions are very large or frequently updated.</div>
+</div>
+
+<div id="compare" class="schema-view">
+  <div class="compare-grid">
+    <div class="compare-card">
+      <div class="compare-card-title">Use Star schema when...</div>
+      <div class="compare-card-body">
+        Query performance is priority<br>
+        Analysts write SQL directly<br>
+        Dimensions are small/stable<br>
+        Simpler BI tooling<br>
+        Typical OLAP reporting<br>
+        <span style="color:#15803d;font-weight:500;">— Most real-world DWH use this</span>
+      </div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-card-title">Use Snowflake schema when...</div>
+      <div class="compare-card-body">
+        Dimension tables are very large<br>
+        Data redundancy is a concern<br>
+        Frequent dimension updates<br>
+        Storage cost matters<br>
+        Complex hierarchies exist<br>
+        <span style="color:#b45309;font-weight:500;">— More joins = slower queries</span>
+      </div>
+    </div>
+  </div>
+  <div class="tip">
+    Interview answer tip: "In my Kahramaa project, the Gold layer was designed as a star schema for Power BI consumption — fact tables for operational metrics and conformed dimension tables for dates, assets, and locations. This gave business users fast, simple query patterns without complex joins."
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.schema-view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

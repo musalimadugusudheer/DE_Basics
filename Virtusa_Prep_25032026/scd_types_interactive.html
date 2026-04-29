@@ -1,0 +1,91 @@
+
+<style>
+  .scd-tabs { display:flex; gap:8px; padding:1rem 1rem 0; }
+  .scd-tab { font-size:13px; padding:6px 14px; border-radius:var(--border-radius-md); border:0.5px solid var(--color-border-secondary); background:transparent; color:var(--color-text-secondary); cursor:pointer; }
+  .scd-tab.active { background:var(--color-background-info); color:var(--color-text-info); border-color:transparent; font-weight:500; }
+  .scd-panel { display:none; padding:1rem; }
+  .scd-panel.active { display:block; }
+  .scenario { font-size:13px; color:var(--color-text-secondary); background:var(--color-background-secondary); padding:8px 12px; border-radius:var(--border-radius-md); margin-bottom:12px; }
+  .tbl { width:100%; border-collapse:collapse; font-size:12px; margin-bottom:10px; }
+  .tbl th { text-align:left; font-size:11px; font-weight:500; color:var(--color-text-secondary); padding:5px 8px; border-bottom:0.5px solid var(--color-border-tertiary); }
+  .tbl td { padding:5px 8px; border-bottom:0.5px solid var(--color-border-tertiary); color:var(--color-text-primary); }
+  .tbl tr.changed td { background:var(--color-background-warning); }
+  .tbl tr.added td { background:var(--color-background-success); }
+  .tbl tr.old td { background:var(--color-background-danger); text-decoration:line-through; opacity:0.7; }
+  .lbl { display:inline-block; font-size:11px; padding:1px 7px; border-radius:4px; margin-left:4px; font-weight:500; }
+  .lbl-warn { background:var(--color-background-warning); color:var(--color-text-warning); }
+  .lbl-ok { background:var(--color-background-success); color:var(--color-text-success); }
+  .lbl-err { background:var(--color-background-danger); color:var(--color-text-danger); }
+  .verdict { font-size:12px; margin-top:10px; padding:8px 12px; border-radius:var(--border-radius-md); border-left:3px solid; }
+  .verdict.pro { border-color:var(--color-border-success); background:var(--color-background-success); color:var(--color-text-success); }
+  .verdict.con { border-color:var(--color-border-danger); background:var(--color-background-danger); color:var(--color-text-danger); }
+  .verdict.use { border-color:var(--color-border-info); background:var(--color-background-info); color:var(--color-text-info); }
+  .section-lbl { font-size:11px; font-weight:500; color:var(--color-text-secondary); text-transform:uppercase; letter-spacing:.04em; margin:10px 0 4px; }
+</style>
+
+<div class="scd-tabs">
+  <button class="scd-tab active" onclick="scd('t1',this)">Type 1 — Overwrite</button>
+  <button class="scd-tab" onclick="scd('t2',this)">Type 2 — New row</button>
+  <button class="scd-tab" onclick="scd('t3',this)">Type 3 — Add column</button>
+</div>
+
+<div id="t1" class="scd-panel active">
+  <div class="scenario">Scenario: Customer "Sudheer" moves from Hyderabad to Bengaluru.</div>
+  <div class="section-lbl">Before change</div>
+  <table class="tbl">
+    <tr><th>cust_key</th><th>name</th><th>city</th><th>segment</th></tr>
+    <tr><td>1001</td><td>Sudheer</td><td>Hyderabad</td><td>Premium</td></tr>
+  </table>
+  <div class="section-lbl">After Type 1 — city is simply overwritten <span class="lbl lbl-warn">history lost</span></div>
+  <table class="tbl">
+    <tr><th>cust_key</th><th>name</th><th>city</th><th>segment</th></tr>
+    <tr class="changed"><td>1001</td><td>Sudheer</td><td>Bengaluru</td><td>Premium</td></tr>
+  </table>
+  <div class="verdict pro">Pro: Simple, no extra rows, always shows current state.</div>
+  <div class="verdict con" style="margin-top:6px;">Con: Historical data is permanently lost — cannot report "sales in Hyderabad last year."</div>
+  <div class="verdict use" style="margin-top:6px;">Use when: History doesn't matter. E.g. correcting a typo, updating a phone number, fixing a data entry error.</div>
+</div>
+
+<div id="t2" class="scd-panel">
+  <div class="scenario">Scenario: Same customer moves from Hyderabad to Bengaluru on 1 Mar 2025.</div>
+  <div class="section-lbl">Before change</div>
+  <table class="tbl">
+    <tr><th>surr_key</th><th>cust_key</th><th>city</th><th>start_date</th><th>end_date</th><th>is_current</th></tr>
+    <tr><td>5001</td><td>1001</td><td>Hyderabad</td><td>2020-01-01</td><td>9999-12-31</td><td>Y</td></tr>
+  </table>
+  <div class="section-lbl">After Type 2 — old row closed, new row added <span class="lbl lbl-ok">full history kept</span></div>
+  <table class="tbl">
+    <tr><th>surr_key</th><th>cust_key</th><th>city</th><th>start_date</th><th>end_date</th><th>is_current</th></tr>
+    <tr class="old"><td>5001</td><td>1001</td><td>Hyderabad</td><td>2020-01-01</td><td>2025-02-28</td><td>N</td></tr>
+    <tr class="added"><td>5002</td><td>1001</td><td>Bengaluru</td><td>2025-03-01</td><td>9999-12-31</td><td>Y</td></tr>
+  </table>
+  <div class="verdict pro">Pro: Full history preserved. Fact table rows tied to surr_key automatically reflect the correct dimension state at that point in time.</div>
+  <div class="verdict con" style="margin-top:6px;">Con: Table grows over time. Queries need is_current=Y filter or date range logic to get current state.</div>
+  <div class="verdict use" style="margin-top:6px;">Use when: History matters. This is the most common SCD type in real DWH. Your SCD2 implementation in Kyndryl (PySpark + Databricks) is a perfect example to cite.</div>
+</div>
+
+<div id="t3" class="scd-panel">
+  <div class="scenario">Scenario: Customer's segment changes from "Standard" to "Premium".</div>
+  <div class="section-lbl">Before change</div>
+  <table class="tbl">
+    <tr><th>cust_key</th><th>name</th><th>segment</th></tr>
+    <tr><td>1001</td><td>Sudheer</td><td>Standard</td></tr>
+  </table>
+  <div class="section-lbl">After Type 3 — a new column added for previous value <span class="lbl lbl-warn">only 1 version back</span></div>
+  <table class="tbl">
+    <tr><th>cust_key</th><th>name</th><th>current_segment</th><th>prev_segment</th></tr>
+    <tr class="changed"><td>1001</td><td>Sudheer</td><td>Premium</td><td>Standard</td></tr>
+  </table>
+  <div class="verdict pro">Pro: Single row per entity maintained. Can compare current vs previous in one row without joins.</div>
+  <div class="verdict con" style="margin-top:6px;">Con: Only stores one previous version. Third change overwrites prev_segment. Schema changes (new column) needed for each tracked attribute.</div>
+  <div class="verdict use" style="margin-top:6px;">Use when: You only need current + one previous value. Rare in practice — Type 2 is usually preferred for historical needs.</div>
+</div>
+
+<script>
+function scd(id, btn) {
+  document.querySelectorAll('.scd-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.scd-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>

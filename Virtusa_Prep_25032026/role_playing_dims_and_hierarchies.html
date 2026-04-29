@@ -1,0 +1,92 @@
+
+<style>
+  .rp-section { padding: 1rem 1rem 0; }
+  .rp-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+  .rp-sub { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 12px; }
+  .hier-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; padding: 0 1rem 1rem; }
+  .hier-card { background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:10px 12px; }
+  .hier-card-title { font-size:12px; font-weight:500; color:var(--color-text-secondary); margin-bottom:8px; }
+  .hier-level { font-size:12px; padding:4px 8px; border-radius:4px; margin-bottom:4px; text-align:center; }
+</style>
+
+<div class="rp-section">
+  <div class="rp-title">Role-playing dimensions</div>
+  <div class="rp-sub">One physical dimension table used multiple times in the same fact table, each playing a different role.</div>
+</div>
+
+<svg width="100%" viewBox="0 0 680 260">
+<defs><marker id="c" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+
+<g class="c-amber">
+  <rect x="230" y="80" width="220" height="110" rx="8" stroke-width="0.5"/>
+  <text class="th" x="340" y="108" text-anchor="middle" dominant-baseline="central">Fact: Order</text>
+  <text class="ts" x="340" y="128" text-anchor="middle" dominant-baseline="central">order_key PK</text>
+  <text class="ts" x="340" y="145" text-anchor="middle" dominant-baseline="central">order_date_key FK</text>
+  <text class="ts" x="340" y="162" text-anchor="middle" dominant-baseline="central">ship_date_key FK</text>
+  <text class="ts" x="340" y="179" text-anchor="middle" dominant-baseline="central">delivery_date_key FK</text>
+</g>
+
+<g class="c-teal">
+  <rect x="20" y="30" width="160" height="75" rx="8" stroke-width="0.5"/>
+  <text class="th" x="100" y="55" text-anchor="middle" dominant-baseline="central">Dim: Date</text>
+  <text class="ts" x="100" y="75" text-anchor="middle" dominant-baseline="central">date_key PK · day</text>
+  <text class="ts" x="100" y="92" text-anchor="middle" dominant-baseline="central">month · quarter · year</text>
+</g>
+
+<g class="c-teal">
+  <rect x="20" y="130" width="160" height="55" rx="8" stroke-width="0.5"/>
+  <text class="th" x="100" y="155" text-anchor="middle" dominant-baseline="central">Dim: Date (alias)</text>
+  <text class="ts" x="100" y="173" text-anchor="middle" dominant-baseline="central">same table, role = Ship</text>
+</g>
+
+<g class="c-teal">
+  <rect x="20" y="205" width="160" height="50" rx="8" stroke-width="0.5"/>
+  <text class="th" x="100" y="226" text-anchor="middle" dominant-baseline="central">Dim: Date (alias)</text>
+  <text class="ts" x="100" y="244" text-anchor="middle" dominant-baseline="central">same table, role = Delivery</text>
+</g>
+
+<line x1="230" y1="135" x2="180" y2="70" class="arr" marker-end="url(#c)" stroke="#1D9E75"/>
+<line x1="230" y1="153" x2="180" y2="157" class="arr" marker-end="url(#c)" stroke="#1D9E75"/>
+<line x1="230" y1="172" x2="180" y2="230" class="arr" marker-end="url(#c)" stroke="#1D9E75"/>
+
+<text class="ts" x="195" y="103" text-anchor="middle">Order date</text>
+<text class="ts" x="208" y="150" text-anchor="middle">Ship date</text>
+<text class="ts" x="205" y="200" text-anchor="middle">Delivery date</text>
+</svg>
+
+<div style="padding: 0 1rem; margin-bottom: 16px;">
+  <div style="font-size:12px; color:var(--color-text-secondary); background:var(--color-background-secondary); padding:8px 12px; border-radius:var(--border-radius-md);">
+    In SQL/Spark: CREATE VIEW vw_order_date AS SELECT * FROM dim_date — then join fact to vw_order_date, vw_ship_date, vw_delivery_date separately. One physical table, three logical roles.
+  </div>
+</div>
+
+<div style="padding: 0 1rem 4px;">
+  <div class="rp-title">Dimensional hierarchies</div>
+  <div class="rp-sub">Hierarchies define drill-down paths — how users navigate from summary to detail.</div>
+</div>
+
+<div class="hier-grid">
+  <div class="hier-card">
+    <div class="hier-card-title">Time hierarchy</div>
+    <div class="hier-level" style="background:var(--color-background-info);color:var(--color-text-info);">Year</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Quarter</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Month</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Week</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Day</div>
+  </div>
+  <div class="hier-card">
+    <div class="hier-card-title">Geography hierarchy</div>
+    <div class="hier-level" style="background:var(--color-background-info);color:var(--color-text-info);">Country</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">State / Region</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">City</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Store</div>
+  </div>
+  <div class="hier-card">
+    <div class="hier-card-title">Product hierarchy</div>
+    <div class="hier-level" style="background:var(--color-background-info);color:var(--color-text-info);">Division</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Category</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Sub-category</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Product</div>
+    <div class="hier-level" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">SKU</div>
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Kahramaa - Table Count per Layer (Source to Synapse)</title>
+<style>
+body { font-family: Calibri, Arial, sans-serif; margin: 40px; line-height: 1.3; }
+h1 { color: #2c3e50; border-bottom: 2px solid #2c3e50; padding-bottom: 5px; }
+h2 { color: #34495e; border-bottom: 1px solid #ccc; margin-top: 25px; }
+h3 { color: #2c3e50; margin-top: 20px; }
+table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+th, td { border: 1px solid #aaa; padding: 8px; vertical-align: top; }
+th { background-color: #f2f2f2; font-weight: bold; }
+code { background-color: #f4f4f4; padding: 2px 4px; font-family: Consolas, monospace; }
+.summary { background-color: #eef; padding: 10px; border-left: 5px solid #2c3e50; margin: 15px 0; }
+</style>
+</head>
+<body>
+
+<h1>Kahramaa Project: Table Count per Layer</h1>
+<p><strong>From Source → Landing → Bronze → Silver → Gold → Synapse SQL Pool</strong><br>
+<em>Estimates based on Qatar national utility (~2.9M population, ~2M smart meters). Replace with actual counts from your environment.</em></p>
+
+<div class="summary">
+<strong>Quick Summary:</strong><br>
+Source: ~109 tables + 4 streams + 10 files &nbsp;|&nbsp;
+Landing: 109 folders &nbsp;|&nbsp;
+Bronze: 113 Delta tables &nbsp;|&nbsp;
+Silver: 20 Delta tables &nbsp;|&nbsp;
+Gold: 21 Delta tables &nbsp;|&nbsp;
+Synapse: ~66 objects (tables+views+procs+functions)
+</div>
+
+<h2>1. Source Systems (On‑Prem / Cloud)</h2>
+<table>
+ <thead><tr><th>Source Type</th><th>Number of Tables / Collections</th><th>Examples</th></tr></thead>
+ <tbody>
+  <tr><td>Oracle ERP</td><td>~50 tables</td><td><code>AR_INVOICES</code>, <code>GL_BALANCES</code>, <code>AP_CHECKS</code>, <code>ASSETS</code>, <code>PROJECTS</code></td></tr>
+  <tr><td>MySQL (Customer CRM)</td><td>~30 tables</td><td><code>customers</code>, <code>accounts</code>, <code>service_requests</code>, <code>meter_installations</code></td></tr>
+  <tr><td>MySQL (Work Orders)</td><td>~15 tables</td><td><code>work_orders</code>, <code>maintenance_schedules</code>, <code>technician_assignments</code></td></tr>
+  <tr><td>IoT / Streaming</td><td>4 logical streams</td><td><code>electricity_meter_readings</code>, <code>water_meter_readings</code>, <code>grid_sensors</code>, <code>pressure_monitors</code></td></tr>
+  <tr><td>Flat files / APIs</td><td>~10 file types</td><td><code>tariff_rates.csv</code>, <code>zone_mapping.xml</code>, <code>weather_api_response.json</code></td></tr>
+  <tr><td><strong>Total source objects</strong></td><td><strong>~109 tables + 4 streams + 10 file types</strong></td><td></td></tr>
+ </tbody>
+</table>
+
+<h2>2. Landing Zone (ADLS Gen2 – raw files)</h2>
+<p>Each source table/stream becomes a folder (not a queryable table).</p>
+<table>
+ <thead><tr><th>Category</th><th>Number of Landing Objects</th><th>Example Path</th></tr></thead>
+ <tbody>
+  <tr><td>Oracle ERP</td><td>50</td><td><code>/landing/oracle_erp/AR_INVOICES/2025-01-15/file.csv</code></td></tr>
+  <tr><td>MySQL tables</td><td>45</td><td><code>/landing/mysql_crm/customers/2025-01-15/*.json</code></td></tr>
+  <tr><td>IoT streams</td><td>4</td><td><code>/landing/iot/electricity_meters/2025-01-15/*.json</code></td></tr>
+  <tr><td>Flat files / APIs</td><td>10</td><td><code>/landing/external/tariff_rates.csv</code></td></tr>
+  <tr><td><strong>Total Landing objects</strong></td><td><strong>109</strong></td><td></td></tr>
+ </tbody>
+</table>
+
+<h2>3. Bronze Layer (Delta Lake – append‑only, audit trail)</h2>
+<p>1:1 mapping from Landing → Bronze. Includes quarantine tables for malformed records.</p>
+<table>
+ <thead><tr><th>Source Category</th><th>Bronze Tables</th><th>Examples</th></tr></thead>
+ <tbody>
+  <tr><td>Oracle ERP</td><td>50</td><td><code>bronze.ar_invoices</code>, <code>bronze.gl_balances</code>, <code>bronze.ap_checks</code></td></tr>
+  <tr><td>MySQL (CRM + Work Orders)</td><td>45</td><td><code>bronze.customers</code>, <code>bronze.accounts</code>, <code>bronze.work_orders</code></td></tr>
+  <tr><td>IoT streams</td><td>4</td><td><code>bronze.electricity_meter_readings</code>, <code>bronze.water_meter_readings</code>, <code>bronze.grid_sensors</code>, <code>bronze.pressure_monitors</code></td></tr>
+  <tr><td>Flat files / APIs</td><td>10</td><td><code>bronze.tariff_rates</code>, <code>bronze.zone_mapping</code>, <code>bronze.weather_data</code></td></tr>
+  <tr><td>Quarantine tables</td><td>4</td><td><code>bronze.quarantine_oracle</code>, <code>bronze.quarantine_mysql</code>, <code>bronze.quarantine_iot</code>, <code>bronze.quarantine_files</code></td></tr>
+  <tr><td><strong>Total Bronze tables</strong></td><td><strong>113</strong></td><td></td></tr>
+ </tbody>
+</table>
+
+<h2>4. Silver Layer (Delta Lake – cleaned, deduplicated, enriched)</h2>
+<p>Fewer tables due to joins and aggregations.</p>
+<table>
+ <thead><tr><th>Subject Area</th><th>Silver Tables</th><th>Examples</th><th>Derived From (Bronze)</th></tr></thead>
+ <tbody>
+  <tr><td>Customer domain</td><td>3</td><td><code>silver.customer_master</code>, <code>silver.customer_accounts</code>, <code>silver.customer_addresses</code></td><td><code>bronze.customers</code>, <code>bronze.accounts</code>, <code>bronze.service_requests</code></td></tr>
+  <tr><td>Meter & device domain</td><td>4</td><td><code>silver.meters</code>, <code>silver.meter_installations</code>, <code>silver.device_health</code>, <code>silver.meter_calendar</code></td><td><code>bronze.meter_installations</code>, IoT metadata</td></tr>
+  <tr><td>IoT readings (clean)</td><td>4</td><td><code>silver.electricity_readings_clean</code>, <code>silver.water_readings_clean</code>, <code>silver.grid_sensors_clean</code>, <code>silver.pressure_monitors_clean</code></td><td>Bronze IoT tables</td></tr>
+  <tr><td>Finance / ERP</td><td>6</td><td><code>silver.invoices</code>, <code>silver.gl_balances</code>, <code>silver.payments</code>, <code>silver.assets</code>, <code>silver.projects</code>, <code>silver.tariff_history</code></td><td>Bronze Oracle tables</td></tr>
+  <tr><td>Reference data</td><td>3</td><td><code>silver.tariff_rates_current</code>, <code>silver.zone_hierarchy</code>, <code>silver.holiday_calendar</code></td><td>Bronze flat files</td></tr>
+  <tr><td><strong>Total Silver tables</strong></td><td><strong>20</strong></td><td colspan="2"></td></tr>
+ </tbody>
+</table>
+
+<h2>5. Gold Layer (Delta Lake – star schema, business aggregates)</h2>
+<table>
+ <thead><tr><th>Business Process</th><th>Gold Tables</th><th>Type</th><th>Examples</th></tr></thead>
+ <tbody>
+  <tr><td>Electricity consumption</td><td>5</td><td>Fact + dims</td><td><code>gold.fact_electricity_usage</code>, <code>gold.dim_customer</code>, <code>gold.dim_meter</code>, <code>gold.dim_date</code>, <code>gold.dim_location</code></td></tr>
+  <tr><td>Water consumption</td><td>5</td><td>Fact + dims</td><td><code>gold.fact_water_usage</code> (shares dimensions above)</td></tr>
+  <tr><td>Billing</td><td>4</td><td>Fact + dims</td><td><code>gold.fact_billing</code>, <code>gold.dim_payment_method</code>, <code>gold.dim_tariff</code>, <code>gold.dim_billing_cycle</code></td></tr>
+  <tr><td>Meter health & alerts</td><td>4</td><td>Fact + dims</td><td><code>gold.fact_meter_health</code>, <code>gold.dim_alert_type</code>, <code>gold.dim_device_status</code>, <code>gold.dim_maintenance</code></td></tr>
+  <tr><td>Cross‑domain aggregates</td><td>3</td><td>Aggregate tables</td><td><code>gold.monthly_consumption_by_zone</code>, <code>gold.daily_peak_demand</code>, <code>gold.customer_360_summary</code></td></tr>
+  <tr><td><strong>Total unique Gold tables</strong></td><td><strong>21</strong></td><td colspan="2"><em>Facts:4, Shared dims:8, Aggregates:3, Lookups:6</em></td></tr>
+ </tbody>
+</table>
+
+<h2>6. Synapse SQL Pool (Serving Layer for Power BI)</h2>
+<p>External tables (point to Gold Delta) + native tables (materialized) + views + procedures + functions.</p>
+<table>
+ <thead><tr><th>Object Type in Synapse</th><th>Number</th><th>Examples</th></tr></thead>
+ <tbody>
+  <tr><td>External tables</td><td>21</td><td><code>ext_fact_electricity_usage</code>, <code>ext_dim_customer</code>, <code>ext_dim_meter</code> …</td></tr>
+  <tr><td>Native tables (materialized for performance)</td><td>10</td><td><code>fact_electricity_usage</code>, <code>dim_customer</code>, <code>dim_meter</code>, <code>dim_date</code>, <code>dim_location</code>, <code>fact_billing</code>, <code>monthly_consumption_by_zone</code></td></tr>
+  <tr><td>Views</td><td>15</td><td><code>vw_customer_360</code>, <code>vw_daily_consumption_by_zone</code>, <code>vw_real_time_alerts</code></td></tr>
+  <tr><td>Stored procedures</td><td>12</td><td><code>usp_load_fact_electricity</code>, <code>usp_refresh_dimensions</code>, <code>usp_purge_quarantine</code></td></tr>
+  <tr><td>Functions</td><td>8</td><td><code>fn_get_peak_hours()</code>, <code>fn_calculate_bill()</code></td></tr>
+  <tr><td><strong>Total objects in Synapse</strong></td><td><strong>~66</strong></td><td></td></tr>
+ </tbody>
+</table>
+
+<h2>7. Example Table Names Across Layers (Electricity Meter Readings)</h2>
+<table>
+ <thead><tr><th>Layer</th><th>Table / Object Name</th></tr></thead>
+ <tbody>
+  <tr><td>Source</td><td><code>iot_stream_electricity_meters</code> (Event Hub)</td></tr>
+  <tr><td>Landing</td><td><code>/landing/iot/electricity_meters/2025-01-15/*.json</code></td></tr>
+  <tr><td>Bronze</td><td><code>bronze.electricity_meter_readings</code></td></tr>
+  <tr><td>Silver</td><td><code>silver.electricity_readings_clean</code></td></tr>
+  <tr><td>Gold</td><td><code>gold.fact_electricity_usage</code></td></tr>
+  <tr><td>Synapse (external)</td><td><code>ext_fact_electricity_usage</code></td></tr>
+  <tr><td>Synapse (native)</td><td><code>fact_electricity_usage</code> (clustered columnstore)</td></tr>
+  <tr><td>Synapse (view)</td><td><code>vw_daily_electricity_by_customer</code></td></tr>
+ </tbody>
+</table>
+
+<div class="summary">
+<strong>How to get actual counts from your environment:</strong><br>
+• <strong>Bronze/Silver/Gold tables</strong> – Run <code>SHOW TABLES IN &lt;schema&gt;</code> in Databricks.<br>
+• <strong>Synapse objects</strong> – Connect to Synapse SQL pool and query <code>sys.tables</code>, <code>sys.views</code>, <code>sys.sql_modules</code>.<br>
+• <strong>Landing</strong> – Use Azure Storage Explorer or ADLS `ls` command.<br>
+• <strong>Source systems</strong> – Check your Oracle/MySQL catalogs.
+</div>
+
+<p><em>Document generated for Kahramaa “Data Transformation & Self-Service Digitization” project. Use as living reference.</em></p>
+</body>
+</html>
